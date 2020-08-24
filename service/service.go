@@ -16,9 +16,9 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 
-	"github.com/giantswarm/app-collector/flag"
-	"github.com/giantswarm/app-collector/pkg/project"
-	"github.com/giantswarm/app-collector/service/collector"
+	"github.com/giantswarm/app-exporter/flag"
+	"github.com/giantswarm/app-exporter/pkg/project"
+	"github.com/giantswarm/app-exporter/service/collector"
 )
 
 // Config represents the configuration used to create a new service.

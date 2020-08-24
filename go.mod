@@ -1,4 +1,4 @@
-module github.com/giantswarm/app-collector
+module github.com/giantswarm/app-exporter
 
 go 1.14
 

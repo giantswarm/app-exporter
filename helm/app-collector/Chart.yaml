@@ -1,6 +1,0 @@
-apiVersion: "v1"
-appVersion: "[[ .AppVersion ]]"
-description: "Chart holding app-collector."
-home: "https://github.com/giantswarm/app-collector"
-name: "app-collector"
-version: "[[ .Version ]]"
