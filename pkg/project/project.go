@@ -1,10 +1,10 @@
 package project
 
 var (
-	description = "The app-collector does something."
+	description = "The app-exporter does something."
 	gitSHA      = "n/a"
-	name        = "app-collector"
-	source      = "https://github.com/giantswarm/app-collector"
+	name        = "app-exporter"
+	source      = "https://github.com/giantswarm/app-exporter"
 	version     = "0.1.0-dev"
 )
 
