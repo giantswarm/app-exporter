@@ -17,7 +17,6 @@ import (
 	"github.com/giantswarm/app-collector/flag"
 	"github.com/giantswarm/app-collector/pkg/project"
 	"github.com/giantswarm/app-collector/service/collector"
-	"github.com/giantswarm/app-collector/service/controller"
 )
 
 // Config represents the configuration used to create a new service.
@@ -32,7 +31,6 @@ type Service struct {
 	Version *version.Service
 
 	bootOnce          sync.Once
-	todoController    *controller.TODO
 	operatorCollector *collector.Set
 }
 
@@ -97,20 +95,6 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var todoController *controller.TODO
-	{
-
-		c := controller.TODOConfig{
-			K8sClient: k8sClient,
-			Logger:    config.Logger,
-		}
-
-		todoController, err = controller.NewTODO(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var operatorCollector *collector.Set
 	{
 		c := collector.SetConfig{
@@ -144,7 +128,6 @@ func New(config Config) (*Service, error) {
 		Version: versionService,
 
 		bootOnce:          sync.Once{},
-		todoController:    todoController,
 		operatorCollector: operatorCollector,
 	}
 
@@ -154,7 +137,5 @@ func New(config Config) (*Service, error) {
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 		go s.operatorCollector.Boot(ctx) // nolint:errcheck
-
-		go s.todoController.Boot(ctx)
 	})
 }
