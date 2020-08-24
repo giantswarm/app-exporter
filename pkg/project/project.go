@@ -8,6 +8,12 @@ var (
 	version     = "0.1.0-dev"
 )
 
+// AppTenantVersion is always 1.0.0 for tenant cluster app CRs using Helm 2.
+// For app CRs using Helm 3 we use project.Version().
+func AppTenantVersion() string {
+	return "1.0.0"
+}
+
 func Description() string {
 	return description
 }

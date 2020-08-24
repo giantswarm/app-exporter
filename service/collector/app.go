@@ -12,7 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/app-operator/v2/service/controller/app/key"
+	"github.com/giantswarm/app-collector/service/collector/key"
 )
 
 var (
@@ -48,7 +48,6 @@ type AppConfig struct {
 
 	AppTeamMapping map[string]string
 	DefaultTeam    string
-	UniqueApp      bool
 }
 
 // App is the main struct for this collector.
@@ -83,7 +82,6 @@ func NewApp(config AppConfig) (*App, error) {
 
 		appTeamMapping: config.AppTeamMapping,
 		defaultTeam:    config.DefaultTeam,
-		uniqueApp:      config.UniqueApp,
 	}
 
 	return c, nil
@@ -109,11 +107,7 @@ func (c *App) Describe(ch chan<- *prometheus.Desc) error {
 }
 
 func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric) error {
-	options := metav1.ListOptions{
-		LabelSelector: key.AppVersionSelector(c.uniqueApp).String(),
-	}
-
-	r, err := c.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, options)
+	r, err := c.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
