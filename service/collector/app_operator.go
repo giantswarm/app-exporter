@@ -12,8 +12,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	pkglabel "github.com/giantswarm/app-collector/pkg/label"
-	"github.com/giantswarm/app-collector/pkg/project"
+	pkglabel "github.com/giantswarm/app-exporter/pkg/label"
+	"github.com/giantswarm/app-exporter/pkg/project"
 )
 
 var (

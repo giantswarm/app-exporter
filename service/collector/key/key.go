@@ -5,7 +5,7 @@ import (
 
 	"github.com/giantswarm/apiextensions/v2/pkg/apis/application/v1alpha1"
 
-	"github.com/giantswarm/app-collector/pkg/annotation"
+	"github.com/giantswarm/app-exporter/pkg/annotation"
 )
 
 func AppName(customResource v1alpha1.App) string {

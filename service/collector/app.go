@@ -12,7 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/app-collector/service/collector/key"
+	"github.com/giantswarm/app-exporter/service/collector/key"
 )
 
 var (
