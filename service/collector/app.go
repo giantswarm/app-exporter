@@ -57,7 +57,6 @@ type App struct {
 
 	appTeamMapping map[string]string
 	defaultTeam    string
-	uniqueApp      bool
 }
 
 // NewApp creates a new App metrics collector
