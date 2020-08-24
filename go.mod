@@ -13,7 +13,5 @@ require (
 	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/prometheus/client_golang v1.7.1
 	github.com/spf13/viper v1.6.2
-	k8s.io/api v0.18.5
-	k8s.io/apimachinery v0.18.5
 	k8s.io/client-go v0.18.5
 )
