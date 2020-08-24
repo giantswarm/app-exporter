@@ -1,5 +1,9 @@
 package project
 
+const (
+	operatorName = "app-operator"
+)
+
 var (
 	description = "The app-collector does something."
 	gitSHA      = "n/a"
@@ -20,6 +24,10 @@ func Description() string {
 
 func GitSHA() string {
 	return gitSHA
+}
+
+func OperatorName() string {
+	return operatorName
 }
 
 func Name() string {
