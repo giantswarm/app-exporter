@@ -13,46 +13,11 @@ rules:
       - get
       - list
   - apiGroups:
-      - ""
+      - apps
     resources:
-      - pods
+      - deployments
     verbs:
-      - "*"
-  - apiGroups:
-      - ""
-    resources:
-      - configmaps
-      - namespaces
-    verbs:
-      - create
-      - update
-      - delete
-      - get
       - list
-  - apiGroups:
-      - ""
-    resources:
-      - serviceaccounts
-    verbs:
-      - create
-  - apiGroups:
-      - "networking.k8s.io"
-    resources:
-      - networkpolicies
-    verbs:
-      - create
-  - apiGroups:
-      - "rbac.authorization.k8s.io"
-    resources:
-      - clusterrolebindings
-    verbs:
-      - create
-  - apiGroups:
-      - apiextensions.k8s.io
-    resources:
-      - customresourcedefinitions
-    verbs:
-      - "*"
   - nonResourceURLs:
       - "/"
       - "/healthz"
