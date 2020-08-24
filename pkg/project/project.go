@@ -1,10 +1,10 @@
 package project
 
 var (
-	description = "The template-operator does something."
+	description = "The app-collector does something."
 	gitSHA      = "n/a"
-	name        = "template-operator"
-	source      = "https://github.com/giantswarm/template-operator"
+	name        = "app-collector"
+	source      = "https://github.com/giantswarm/app-collector"
 	version     = "0.1.0-dev"
 )
 

@@ -1,4 +1,4 @@
 *.swp
 TODO
-/template-operator
+/app-collector
 !vendor/**

@@ -11,8 +11,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"github.com/giantswarm/template-operator/pkg/project"
-	"github.com/giantswarm/template-operator/service/controller/resource/test"
+	"github.com/giantswarm/app-collector/pkg/project"
+	"github.com/giantswarm/app-collector/service/controller/resource/test"
 )
 
 type TODOConfig struct {
@@ -43,7 +43,7 @@ func NewTODO(config TODOConfig) (*TODO, error) {
 			Resources: resources,
 
 			// Name is used to compute finalizer names. This here results in something
-			// like operatorkit.giantswarm.io/template-operator-todo-controller.
+			// like operatorkit.giantswarm.io/app-collector-todo-controller.
 			Name: project.Name() + "-todo-controller",
 		}
 
