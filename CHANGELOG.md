@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2020-08-25
+
 ### Added
 
 - Added initial structures. 
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/tree/master
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/giantswarm/app-exporter/releases/tag/v0.1.0
