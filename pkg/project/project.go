@@ -9,7 +9,7 @@ var (
 	gitSHA      = "n/a"
 	name        = "app-exporter"
 	source      = "https://github.com/giantswarm/app-exporter"
-	version     = "0.2.0"
+	version     = "0.2.1-dev"
 )
 
 // AppTenantVersion is always 1.0.0 for tenant cluster app CRs using Helm 2.
