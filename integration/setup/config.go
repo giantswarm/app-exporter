@@ -3,16 +3,16 @@
 package setup
 
 import (
+	"github.com/giantswarm/apptest"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
 	"github.com/giantswarm/app-exporter/integration/env"
-	"github.com/giantswarm/app-exporter/pkg/appsetup"
 )
 
 type Config struct {
-	AppSetup   appsetup.Interface
+	AppTest    apptest.Interface
 	K8sClients k8sclient.Interface
 	Logger     micrologger.Logger
 }
@@ -44,21 +44,21 @@ func NewConfig() (Config, error) {
 		}
 	}
 
-	var appSetup appsetup.Interface
+	var appTest apptest.Interface
 	{
-		c := appsetup.Config{
+		c := apptest.Config{
 			K8sClient: k8sClients,
 			Logger:    logger,
 		}
 
-		appSetup, err = appsetup.New(c)
+		appTest, err = apptest.New(c)
 		if err != nil {
 			return Config{}, microerror.Mask(err)
 		}
 	}
 
 	c := Config{
-		AppSetup:   appSetup,
+		AppTest:    appTest,
 		K8sClients: k8sClients,
 		Logger:     logger,
 	}

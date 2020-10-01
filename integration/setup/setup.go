@@ -8,10 +8,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/giantswarm/apptest"
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/app-exporter/integration/key"
-	"github.com/giantswarm/app-exporter/pkg/appsetup"
 	"github.com/giantswarm/app-exporter/pkg/project"
 )
 
@@ -39,7 +39,7 @@ func installResources(ctx context.Context, config Config) error {
 	var err error
 
 	{
-		apps := []appsetup.App{
+		apps := []apptest.App{
 			{
 				CatalogName:   key.ControlPlaneTestCatalogName(),
 				CatalogURL:    key.ControlPlaneTestCatalogStorageURL(),
@@ -49,7 +49,7 @@ func installResources(ctx context.Context, config Config) error {
 				WaitForDeploy: true,
 			},
 		}
-		err = config.AppSetup.InstallApps(ctx, apps)
+		err = config.AppTest.InstallApps(ctx, apps)
 		if err != nil {
 			return microerror.Mask(err)
 		}

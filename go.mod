@@ -6,15 +6,16 @@ require (
 	github.com/Masterminds/semver/v3 v3.1.0
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
 	github.com/ghodss/yaml v1.0.0
-	github.com/giantswarm/apiextensions/v2 v2.1.0
+	github.com/giantswarm/apiextensions/v2 v2.4.0
 	github.com/giantswarm/appcatalog v0.2.7
+	github.com/giantswarm/apptest v0.0.0-20200921110725-203908c189ef
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.0
 	github.com/giantswarm/k8sclient/v4 v4.0.0
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.2.1
 	github.com/giantswarm/microkit v0.2.1
-	github.com/giantswarm/micrologger v0.3.1
+	github.com/giantswarm/micrologger v0.3.3
 	github.com/giantswarm/operatorkit/v2 v2.0.0
 	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/prometheus/client_golang v1.7.1
@@ -24,6 +25,6 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1 // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
-	k8s.io/apimachinery v0.18.5
+	k8s.io/apimachinery v0.18.8
 	k8s.io/client-go v0.18.5
 )
