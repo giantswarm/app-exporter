@@ -143,6 +143,7 @@ github.com/eapache/queue v1.1.0/go.mod h1:6eCeP0CKFpHLu8blIFXhExK/dRa7WDZfr6jVFP
 github.com/edsrzf/mmap-go v1.0.0/go.mod h1:YO35OhQPt3KJa3ryjFM5Bs14WD66h8eGKpfaBNrHW5M=
 github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385/go.mod h1:0vRUJqYpeSZifjYj7uP3BG/gKcuzL9xWVV/Y+cK33KM=
 github.com/elazarl/goproxy v0.0.0-20170405201442-c4fc26588b6e/go.mod h1:/Zj4wYkgs4iZTTu3o/KG3Itv/qCCa8VVMlb3i9OVuzc=
+github.com/elazarl/goproxy v0.0.0-20180725130230-947c36da3153 h1:yUdfgN0XgIJw7foRItutHYUIhlcKzcSf5vDpdhQAKTc=
 github.com/elazarl/goproxy v0.0.0-20180725130230-947c36da3153/go.mod h1:/Zj4wYkgs4iZTTu3o/KG3Itv/qCCa8VVMlb3i9OVuzc=
 github.com/emicklei/go-restful v0.0.0-20170410110728-ff4f55a20633/go.mod h1:otzb+WCGbkyDHkqmQmT5YD2WR4BBwUdeQoFo8l/7tVs=
 github.com/emicklei/go-restful v2.9.5+incompatible h1:spTtZBk5DYEvbxMVutUuTyh1Ao2r4iyvLdACqsl/Ljk=
@@ -161,6 +162,8 @@ github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5Kwzbycv
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
 github.com/flosch/pongo2 v0.0.0-20190707114632-bbf5a6c351f4/go.mod h1:T9YF2M40nIgbVgp3rreNmTged+9HrbNTIQf1PsaIiTA=
 github.com/flynn/go-shlex v0.0.0-20150515145356-3f9db97f8568/go.mod h1:xEzjJPgXI435gkrCt3MPfRiAkVrwSbHsst4LCFVfpJc=
+github.com/fortytw2/leaktest v1.3.0 h1:u8491cBMTQ8ft8aeV+adlcytMZylmA5nnwwkRZjI8vw=
+github.com/fortytw2/leaktest v1.3.0/go.mod h1:jDsjWgpAGjm2CA7WthBh/CdZYEPF31XHquHwclZch5g=
 github.com/franela/goblin v0.0.0-20200105215937-c9ffbefa60db/go.mod h1:7dvUGVsVBjqR7JHJk0brhHOZYGmfBYOrK0ZhYMEtBr4=
 github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8/go.mod h1:ZhphrRTfi2rbfLwlschooIH4+wKKDR4Pdxhh+TRoA20=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
@@ -177,8 +180,6 @@ github.com/giantswarm/apiextensions/v2 v2.0.0 h1:rKUHhiM8herDiNSgkfdLwqs+Pzrews2
 github.com/giantswarm/apiextensions/v2 v2.0.0/go.mod h1:/qSx5jA2F5um0ipvVDMZJz+rJqsPZewzz4jjMXkXYFw=
 github.com/giantswarm/apiextensions/v2 v2.4.0 h1:xHGA5cc0T2KEbOxHPAb8ZRbCUwpykHFYljKiyo+iSSw=
 github.com/giantswarm/apiextensions/v2 v2.4.0/go.mod h1:/qSx5jA2F5um0ipvVDMZJz+rJqsPZewzz4jjMXkXYFw=
-github.com/giantswarm/appcatalog v0.2.7 h1:SVD1OH/C5zEP8TaeS3L9t8+lVcfaRZhwY98sn8v9lYs=
-github.com/giantswarm/appcatalog v0.2.7/go.mod h1:WHO5lJvcuwzToxxHPdiX9CVxvMsmP8YZfjoo4E/NTLs=
 github.com/giantswarm/apptest v0.0.0-20200921110725-203908c189ef h1:FLIwXG1R6lIyn9KYgzmbBcVXUaJX1jvgmU/GmbMQsNA=
 github.com/giantswarm/apptest v0.0.0-20200921110725-203908c189ef/go.mod h1:ziCoOxs9q70pwzpDXP9WpXnvg6JBg0WLTHi3s/MEJjk=
 github.com/giantswarm/backoff v0.2.0 h1:kdfAf83pZ/l8X0KiA2dJ2Wq19nS9hISijVn7ZRdFhfU=
@@ -187,6 +188,8 @@ github.com/giantswarm/exporterkit v0.2.0 h1:+HTGl4fmT/1OkTox8HbV3JXeavmsZv94+2CD
 github.com/giantswarm/exporterkit v0.2.0/go.mod h1:b4fuHVjsvZgznC9OEPfn0y5zvN8SnEKTiI5zTTfck94=
 github.com/giantswarm/k8sclient/v4 v4.0.0 h1:K18A0FomGjxTMElcGrjO3uLkYobUtcNh8e8PhTgFr2w=
 github.com/giantswarm/k8sclient/v4 v4.0.0/go.mod h1:jTwQ8q0YbJJu3ZxbjoI6hkXeuvKm15xyI/c+zwxnUH0=
+github.com/giantswarm/k8sportforward/v2 v2.0.0 h1:tbu1i0+iRQ8ShTUwh55YizqBpYn5T9ltsr0ibNwH5Og=
+github.com/giantswarm/k8sportforward/v2 v2.0.0/go.mod h1:YfTaZsgLH1K9BX2zOy+QvvvUTdc744BvRlKrEfVwYfM=
 github.com/giantswarm/microendpoint v0.2.0 h1:xCAqAVRjTw/4ifEuBeNavALdbQsLk6+k/ukzdy0GWZE=
 github.com/giantswarm/microendpoint v0.2.0/go.mod h1:SSkSp4Q4iSW7vwkil+/E3IXy9Q8To8vXmT5VCg24RDg=
 github.com/giantswarm/microerror v0.2.0 h1:SaE7S34mp/wEiQkgtPiq8wQbNUTCj1gjiCWPjO3wgJo=

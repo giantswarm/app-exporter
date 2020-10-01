@@ -7,11 +7,11 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/giantswarm/apiextensions/v2 v2.4.0
-	github.com/giantswarm/appcatalog v0.2.7
 	github.com/giantswarm/apptest v0.0.0-20200921110725-203908c189ef
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.0
 	github.com/giantswarm/k8sclient/v4 v4.0.0
+	github.com/giantswarm/k8sportforward/v2 v2.0.0
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.2.1
 	github.com/giantswarm/microkit v0.2.1

@@ -1,6 +1,6 @@
 // +build k8srequired
 
-package bootstrap
+package metrics
 
 import (
 	"testing"
