@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Update deployment annotation to use checksum instead of helm revision to
+reduce how often pods are rolled.
+
 ## [0.2.0] - 2020-09-04
 
 ### Changed
