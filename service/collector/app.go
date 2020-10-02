@@ -116,7 +116,8 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team, ok := c.appTeamMapping[key.AppName(app)]
 			if !ok {
 				team = c.defaultTeam
-			}*/
+			}
+		*/
 
 		team := "joker"
 
