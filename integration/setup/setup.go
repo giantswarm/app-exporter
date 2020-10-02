@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/apptest"
 	"github.com/giantswarm/microerror"
 
+	"github.com/giantswarm/app-exporter/integration/env"
 	"github.com/giantswarm/app-exporter/integration/key"
 	"github.com/giantswarm/app-exporter/pkg/project"
 )
@@ -45,7 +46,7 @@ func installResources(ctx context.Context, config Config) error {
 				CatalogURL:    key.ControlPlaneTestCatalogStorageURL(),
 				Name:          project.Name(),
 				Namespace:     key.Namespace(),
-				Version:       "0.2.1", // TODO Use SHA for WIP commits.
+				Version:       fmt.Sprintf("0.2.1-%s", env.CircleSHA()), // TODO Use SHA for WIP commits.
 				WaitForDeploy: true,
 			},
 		}

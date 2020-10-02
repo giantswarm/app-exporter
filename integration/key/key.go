@@ -7,13 +7,11 @@ func AppExporterAppName() string {
 }
 
 func ControlPlaneTestCatalogName() string {
-	// TODO Put back test catalog.
-	return "control-plane-catalog"
+	return "control-plane-test-catalog"
 }
 
 func ControlPlaneTestCatalogStorageURL() string {
-	// TODO Put back test catalog.
-	return "https://giantswarm.github.io/control-plane-catalog/"
+	return "https://giantswarm.github.io/control-plane-test-catalog/"
 }
 
 func Namespace() string {

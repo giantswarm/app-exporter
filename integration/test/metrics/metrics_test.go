@@ -22,7 +22,7 @@ import (
 	"github.com/giantswarm/app-exporter/pkg/project"
 )
 
-// TestMetrics TODO
+// TestMetrics TODO2
 //
 func TestMetrics(t *testing.T) {
 	var err error
@@ -106,7 +106,7 @@ func TestMetrics(t *testing.T) {
 
 		metrics := string(respBytes)
 		if !strings.Contains(metrics, expectedMetric) {
-			t.Fatalf("expected metric\n%s not found in response\n%s", expectedMetric, metrics)
+			t.Fatalf("expected metric\n\n%s\n\nnot found in response\n\n%s", expectedMetric, metrics)
 		}
 
 		config.Logger.LogCtx(ctx, "level", "debug", "message", "found expected metric")

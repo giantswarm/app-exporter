@@ -117,6 +117,8 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team = c.defaultTeam
 		}
 
+		team = "joker"
+
 		ch <- prometheus.MustNewConstMetric(
 			appDesc,
 			prometheus.GaugeValue,
