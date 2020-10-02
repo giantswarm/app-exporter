@@ -112,14 +112,10 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	}
 
 	for _, app := range r.Items {
-		/*
-			team, ok := c.appTeamMapping[key.AppName(app)]
-			if !ok {
-				team = c.defaultTeam
-			}
-		*/
-
-		team := "joker"
+		team, ok := c.appTeamMapping[key.AppName(app)]
+		if !ok {
+			team = c.defaultTeam
+		}
 
 		ch <- prometheus.MustNewConstMetric(
 			appDesc,
