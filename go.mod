@@ -7,7 +7,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/giantswarm/apiextensions/v2 v2.4.0
-	github.com/giantswarm/apptest v0.1.1-0.20201005143643-49004b217d31
+	github.com/giantswarm/apptest v0.1.1-0.20201005151255-ebdabb758039
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.0
 	github.com/giantswarm/k8sclient/v4 v4.0.0
