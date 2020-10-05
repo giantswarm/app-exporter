@@ -46,7 +46,7 @@ func installResources(ctx context.Context, config Config) error {
 				CatalogURL:    key.ControlPlaneTestCatalogStorageURL(),
 				Name:          project.Name(),
 				Namespace:     key.Namespace(),
-				Version:       fmt.Sprintf("0.2.0-%s", env.CircleSHA()), // TODO Use SHA for WIP commits.
+				SHA:           env.CircleSHA(),
 				WaitForDeploy: true,
 			},
 		}
