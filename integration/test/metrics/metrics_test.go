@@ -22,8 +22,11 @@ import (
 	"github.com/giantswarm/app-exporter/pkg/project"
 )
 
-// TestMetrics TODO2
+// TestMetrics checks the exporter emits app info metrics for its own app CR.
 //
+// - Waits for the pod to start and creates a port forwarding connection
+// to the metrics endpoint.
+// - Scrapes the metrics and checks the expected app info metric is present.
 func TestMetrics(t *testing.T) {
 	var err error
 
