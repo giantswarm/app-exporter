@@ -2,10 +2,6 @@
 
 package key
 
-func AppExporterAppName() string {
-	return "app-exporter"
-}
-
 func ControlPlaneTestCatalogName() string {
 	return "control-plane-test-catalog"
 }
