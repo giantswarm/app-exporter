@@ -42,7 +42,7 @@ workflows:
 
       - architect/push-to-app-catalog:
           context: "architect"
-          name: push-app-exporter-to-app-catalog
+          name: push-app-exporter-to-control-plane-catalog
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
           chart: "app-exporter"
@@ -60,7 +60,8 @@ workflows:
           app_collection_repo: "aws-app-collection"
           unique: "true"
           requires:
-            - push-app-exporter-to-app-catalog
+            - push-app-exporter-to-aliyun
+            - push-app-exporter-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -74,7 +75,7 @@ workflows:
           app_collection_repo: "azure-app-collection"
           unique: "true"
           requires:
-            - push-app-exporter-to-app-catalog
+            - push-app-exporter-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -88,7 +89,7 @@ workflows:
           app_collection_repo: "kvm-app-collection"
           unique: "true"
           requires:
-            - push-app-exporter-to-app-catalog
+            - push-app-exporter-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
