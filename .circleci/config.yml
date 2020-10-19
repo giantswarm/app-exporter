@@ -13,6 +13,19 @@ workflows:
             tags:
               only: /^v.*/
 
+      - architect/integration-test:
+          context: architect
+          name: "basic-integration-test"
+          setup-script: "integration/setup/setup.sh"
+          test-dir: "integration/test/metrics"
+          filters:
+            # Do not trigger the job on merge to master.
+            branches:
+              ignore:
+                - master
+          requires:
+            - push-app-exporter-to-app-catalog
+
       - architect/push-to-docker:
           context: "architect"
           name: push-app-exporter-to-quay
