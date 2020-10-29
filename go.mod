@@ -1,6 +1,6 @@
 module github.com/giantswarm/app-exporter
 
-go 1.14
+go 1.15
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.0
@@ -28,4 +28,8 @@ require (
 	k8s.io/client-go v0.18.9
 )
 
-replace sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.10-gs
+replace (
+	// Apply fix for CVE-2020-15114 not yet released in github.com/spf13/viper.
+	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.3
+	sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.10-gs
+)
