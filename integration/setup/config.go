@@ -47,8 +47,9 @@ func NewConfig() (Config, error) {
 	var appTest apptest.Interface
 	{
 		c := apptest.Config{
-			K8sClient: k8sClients,
-			Logger:    logger,
+			Logger: logger,
+
+			KubeConfigPath: env.KubeConfigPath(),
 		}
 
 		appTest, err = apptest.New(c)
