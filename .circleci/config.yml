@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@0.10.2
+  architect: giantswarm/architect@0.16.0
 
 workflows:
   build:
@@ -24,7 +24,7 @@ workflows:
               ignore:
                 - master
           requires:
-            - push-app-exporter-to-app-catalog
+            - push-app-exporter-to-control-plane-catalog
 
       - architect/push-to-docker:
           context: "architect"

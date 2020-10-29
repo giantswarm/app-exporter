@@ -4,7 +4,7 @@ package setup
 
 import (
 	"github.com/giantswarm/apptest"
-	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
@@ -47,8 +47,9 @@ func NewConfig() (Config, error) {
 	var appTest apptest.Interface
 	{
 		c := apptest.Config{
-			K8sClient: k8sClients,
-			Logger:    logger,
+			Logger: logger,
+
+			KubeConfigPath: env.KubeConfigPath(),
 		}
 
 		appTest, err = apptest.New(c)
