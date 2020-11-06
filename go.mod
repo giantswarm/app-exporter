@@ -18,12 +18,11 @@ require (
 	github.com/giantswarm/micrologger v0.3.3
 	github.com/giantswarm/operatorkit/v2 v2.0.0
 	github.com/gorilla/mux v1.7.4 // indirect
-	github.com/prometheus/client_golang v1.7.1
+	github.com/prometheus/client_golang v1.8.0
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1 // indirect
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
 	k8s.io/apimachinery v0.18.9
 	k8s.io/client-go v0.18.9
 )
