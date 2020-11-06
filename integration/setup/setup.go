@@ -17,8 +17,6 @@ import (
 )
 
 func Setup(m *testing.M, config Config) {
-	var v int
-
 	var err error
 
 	ctx := context.Background()
@@ -26,14 +24,10 @@ func Setup(m *testing.M, config Config) {
 	err = installResources(ctx, config)
 	if err != nil {
 		config.Logger.LogCtx(ctx, "level", "error", "message", fmt.Sprintf("failed to install %#q", project.Name()), "stack", fmt.Sprintf("%#v", err))
-		v = 1
+		os.Exit(-1)
 	}
 
-	if v == 0 {
-		v = m.Run()
-	}
-
-	os.Exit(v)
+	os.Exit(m.Run())
 }
 
 func installResources(ctx context.Context, config Config) error {
@@ -43,7 +37,6 @@ func installResources(ctx context.Context, config Config) error {
 		apps := []apptest.App{
 			{
 				CatalogName:   key.ControlPlaneTestCatalogName(),
-				CatalogURL:    key.ControlPlaneTestCatalogStorageURL(),
 				Name:          project.Name(),
 				Namespace:     key.Namespace(),
 				SHA:           env.CircleSHA(),
