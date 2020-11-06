@@ -178,6 +178,7 @@ github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2H
 github.com/ghodss/yaml v1.0.0 h1:wQHKEahhL6wmXdzwWG11gIVCkOv05bNOh+Rxn0yngAk=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/giantswarm/apiextensions/v2 v2.0.0/go.mod h1:/qSx5jA2F5um0ipvVDMZJz+rJqsPZewzz4jjMXkXYFw=
+github.com/giantswarm/apiextensions/v2 v2.6.2/go.mod h1:/qSx5jA2F5um0ipvVDMZJz+rJqsPZewzz4jjMXkXYFw=
 github.com/giantswarm/apiextensions/v3 v3.4.0 h1:uP4OUuahuuZyI56jmgXPwBbMpJ1xEHMhh0DcNNcnAik=
 github.com/giantswarm/apiextensions/v3 v3.4.0/go.mod h1:MMLkRJta4mbTbrikP9LewADiCL+55LmsagyhdTU7XAY=
 github.com/giantswarm/appcatalog v0.2.7 h1:SVD1OH/C5zEP8TaeS3L9t8+lVcfaRZhwY98sn8v9lYs=
@@ -209,8 +210,8 @@ github.com/giantswarm/micrologger v0.3.1 h1:HbYbQLobvfsLYzRiGTncaO61CCPd4BlT18xa
 github.com/giantswarm/micrologger v0.3.1/go.mod h1:PjAgtcJ922ZMX/Aa05IPi0bdYvOj2P7pZ7+6dBShMQs=
 github.com/giantswarm/micrologger v0.3.3 h1:RGUOHlpFVvT9vK/BhZGqfzb9AjFxLLBns20oCdlTt8A=
 github.com/giantswarm/micrologger v0.3.3/go.mod h1:fkzQdDBC6HjJq4nllBDt6XB4t4yeVyhdHKblFX6QoMQ=
-github.com/giantswarm/operatorkit/v2 v2.0.0 h1:sq7WWTggG+8PryPppxgLJ4djjrRreY1g4fH6vfXor1M=
-github.com/giantswarm/operatorkit/v2 v2.0.0/go.mod h1:hPkK01XN+c6mk65Ox3M4TFLSX7SpySFnkVCn+uUeNrw=
+github.com/giantswarm/operatorkit/v2 v2.0.2 h1:S2O5lZBT1yeGFfR+/so5TSIXgbgCSrVceM3EccNmoGE=
+github.com/giantswarm/operatorkit/v2 v2.0.2/go.mod h1:Bl8gK7hYhvRQP0Ds26rwYdoSXbbr+NKRZmWtwqI7HFI=
 github.com/giantswarm/to v0.3.0 h1:cEzMYkWLGI3cI8x3a0L3nPCQYJTb/cAaqcIPvxnDmpQ=
 github.com/giantswarm/to v0.3.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
 github.com/giantswarm/versionbundle v0.2.0 h1:6EP3+9uO/9z1xu7g4pHNUyENxE+Ix1bc5aFpUMPz5Yg=

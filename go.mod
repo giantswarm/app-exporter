@@ -16,7 +16,7 @@ require (
 	github.com/giantswarm/microerror v0.2.1
 	github.com/giantswarm/microkit v0.2.1
 	github.com/giantswarm/micrologger v0.3.3
-	github.com/giantswarm/operatorkit/v2 v2.0.0
+	github.com/giantswarm/operatorkit/v2 v2.0.2
 	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/prometheus/client_golang v1.7.1
 	github.com/spf13/afero v1.3.4 // indirect
