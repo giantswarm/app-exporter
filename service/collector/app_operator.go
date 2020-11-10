@@ -149,7 +149,7 @@ func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]i
 	}
 
 	for _, deploy := range d.Items {
-		version := deploy.Labels[pkglabel.AppKubernetesVersion]
+		version := deploy.Labels[label.AppKubernetesVersion]
 		operatorVersions[version] = deploy.Status.ReadyReplicas
 	}
 

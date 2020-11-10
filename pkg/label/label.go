@@ -5,8 +5,4 @@ package label
 const (
 	// App label is used to identify Kubernetes resources.
 	App = "app"
-
-	// AppKubernetesVersion label is used to identify the version of Kubernetes
-	// resources.
-	AppKubernetesVersion = "app.kubernetes.io/version"
 )

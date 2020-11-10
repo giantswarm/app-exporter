@@ -4,9 +4,9 @@ go 1.15
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.0
-	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/giantswarm/apiextensions/v3 v3.7.0
+	github.com/giantswarm/app/v3 v3.1.0
 	github.com/giantswarm/apptest v0.5.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.0
@@ -18,16 +18,18 @@ require (
 	github.com/giantswarm/micrologger v0.3.4
 	github.com/giantswarm/operatorkit/v2 v2.0.2
 	github.com/prometheus/client_golang v1.8.0
-	github.com/spf13/afero v1.3.4 // indirect
-	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/viper v1.7.1
-	github.com/stretchr/testify v1.6.1 // indirect
 	k8s.io/apimachinery v0.18.9
 	k8s.io/client-go v0.18.9
 )
 
 replace (
+	// Use v0.8.10 of hcsshim to fix nancy alert.
+	github.com/Microsoft/hcsshim v0.8.7 => github.com/Microsoft/hcsshim v0.8.10
 	// Apply fix for CVE-2020-15114 not yet released in github.com/spf13/viper.
 	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.3
+	// Use v1.0.0-rc7 of runc to fix nancy alert.
+	github.com/opencontainers/runc v0.1.1 => github.com/opencontainers/runc v1.0.0-rc7
+	// Use fork of CAPI with Kubernetes 1.18 support.
 	sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.10-gs
 )
