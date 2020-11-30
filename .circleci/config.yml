@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@dev:fix-integration-test
+  architect: giantswarm/architect@0.18.1
 
 workflows:
   build:
