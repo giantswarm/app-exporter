@@ -232,8 +232,6 @@ github.com/giantswarm/app/v3 v3.7.0 h1:HfrY21NX0Uni9nMConTuSEbWevoWFd6sfNHWjeQNp
 github.com/giantswarm/app/v3 v3.7.0/go.mod h1:xBnXpbucQUqkSTjm7r7gIOjCm34mDJiFFLM6Dc/fh+I=
 github.com/giantswarm/appcatalog v0.3.2 h1:pH0ASrizU7QcAK4oZtrPXAi4pqMFJOsjCPRLY0uLFEo=
 github.com/giantswarm/appcatalog v0.3.2/go.mod h1:cjOuCqi8gWudFY0ogbp4ukSV4Vff6kfInR9VdrX+7yI=
-github.com/giantswarm/apptest v0.8.3-0.20201214140131-b2e869758880 h1:em1duBAwb9ws1JaMD5q1f1F49lAO7KhLYwotB04x/YU=
-github.com/giantswarm/apptest v0.8.3-0.20201214140131-b2e869758880/go.mod h1:tm+Nzd+3QRno04Il8+mtUUsqDPsGfDWvt76xLPjbUx0=
 github.com/giantswarm/apptest v0.8.3-0.20201214142542-a86f3c2a45fb h1:3RA/KENjwMtCQogWuomhHoFy7LTbjSO7iJgRnqjigzM=
 github.com/giantswarm/apptest v0.8.3-0.20201214142542-a86f3c2a45fb/go.mod h1:tm+Nzd+3QRno04Il8+mtUUsqDPsGfDWvt76xLPjbUx0=
 github.com/giantswarm/backoff v0.2.0 h1:kdfAf83pZ/l8X0KiA2dJ2Wq19nS9hISijVn7ZRdFhfU=
