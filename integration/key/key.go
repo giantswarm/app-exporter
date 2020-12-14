@@ -6,10 +6,6 @@ func ControlPlaneCatalogName() string {
 	return "control-plane-catalog"
 }
 
-func ControlPlaneCatalogURL() string {
-	return "https://giantswarm.github.io/control-plane-catalog/"
-}
-
 func ControlPlaneTestCatalogName() string {
 	return "control-plane-test-catalog"
 }
