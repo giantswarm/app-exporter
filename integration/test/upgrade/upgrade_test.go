@@ -9,7 +9,6 @@ import (
 
 	"github.com/giantswarm/appcatalog"
 	"github.com/giantswarm/apptest"
-	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/app-exporter/integration/key"
 	"github.com/giantswarm/app-exporter/integration/setup"
@@ -64,9 +63,9 @@ func TestUpgrade(t *testing.T) {
 	app.Version = ""
 	app.SHA = env.CircleSHA()
 
-	// 2. Ungrade app CR to this version
+	// 2. Upgrade app CR to this testing version
 	{
-		err = config.AppTest.InstallApps(ctx, apps)
+		err = config.AppTest.UpgradeApp(ctx, app)
 		if err != nil {
 			t.Fatalf("expected nil got %#q", err)
 		}
