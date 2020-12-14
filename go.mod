@@ -8,7 +8,7 @@ require (
 	github.com/giantswarm/apiextensions/v3 v3.13.0
 	github.com/giantswarm/app/v3 v3.7.0
 	github.com/giantswarm/appcatalog v0.3.2
-	github.com/giantswarm/apptest v0.8.3-0.20201214124544-7210d7d8b694
+	github.com/giantswarm/apptest v0.8.3-0.20201214125159-d63e9f76f908
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.0
 	github.com/giantswarm/k8sclient/v5 v5.0.0
