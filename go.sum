@@ -234,6 +234,8 @@ github.com/giantswarm/appcatalog v0.3.2 h1:pH0ASrizU7QcAK4oZtrPXAi4pqMFJOsjCPRLY
 github.com/giantswarm/appcatalog v0.3.2/go.mod h1:cjOuCqi8gWudFY0ogbp4ukSV4Vff6kfInR9VdrX+7yI=
 github.com/giantswarm/apptest v0.8.1-0.20201214092605-1e082b17e5be h1:t3QzjasoTTF8krwZwaUjiTSXx415O2aW6g7nKK19pss=
 github.com/giantswarm/apptest v0.8.1-0.20201214092605-1e082b17e5be/go.mod h1:tm+Nzd+3QRno04Il8+mtUUsqDPsGfDWvt76xLPjbUx0=
+github.com/giantswarm/apptest v0.8.1 h1:8cetiT4DhwDQvXmJMO/reLS772hXP5tS7v5YXYS74g8=
+github.com/giantswarm/apptest v0.8.1/go.mod h1:tm+Nzd+3QRno04Il8+mtUUsqDPsGfDWvt76xLPjbUx0=
 github.com/giantswarm/backoff v0.2.0 h1:kdfAf83pZ/l8X0KiA2dJ2Wq19nS9hISijVn7ZRdFhfU=
 github.com/giantswarm/backoff v0.2.0/go.mod h1:Z3WRsFilSJ5H5VlFa4XhraoPr+9pmZgYasoY2OSfNOk=
 github.com/giantswarm/cluster-api v0.3.10-gs h1:l2LpZlN97t7RRwKf4OBfNA2h1oVnZXWC68TFRfBMu5c=
