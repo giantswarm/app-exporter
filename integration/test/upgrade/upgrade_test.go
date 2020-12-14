@@ -4,12 +4,12 @@ package upgrade
 
 import (
 	"context"
-	"github.com/giantswarm/app-exporter/integration/env"
 	"testing"
 
 	"github.com/giantswarm/appcatalog"
 	"github.com/giantswarm/apptest"
 
+	"github.com/giantswarm/app-exporter/integration/env"
 	"github.com/giantswarm/app-exporter/integration/key"
 	"github.com/giantswarm/app-exporter/integration/setup"
 	"github.com/giantswarm/app-exporter/pkg/project"
