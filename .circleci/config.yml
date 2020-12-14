@@ -25,6 +25,18 @@ workflows:
           requires:
             - push-app-exporter-to-control-plane-catalog
 
+      - architect/integration-test:
+          name: "basic-integration-test"
+          install-app-platform: true
+          test-dir: "integration/test/upgrade"
+          filters:
+            # Do not trigger the job on merge to master.
+            branches:
+              ignore:
+                - master
+          requires:
+            - push-app-exporter-to-control-plane-catalog
+
       - architect/push-to-docker:
           context: "architect"
           name: push-app-exporter-to-quay
