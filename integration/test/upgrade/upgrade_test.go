@@ -6,7 +6,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/giantswarm/appcatalog"
 	"github.com/giantswarm/apptest"
 
 	"github.com/giantswarm/app-exporter/integration/env"
@@ -34,38 +33,23 @@ func TestUpgrade(t *testing.T) {
 	var err error
 	ctx := context.Background()
 
-	var latestVersion string
-	{
-		latestVersion, err = appcatalog.GetLatestVersion(ctx, key.ControlPlaneCatalogURL(), project.Name(), "")
-		if err != nil {
-			t.Fatalf("expected nil got %#q", err)
-		}
-	}
-
-	app := apptest.App{
+	currentApp := apptest.App{
 		CatalogName:   key.ControlPlaneCatalogName(),
 		Name:          project.Name(),
 		Namespace:     key.Namespace(),
-		Version:       latestVersion,
 		WaitForDeploy: true,
 	}
 
-	// 1. Install the latest version
-	{
-		apps := []apptest.App{app}
-		err = config.AppTest.InstallApps(ctx, apps)
-		if err != nil {
-			t.Fatalf("expected nil got %#q", err)
-		}
+	desiredApp := apptest.App{
+		CatalogName:   key.ControlPlaneTestCatalogName(),
+		Name:          project.Name(),
+		Namespace:     key.Namespace(),
+		SHA:           env.CircleSHA(),
+		WaitForDeploy: true,
 	}
 
-	app.CatalogName = key.ControlPlaneTestCatalogName()
-	app.Version = ""
-	app.SHA = env.CircleSHA()
-
-	// 2. Upgrade app CR to this testing version
 	{
-		err = config.AppTest.UpgradeApp(ctx, app)
+		err = config.AppTest.UpgradeApp(ctx, currentApp, desiredApp)
 		if err != nil {
 			t.Fatalf("expected nil got %#q", err)
 		}
