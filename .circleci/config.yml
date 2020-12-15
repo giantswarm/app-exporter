@@ -26,7 +26,7 @@ workflows:
             - push-app-exporter-to-control-plane-catalog
 
       - architect/integration-test:
-          name: "upgrade-test"
+          name: "upgrade-integration-test"
           install-app-platform: true
           test-dir: "integration/test/upgrade"
           filters:
