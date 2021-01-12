@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update apiextensions to v3 and replace CAPI with Giant Swarm fork.
+- Update `giantswarm/app` to `v4.2.0`.
 
 ## [0.2.1] - 2020-10-01
 
@@ -29,7 +30,7 @@ reduce how often pods are rolled.
 
 ### Added
 
-- Added initial structures. 
+- Added initial structures.
 
 [Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.2.1...HEAD
 [0.2.1]: https://github.com/giantswarm/app-exporter/compare/v0.2.0...v0.2.1
