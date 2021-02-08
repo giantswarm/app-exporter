@@ -19,10 +19,8 @@ require (
 	github.com/giantswarm/operatorkit/v2 v2.0.2
 	github.com/prometheus/client_golang v1.9.0
 	github.com/spf13/viper v1.7.1
-	k8s.io/apiextensions-apiserver v0.19.2 // indirect
-	k8s.io/apimachinery v0.19.2
-	k8s.io/client-go v0.19.2
-	sigs.k8s.io/controller-runtime v0.6.5 // indirect
+	k8s.io/apimachinery v0.18.9
+	k8s.io/client-go v0.18.9
 )
 
 replace (
