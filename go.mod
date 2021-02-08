@@ -5,9 +5,9 @@ go 1.15
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/ghodss/yaml v1.0.0
-	github.com/giantswarm/apiextensions/v3 v3.16.1
+	github.com/giantswarm/apiextensions/v3 v3.17.0
 	github.com/giantswarm/app/v4 v4.2.0
-	github.com/giantswarm/apptest v0.10.0
+	github.com/giantswarm/apptest v0.10.1
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.0
 	github.com/giantswarm/k8sclient/v5 v5.0.0
@@ -19,8 +19,10 @@ require (
 	github.com/giantswarm/operatorkit/v2 v2.0.2
 	github.com/prometheus/client_golang v1.9.0
 	github.com/spf13/viper v1.7.1
+	k8s.io/apiextensions-apiserver v0.19.2 // indirect
 	k8s.io/apimachinery v0.19.2
 	k8s.io/client-go v0.19.2
+	sigs.k8s.io/controller-runtime v0.6.5 // indirect
 )
 
 replace (
