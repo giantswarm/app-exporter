@@ -18,7 +18,7 @@ data:
         apps:
           defaultTeam: "batman"
           teams: |
-            atlas: "g8s-efk,g8s-grafana,g8s-oauth2-proxy,g8s-prometheus,gatekeeper-app,gatekeeper-control-plane-rules"
+            atlas: "g8s-efk,g8s-grafana,g8s-oauth2-proxy,g8s-prometheus,gatekeeper-app,gatekeeper-control-plane-rules,prometheus-meta-operator,vertical-pod-autoscaler-app,promxy-app"
             biscuit: "api,cluster-service,dex-app,g8s-cert-manager,kubernetesd,organization-operator,rbac-operator,tokend,userd,vault-app,vault-exporter"
             celestial: "azure-admission-controller,azure-collector,azure-operator,etcd-backup-operator,releases-azure"
             firecracker: "admission-controller,aws-operator,cluster-operator,kiam,releases-aws,route53-manager"
