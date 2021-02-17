@@ -4,3 +4,5 @@ description: "Chart holding app-exporter."
 home: "https://github.com/giantswarm/app-exporter"
 name: "app-exporter"
 version: "[[ .Version ]]"
+annotations:
+  application.giantswarm.io/team: "batman"
