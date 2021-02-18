@@ -97,27 +97,13 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	// TODO: Remove once appcatalogentry CRs exist and have the name of the
-	// team responsible for the app.
-	//
-	//	https://github.com/giantswarm/roadmap/issues/26
-	//
-	var appTeamMapping map[string]string
-	{
-		appTeamMapping, err = newAppTeamMapping(config.Viper.GetString(config.Flag.Service.Collector.Apps.Teams))
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var operatorCollector *collector.Set
 	{
 		c := collector.SetConfig{
 			K8sClient: k8sClient,
 			Logger:    config.Logger,
 
-			AppTeamMapping: appTeamMapping,
-			DefaultTeam:    config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
+			DefaultTeam: config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
 		}
 
 		operatorCollector, err = collector.NewSet(c)

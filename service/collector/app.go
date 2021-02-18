@@ -6,11 +6,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/app/v4/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -111,9 +113,10 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	}
 
 	for _, app := range r.Items {
-		team, ok := c.appTeamMapping[key.AppName(app)]
-		if !ok {
-			team = c.defaultTeam
+		team, err := c.getTeam(ctx, app)
+		if err != nil {
+			c.logger.Log("level", "warning", "message", fmt.Sprintf("could not convert cordon-until for app %q", key.AppName(app)), "stack", fmt.Sprintf("%#v", err))
+			continue
 		}
 
 		ch <- prometheus.MustNewConstMetric(
@@ -148,6 +151,24 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		)
 	}
 	return nil
+}
+
+func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
+	name := key.AppCatalogEntryName(app.Spec.Catalog, app.Name, app.Spec.Version)
+
+	ace, err := c.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
+	if apierrors.IsNotFound(err) {
+		return c.defaultTeam, nil
+	} else if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	team := key.AppCatalogEntryTeam(*ace)
+	if team == "" {
+		team = c.defaultTeam
+	}
+
+	return team, nil
 }
 
 func convertToTime(input string) (time.Time, error) {
