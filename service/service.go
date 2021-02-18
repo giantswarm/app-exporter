@@ -4,10 +4,8 @@ package service
 
 import (
 	"context"
-	"strings"
 	"sync"
 
-	"github.com/ghodss/yaml"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
@@ -142,23 +140,4 @@ func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 		go s.operatorCollector.Boot(ctx) // nolint:errcheck
 	})
-}
-
-func newAppTeamMapping(input string) (map[string]string, error) {
-	appTeamMapping := make(map[string]string)
-
-	teams := map[string]string{}
-
-	err := yaml.Unmarshal([]byte(input), &teams)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	for team, apps := range teams {
-		for _, app := range strings.Split(apps, ",") {
-			appTeamMapping[app] = team
-		}
-	}
-
-	return appTeamMapping, nil
 }
