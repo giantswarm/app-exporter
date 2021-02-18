@@ -12,7 +12,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	pkglabel "github.com/giantswarm/app-exporter/pkg/label"
 	"github.com/giantswarm/app-exporter/pkg/project"
 )
 
@@ -141,7 +140,7 @@ func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]i
 	operatorVersions := map[string]int32{}
 
 	lo := metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("%s=%s", pkglabel.App, project.OperatorName()),
+		LabelSelector: fmt.Sprintf("%s=%s", label.App, project.OperatorName()),
 	}
 	d, err := a.k8sClient.K8sClient().AppsV1().Deployments("giantswarm").List(ctx, lo)
 	if err != nil {
