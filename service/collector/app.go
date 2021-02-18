@@ -47,8 +47,7 @@ type AppConfig struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	AppTeamMapping map[string]string
-	DefaultTeam    string
+	DefaultTeam string
 }
 
 // App is the main struct for this collector.
@@ -56,8 +55,7 @@ type App struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 
-	appTeamMapping map[string]string
-	defaultTeam    string
+	defaultTeam string
 }
 
 // NewApp creates a new App metrics collector
@@ -69,9 +67,6 @@ func NewApp(config AppConfig) (*App, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
-	if config.AppTeamMapping == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.AppTeamMapping must not be empty", config)
-	}
 	if config.DefaultTeam == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.DefaultTeam must not be empty", config)
 	}
@@ -80,8 +75,7 @@ func NewApp(config AppConfig) (*App, error) {
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
-		appTeamMapping: config.AppTeamMapping,
-		defaultTeam:    config.DefaultTeam,
+		defaultTeam: config.DefaultTeam,
 	}
 
 	return c, nil
