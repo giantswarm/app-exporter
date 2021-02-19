@@ -2,7 +2,6 @@ package collector
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
 
@@ -135,7 +134,7 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 
 		t, err := convertToTime(key.CordonUntil(app))
 		if err != nil {
-			c.logger.Log("level", "warning", "message", fmt.Sprintf("could not convert cordon-until for app %q", key.AppName(app)), "stack", fmt.Sprintf("%#v", err))
+			c.logger.Errorf(ctx, err, "could not convert cordon-until for app %q", key.AppName(app))
 			continue
 		}
 

@@ -95,7 +95,7 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 			// 1 for Helm 2 tenant clusters.
 			ready, err = helm2AppOperatorReady(operatorVersions)
 			if err != nil {
-				a.logger.LogCtx(ctx, "level", "error", "message", "failed to check helm 2 app-operator ready", "stack", fmt.Sprintf("%#v", err))
+				a.logger.Errorf(ctx, err, "failed to check helm 2 app-operator ready")
 				ready = 0
 			}
 		} else {
@@ -105,7 +105,7 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 			if ok {
 				ready = result
 			} else {
-				a.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("no app-operator found for version %#q", version))
+				a.logger.Debugf(ctx, "no app-operator found for version %#q", version)
 				ready = 0
 			}
 		}
