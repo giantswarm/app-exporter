@@ -4,10 +4,8 @@ package service
 
 import (
 	"context"
-	"strings"
 	"sync"
 
-	"github.com/ghodss/yaml"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
@@ -97,27 +95,13 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	// TODO: Remove once appcatalogentry CRs exist and have the name of the
-	// team responsible for the app.
-	//
-	//	https://github.com/giantswarm/roadmap/issues/26
-	//
-	var appTeamMapping map[string]string
-	{
-		appTeamMapping, err = newAppTeamMapping(config.Viper.GetString(config.Flag.Service.Collector.Apps.Teams))
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var operatorCollector *collector.Set
 	{
 		c := collector.SetConfig{
 			K8sClient: k8sClient,
 			Logger:    config.Logger,
 
-			AppTeamMapping: appTeamMapping,
-			DefaultTeam:    config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
+			DefaultTeam: config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
 		}
 
 		operatorCollector, err = collector.NewSet(c)
@@ -156,23 +140,4 @@ func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 		go s.operatorCollector.Boot(ctx) // nolint:errcheck
 	})
-}
-
-func newAppTeamMapping(input string) (map[string]string, error) {
-	appTeamMapping := make(map[string]string)
-
-	teams := map[string]string{}
-
-	err := yaml.Unmarshal([]byte(input), &teams)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	for team, apps := range teams {
-		for _, app := range strings.Split(apps, ",") {
-			appTeamMapping[app] = team
-		}
-	}
-
-	return appTeamMapping, nil
 }

@@ -9,6 +9,7 @@ rules:
       - application.giantswarm.io
     resources:
       - apps
+      - appcatalogentries
     verbs:
       - get
       - list

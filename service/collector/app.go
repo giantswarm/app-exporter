@@ -5,11 +5,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/app/v4/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -44,8 +46,7 @@ type AppConfig struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	AppTeamMapping map[string]string
-	DefaultTeam    string
+	DefaultTeam string
 }
 
 // App is the main struct for this collector.
@@ -53,8 +54,7 @@ type App struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 
-	appTeamMapping map[string]string
-	defaultTeam    string
+	defaultTeam string
 }
 
 // NewApp creates a new App metrics collector
@@ -66,9 +66,6 @@ func NewApp(config AppConfig) (*App, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
-	if config.AppTeamMapping == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.AppTeamMapping must not be empty", config)
-	}
 	if config.DefaultTeam == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.DefaultTeam must not be empty", config)
 	}
@@ -77,8 +74,7 @@ func NewApp(config AppConfig) (*App, error) {
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
-		appTeamMapping: config.AppTeamMapping,
-		defaultTeam:    config.DefaultTeam,
+		defaultTeam: config.DefaultTeam,
 	}
 
 	return c, nil
@@ -110,9 +106,10 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	}
 
 	for _, app := range r.Items {
-		team, ok := c.appTeamMapping[key.AppName(app)]
-		if !ok {
-			team = c.defaultTeam
+		team, err := c.getTeam(ctx, app)
+		if err != nil {
+			c.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
+			continue
 		}
 
 		ch <- prometheus.MustNewConstMetric(
@@ -147,6 +144,24 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		)
 	}
 	return nil
+}
+
+func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
+	name := key.AppCatalogEntryName(app.Spec.Catalog, app.Name, app.Spec.Version)
+
+	ace, err := c.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
+	if apierrors.IsNotFound(err) {
+		return c.defaultTeam, nil
+	} else if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	team := key.AppCatalogEntryTeam(*ace)
+	if team == "" {
+		team = c.defaultTeam
+	}
+
+	return team, nil
 }
 
 func convertToTime(input string) (time.Time, error) {
