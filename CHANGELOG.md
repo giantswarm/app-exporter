@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Get team from `AppCatalogEntry` CRs not mapping configmap.
 - Update apiextensions to v3 and replace CAPI with Giant Swarm fork.
 - Update `giantswarm/app` to `v4.2.0`.
 
