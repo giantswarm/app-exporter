@@ -109,7 +109,7 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	for _, app := range r.Items {
 		team, err := c.getTeam(ctx, app)
 		if err != nil {
-			c.logger.Log("level", "warning", "message", fmt.Sprintf("could not get team for app %q", key.AppName(app)), "stack", fmt.Sprintf("%#v", err))
+			c.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
 			continue
 		}
 
