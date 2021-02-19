@@ -46,33 +46,33 @@ func TestMetrics(t *testing.T) {
 
 	var podName string
 	{
-		config.Logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("waiting for %#q pod", project.Name()))
+		config.Logger.Debugf(ctx, "waiting for %#q pod", project.Name())
 
 		podName, err = waitForPod(ctx)
 		if err != nil {
 			t.Fatalf("could not get %#q pod %#v", project.Name(), err)
 		}
 
-		config.Logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("waited for %#q pod", project.Name()))
+		config.Logger.Debugf(ctx, "waited for %#q pod", project.Name())
 	}
 
 	var tunnel *k8sportforward.Tunnel
 	{
-		config.Logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating tunnel to pod %#q on port %d", podName, key.ServerPort()))
+		config.Logger.Debugf(ctx, "creating tunnel to pod %#q on port %d", podName, key.ServerPort())
 
 		tunnel, err = fw.ForwardPort(key.Namespace(), podName, key.ServerPort())
 		if err != nil {
 			t.Fatalf("could not create tunnel %v", err)
 		}
 
-		config.Logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("created tunnel to pod %#q on port %d", podName, key.ServerPort()))
+		config.Logger.Debugf(ctx, "created tunnel to pod %#q on port %d", podName, key.ServerPort())
 	}
 
 	var metricsResp *http.Response
 	{
 		metricsURL := fmt.Sprintf("http://%s/metrics", tunnel.LocalAddress())
 
-		config.Logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("getting metrics from %#q", metricsURL))
+		config.Logger.Debugf(ctx, "getting metrics from %#q", metricsURL)
 
 		metricsResp, err = waitForServer(metricsURL)
 		if err != nil {
@@ -83,7 +83,7 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected http status %#q got %#q", http.StatusOK, metricsResp.StatusCode)
 		}
 
-		config.Logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("got metrics from %#q", metricsURL))
+		config.Logger.Debugf(ctx, "got metrics from %#q", metricsURL)
 	}
 
 	var app *v1alpha1.App
@@ -100,7 +100,7 @@ func TestMetrics(t *testing.T) {
 			app.Status.Release.Status,
 			app.Spec.Version)
 
-		config.Logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("checking for expected metric\n%s", expectedMetric))
+		config.Logger.Debugf(ctx, "checking for expected metric\n%s", expectedMetric)
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
@@ -112,7 +112,7 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected metric\n\n%s\n\nnot found in response\n\n%s", expectedMetric, metrics)
 		}
 
-		config.Logger.LogCtx(ctx, "level", "debug", "message", "found expected metric")
+		config.Logger.Debugf(ctx, "found expected metric")
 	}
 }
 
