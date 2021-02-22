@@ -185,8 +185,8 @@ github.com/giantswarm/exporterkit v0.2.0/go.mod h1:b4fuHVjsvZgznC9OEPfn0y5zvN8Sn
 github.com/giantswarm/exporterkit v0.2.1 h1:M/Avqdg6O+NdyGtY+LSy5cCpJzhG15WRHQRkhOY/dKs=
 github.com/giantswarm/exporterkit v0.2.1/go.mod h1:LkZNK+2qTcbHspbizA6JBBXpQW99u7u7UisUaWrSoVY=
 github.com/giantswarm/k8sclient/v4 v4.0.0/go.mod h1:jTwQ8q0YbJJu3ZxbjoI6hkXeuvKm15xyI/c+zwxnUH0=
-github.com/giantswarm/k8sclient/v5 v5.10.0 h1:ZgiteFkbU0yuSv/b+3rw/VQZIBE7mZsBJcT16bKEDhA=
-github.com/giantswarm/k8sclient/v5 v5.10.0/go.mod h1:HHSHvERGfLhNqTsqKBUQSQ5VXGhLfVRojplYwio6jDU=
+github.com/giantswarm/k8sclient/v5 v5.11.0 h1:LZwtscRz53Wz+hf0Sc7L1PEJdeUTDzgUjai4+9EbNjY=
+github.com/giantswarm/k8sclient/v5 v5.11.0/go.mod h1:3if9oaz3gwTKMuVNxU8vJfrzADyTuExOj+uu8N0+LsM=
 github.com/giantswarm/k8sportforward/v2 v2.0.0 h1:tbu1i0+iRQ8ShTUwh55YizqBpYn5T9ltsr0ibNwH5Og=
 github.com/giantswarm/k8sportforward/v2 v2.0.0/go.mod h1:YfTaZsgLH1K9BX2zOy+QvvvUTdc744BvRlKrEfVwYfM=
 github.com/giantswarm/microendpoint v0.2.0 h1:xCAqAVRjTw/4ifEuBeNavALdbQsLk6+k/ukzdy0GWZE=
