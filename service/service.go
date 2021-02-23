@@ -102,6 +102,7 @@ func New(config Config) (*Service, error) {
 			Logger:    config.Logger,
 
 			DefaultTeam: config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
+			Provider:    config.Viper.GetString(config.Flag.Service.Collector.Provider.Kind),
 		}
 
 		operatorCollector, err = collector.NewSet(c)

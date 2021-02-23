@@ -13,6 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/yaml"
 )
 
 var (
@@ -47,6 +48,7 @@ type AppConfig struct {
 	Logger    micrologger.Logger
 
 	DefaultTeam string
+	Provider    string
 }
 
 // App is the main struct for this collector.
@@ -55,6 +57,7 @@ type App struct {
 	logger    micrologger.Logger
 
 	defaultTeam string
+	provider    string
 }
 
 // NewApp creates a new App metrics collector
@@ -69,12 +72,16 @@ func NewApp(config AppConfig) (*App, error) {
 	if config.DefaultTeam == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.DefaultTeam must not be empty", config)
 	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
+	}
 
 	c := &App{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
 		defaultTeam: config.DefaultTeam,
+		provider:    config.Provider,
 	}
 
 	return c, nil
@@ -146,7 +153,37 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	return nil
 }
 
+func (c *App) getOwningTeam(ctx context.Context, app v1alpha1.App, ownersYAML string) (string, error) {
+	owners := []owner{}
+
+	err := yaml.Unmarshal([]byte(ownersYAML), &owners)
+	if err != nil {
+		// If the YAML in the owners annotation is invalid log the error and
+		// fall back to trying the team annotation.
+		c.logger.Errorf(ctx, err, "could not parse owners YAML for app %q", key.AppName(app))
+		return "", nil
+	}
+
+	for _, o := range owners {
+		if key.CatalogName(app) == o.Catalog && c.provider == o.Provider {
+			return o.Team, nil
+		} else if key.CatalogName(app) == o.Catalog && o.Provider == "" {
+			return o.Team, nil
+		} else if o.Catalog == "" && c.provider == o.Provider {
+			return o.Team, nil
+		} else {
+			// Something has gone wrong if we hit here.
+			return "", microerror.Maskf(invalidExecutionError, "unexpected error getting team for owner %#q", o)
+		}
+	}
+
+	// If no owning team is found we fall back to the team annotation.
+	return "", nil
+}
+
 func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
+	var team string
+
 	name := key.AppCatalogEntryName(app.Spec.Catalog, app.Name, app.Spec.Version)
 
 	ace, err := c.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
@@ -156,8 +193,20 @@ func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		return "", microerror.Mask(err)
 	}
 
-	team := key.AppCatalogEntryTeam(*ace)
+	// Owners annotation takes precedence if it exists.
+	ownersYAML := key.AppCatalogEntryOwners(*ace)
+	if ownersYAML != "" {
+		team, err = c.getOwningTeam(ctx, app, ownersYAML)
+		if err != nil {
+			return "", microerror.Mask(err)
+		}
+
+		return team, nil
+	}
+
+	team = key.AppCatalogEntryTeam(*ace)
 	if team == "" {
+		// If there is no team annotation we use the default.
 		team = c.defaultTeam
 	}
 
