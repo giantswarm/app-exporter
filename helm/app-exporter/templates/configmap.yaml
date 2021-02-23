@@ -17,8 +17,8 @@ data:
       collector:
         apps:
           defaultTeam: "batman"
-      provider:
-        kind: '{{ .Values.Installation.V1.Provider.Kind }}'
+        provider:
+          kind: '{{ .Values.Installation.V1.Provider.Kind }}'
       kubernetes:
         address: ''
         inCluster: true
