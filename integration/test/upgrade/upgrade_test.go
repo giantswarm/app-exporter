@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/app-exporter/integration/env"
 	"github.com/giantswarm/app-exporter/integration/key"
 	"github.com/giantswarm/app-exporter/integration/setup"
+	"github.com/giantswarm/app-exporter/integration/templates"
 	"github.com/giantswarm/app-exporter/pkg/project"
 )
 
@@ -37,6 +38,7 @@ func TestUpgrade(t *testing.T) {
 		CatalogName:   key.ControlPlaneCatalogName(),
 		Name:          project.Name(),
 		Namespace:     key.Namespace(),
+		ValuesYAML:    templates.AppExporterValues,
 		WaitForDeploy: true,
 	}
 
@@ -45,6 +47,7 @@ func TestUpgrade(t *testing.T) {
 		Name:          project.Name(),
 		Namespace:     key.Namespace(),
 		SHA:           env.CircleSHA(),
+		ValuesYAML:    templates.AppExporterValues,
 		WaitForDeploy: true,
 	}
 
