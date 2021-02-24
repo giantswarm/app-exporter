@@ -5,8 +5,7 @@ package templates
 // AppExporterValues values required by app-exporter chart.
 const AppExporterValues = `Installation:
   V1:
-	Provider:
-	  Kind: aws
+    Provider:
+      Kind: aws
     Registry:
-      Domain: quay.io
-`
+      Domain: quay.io`
