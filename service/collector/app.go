@@ -76,7 +76,7 @@ func NewApp(config AppConfig) (*App, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
 	}
 
-	c := &App{
+	a := &App{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
@@ -84,7 +84,7 @@ func NewApp(config AppConfig) (*App, error) {
 		provider:    config.Provider,
 	}
 
-	return c, nil
+	return a, nil
 }
 
 // Collect is the main metrics collection function.
