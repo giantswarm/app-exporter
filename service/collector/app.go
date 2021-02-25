@@ -88,10 +88,10 @@ func NewApp(config AppConfig) (*App, error) {
 }
 
 // Collect is the main metrics collection function.
-func (c *App) Collect(ch chan<- prometheus.Metric) error {
+func (a *App) Collect(ch chan<- prometheus.Metric) error {
 	ctx := context.Background()
 
-	err := c.collectAppStatus(ctx, ch)
+	err := a.collectAppStatus(ctx, ch)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -100,22 +100,22 @@ func (c *App) Collect(ch chan<- prometheus.Metric) error {
 }
 
 // Describe emits the description for the metrics collected here.
-func (c *App) Describe(ch chan<- *prometheus.Desc) error {
+func (a *App) Describe(ch chan<- *prometheus.Desc) error {
 	ch <- appDesc
 	ch <- appCordonExpireTimeDesc
 	return nil
 }
 
-func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric) error {
-	r, err := c.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
+func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric) error {
+	r, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	for _, app := range r.Items {
-		team, err := c.getTeam(ctx, app)
+		team, err := a.getTeam(ctx, app)
 		if err != nil {
-			c.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
+			a.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
 			continue
 		}
 
@@ -138,7 +138,7 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 
 		t, err := convertToTime(key.CordonUntil(app))
 		if err != nil {
-			c.logger.Errorf(ctx, err, "could not convert cordon-until for app %q", key.AppName(app))
+			a.logger.Errorf(ctx, err, "could not convert cordon-until for app %q", key.AppName(app))
 			continue
 		}
 
@@ -153,23 +153,23 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	return nil
 }
 
-func (c *App) getOwningTeam(ctx context.Context, app v1alpha1.App, ownersYAML string) (string, error) {
+func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, ownersYAML string) (string, error) {
 	owners := []owner{}
 
 	err := yaml.Unmarshal([]byte(ownersYAML), &owners)
 	if err != nil {
 		// If the YAML in the owners annotation is invalid log the error and
 		// fall back to trying the team annotation.
-		c.logger.Errorf(ctx, err, "could not parse owners YAML for app %q", key.AppName(app))
+		a.logger.Errorf(ctx, err, "could not parse owners YAML for app %q", key.AppName(app))
 		return "", nil
 	}
 
 	for _, o := range owners {
-		if key.CatalogName(app) == o.Catalog && c.provider == o.Provider {
+		if key.CatalogName(app) == o.Catalog && a.provider == o.Provider {
 			return o.Team, nil
 		} else if key.CatalogName(app) == o.Catalog && o.Provider == "" {
 			return o.Team, nil
-		} else if o.Catalog == "" && c.provider == o.Provider {
+		} else if o.Catalog == "" && a.provider == o.Provider {
 			return o.Team, nil
 		}
 	}
@@ -178,14 +178,14 @@ func (c *App) getOwningTeam(ctx context.Context, app v1alpha1.App, ownersYAML st
 	return "", nil
 }
 
-func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
+func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	var team string
 
 	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
-	ace, err := c.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
+	ace, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		return c.defaultTeam, nil
+		return a.defaultTeam, nil
 	} else if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -194,7 +194,7 @@ func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	ownersYAML := key.AppCatalogEntryOwners(*ace)
 
 	if ownersYAML != "" {
-		team, err = c.getOwningTeam(ctx, app, ownersYAML)
+		team, err = a.getOwningTeam(ctx, app, ownersYAML)
 		if err != nil {
 			return "", microerror.Mask(err)
 		}
@@ -205,7 +205,7 @@ func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	team = key.AppCatalogEntryTeam(*ace)
 	if team == "" {
 		// If there is no team annotation we use the default.
-		team = c.defaultTeam
+		team = a.defaultTeam
 	}
 
 	return team, nil
