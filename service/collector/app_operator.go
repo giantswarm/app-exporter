@@ -20,6 +20,7 @@ var (
 		prometheus.BuildFQName(namespace, "ready", "total"),
 		"Gauge with ready app-operator instances per app CR version.",
 		[]string{
+			labelNamespace,
 			labelVersion,
 		},
 		nil,
@@ -87,41 +88,45 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 	}
 
 	for version := range appVersions {
-		var ready int32
+		instances, ok := operatorVersions[version]
+		if !ok {
+			a.logger.Debugf(ctx, "no app-operator found for version %#q", version)
 
-		if version == project.AppTenantVersion() {
-			// There should be a single app-operator instance with major version
-			// 1 for Helm 2 tenant clusters.
-			ready, err = helm2AppOperatorReady(operatorVersions)
-			if err != nil {
-				a.logger.Errorf(ctx, err, "failed to check helm 2 app-operator ready")
-				ready = 0
-			}
-		} else {
-			// For all other versions there should be a 1:1 mapping from app CR
-			// version to app-operator version.
-			result, ok := operatorVersions[version]
-			if ok {
-				ready = result
-			} else {
-				a.logger.Debugf(ctx, "no app-operator found for version %#q", version)
-				ready = 0
-			}
+			ch <- prometheus.MustNewConstMetric(
+				appOperatorDesc,
+				prometheus.GaugeValue,
+				0,
+				"",
+				version,
+			)
 		}
 
-		ch <- prometheus.MustNewConstMetric(
-			appOperatorDesc,
-			prometheus.GaugeValue,
-			float64(ready),
-			version,
-		)
+		for namespace, ready := range instances {
+			if version == project.AppTenantVersion() {
+				// There should be a single app-operator instance with major version
+				// 1 for Helm 2 tenant clusters.
+				ready, err = helm2AppOperatorReady(operatorVersions)
+				if err != nil {
+					a.logger.Errorf(ctx, err, "failed to check helm 2 app-operator ready")
+					ready = 0
+				}
+			}
+
+			ch <- prometheus.MustNewConstMetric(
+				appOperatorDesc,
+				prometheus.GaugeValue,
+				float64(ready),
+				namespace,
+				version,
+			)
+		}
 	}
 
 	return nil
 }
 
-func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]bool, error) {
-	appVersions := map[string]bool{}
+func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[string]bool, error) {
+	appVersions := map[string]map[string]bool{}
 
 	l, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -129,15 +134,25 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]bool, 
 	}
 
 	for _, app := range l.Items {
+		namespace := app.Namespace
 		version := app.Labels[label.AppOperatorVersion]
-		appVersions[version] = true
+
+		appNamespaces, ok := appVersions[version]
+		if !ok {
+			appNamespaces = map[string]bool{
+				namespace: true,
+			}
+		}
+
+		appNamespaces[namespace] = true
+		appVersions[version] = appNamespaces
 	}
 
 	return appVersions, nil
 }
 
-func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]int32, error) {
-	operatorVersions := map[string]int32{}
+func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]map[string]int32, error) {
+	operatorVersions := map[string]map[string]int32{}
 
 	lo := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s", label.App, project.OperatorName()),
@@ -148,24 +163,37 @@ func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]i
 	}
 
 	for _, deploy := range d.Items {
+		namespace := deploy.Namespace
+		replicas := deploy.Status.ReadyReplicas
 		version := deploy.Labels[label.AppKubernetesVersion]
-		operatorVersions[version] = deploy.Status.ReadyReplicas
+
+		instances, ok := operatorVersions[version]
+		if !ok {
+			instances = map[string]int32{
+				namespace: replicas,
+			}
+		}
+
+		instances[namespace] = replicas
+		operatorVersions[version] = instances
 	}
 
 	return operatorVersions, nil
 }
 
-func helm2AppOperatorReady(operatorVersions map[string]int32) (int32, error) {
+func helm2AppOperatorReady(operatorVersions map[string]map[string]int32) (int32, error) {
 	var helm2AppOperators int32
 
-	for version, ready := range operatorVersions {
-		v, err := semver.NewVersion(version)
-		if err != nil {
-			return 0, microerror.Mask(err)
-		}
+	for version, instances := range operatorVersions {
+		for _, ready := range instances {
+			v, err := semver.NewVersion(version)
+			if err != nil {
+				return 0, microerror.Mask(err)
+			}
 
-		if v.Major() == 1 {
-			helm2AppOperators += ready
+			if v.Major() == 1 {
+				helm2AppOperators += ready
+			}
 		}
 	}
 

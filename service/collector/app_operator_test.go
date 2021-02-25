@@ -8,49 +8,67 @@ import (
 func Test_helm2AppOperatorReady(t *testing.T) {
 	tests := []struct {
 		name             string
-		operatorVersions map[string]int32
+		operatorVersions map[string]map[string]int32
 		expectedResult   int32
 		hasError         bool
 	}{
 		{
 			name: "case 0: correct operator versions",
-			operatorVersions: map[string]int32{
-				"0.0.0": 1,
-				"1.0.9": 1,
-				"2.0.0": 1,
+			operatorVersions: map[string]map[string]int32{
+				"0.0.0": {
+					"giantswarm": 1,
+				},
+				"1.0.9": {
+					"giantswarm": 1,
+				},
+				"2.0.0": {
+					"giantswarm": 1,
+				},
 			},
 			expectedResult: 1,
 		},
 		{
 			name: "case 1: helm 2 operator not ready",
-			operatorVersions: map[string]int32{
-				"0.0.0": 1,
-				"1.0.9": 0,
-				"2.0.0": 1,
+			operatorVersions: map[string]map[string]int32{
+				"0.0.0": {
+					"giantswarm": 1,
+				},
+				"1.0.9": {
+					"giantswarm": 0,
+				},
+				"2.0.0": {
+					"giantswarm": 1,
+				},
 			},
 			expectedResult: 0,
 		},
 		{
 			name: "case 2: helm 2 operator missing",
-			operatorVersions: map[string]int32{
-				"0.0.0": 1,
-				"2.0.0": 1,
+			operatorVersions: map[string]map[string]int32{
+				"0.0.0": {
+					"giantswarm": 1,
+				},
+				"2.0.0": {
+					"giantswarm": 1,
+				},
 			},
 			expectedResult: 0,
 		},
 		{
 			name: "case 3: multiple helm 2 operators",
-			operatorVersions: map[string]int32{
-				"0.0.0": 0,
-				"1.0.9": 1,
-				"1.1.0": 1,
-				"2.0.0": 0,
+			operatorVersions: map[string]map[string]int32{
+				"1.0.9": {
+					"giantswarm": 1,
+				},
+				"1.1.0": {
+					"giantswarm": 1,
+				},
 			},
 			expectedResult: 2,
 		},
 		{
 			name:             "case 4: no versions",
-			operatorVersions: map[string]int32{},
+			operatorVersions: map[string]map[string]int32{},
 			expectedResult:   0,
 		},
 	}
