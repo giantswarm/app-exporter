@@ -20,6 +20,11 @@ func GitSHA() string {
 	return gitSHA
 }
 
+// Helm2AppVersion is always 1.0.0 for workload cluster app CRs using Helm 2.
+func Helm2AppVersion() string {
+	return "1.0.0"
+}
+
 func OperatorName() string {
 	return operatorName
 }
@@ -34,9 +39,4 @@ func Source() string {
 
 func Version() string {
 	return version
-}
-
-// WorkloadAppVersion is always 1.0.0 for workload cluster app CRs using Helm 2.
-func WorkloadAppVersion() string {
-	return "1.0.0"
 }
