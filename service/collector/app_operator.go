@@ -157,7 +157,7 @@ func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]m
 	lo := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s", label.App, project.OperatorName()),
 	}
-	d, err := a.k8sClient.K8sClient().AppsV1().Deployments("giantswarm").List(ctx, lo)
+	d, err := a.k8sClient.K8sClient().AppsV1().Deployments("").List(ctx, lo)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
