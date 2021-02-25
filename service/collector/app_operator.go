@@ -125,7 +125,7 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 				appOperatorDesc,
 				prometheus.GaugeValue,
 				float64(ready),
-				namespace,
+				"giantswarm",
 				version,
 			)
 		}
