@@ -82,10 +82,14 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 		return microerror.Mask(err)
 	}
 
+	a.logger.Debugf(ctx, "APP VERSIONS %#v", appVersions)
+
 	operatorVersions, err := a.collectOperatorVersions(ctx)
 	if err != nil {
 		return microerror.Mask(err)
 	}
+
+	a.logger.Debugf(ctx, "OPERATOR VERSIONS %#v", operatorVersions)
 
 	for version := range appVersions {
 		instances, ok := operatorVersions[version]
