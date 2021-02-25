@@ -171,9 +171,6 @@ func (c *App) getOwningTeam(ctx context.Context, app v1alpha1.App, ownersYAML st
 			return o.Team, nil
 		} else if o.Catalog == "" && c.provider == o.Provider {
 			return o.Team, nil
-		} else {
-			// Something has gone wrong if we hit here.
-			return "", microerror.Maskf(invalidExecutionError, "unexpected error getting team for owner %#q", o)
 		}
 	}
 
@@ -184,7 +181,7 @@ func (c *App) getOwningTeam(ctx context.Context, app v1alpha1.App, ownersYAML st
 func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	var team string
 
-	name := key.AppCatalogEntryName(app.Spec.Catalog, app.Name, app.Spec.Version)
+	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
 	ace, err := c.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
@@ -195,6 +192,7 @@ func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 
 	// Owners annotation takes precedence if it exists.
 	ownersYAML := key.AppCatalogEntryOwners(*ace)
+
 	if ownersYAML != "" {
 		team, err = c.getOwningTeam(ctx, app, ownersYAML)
 		if err != nil {
