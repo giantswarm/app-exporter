@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Extend app-operator ready metric to include per workload cluster instances.
+
 ### Changed
 
 - Get team from `AppCatalogEntry` CRs not mapping configmap.
 - Update apiextensions to v3 and replace CAPI with Giant Swarm fork.
-- Update `giantswarm/app` to `v4.2.0`.
 
 ## [0.2.1] - 2020-10-01
 
