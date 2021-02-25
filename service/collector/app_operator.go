@@ -90,7 +90,7 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 	for version := range appVersions {
 		instances, ok := operatorVersions[version]
 		if !ok {
-			a.logger.Debugf(ctx, "no app-operator found for version %#q", version)
+			a.logger.Debugf(ctx, "no %#q found for version %#q", project.OperatorName(), version)
 
 			ch <- prometheus.MustNewConstMetric(
 				appOperatorDesc,
@@ -125,6 +125,8 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 	return nil
 }
 
+// collectAppVersions returns all app CR versions in the cluster and which
+// namespaces they are present in.
 func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[string]bool, error) {
 	appVersions := map[string]map[string]bool{}
 
@@ -134,11 +136,23 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 	}
 
 	for _, app := range l.Items {
-		namespace := app.Namespace
 		version := app.Labels[label.AppOperatorVersion]
-
 		appNamespaces, ok := appVersions[version]
 		if !ok {
+			namespace := app.Namespace
+
+			v, err := semver.NewVersion(version)
+			if err != nil {
+				a.logger.Errorf(ctx, err, "failed to parse version %#q", version)
+				continue
+			}
+			if v.Major() < 4 {
+				// If the app-operator version is >= 4.0.0 it will be running in
+				// the workload cluster namespace. For older releases we just
+				// need to check the giantswarm namespace.
+				namespace = "giantswarm"
+			}
+
 			appNamespaces = map[string]bool{
 				namespace: true,
 			}
@@ -151,6 +165,8 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 	return appVersions, nil
 }
 
+// collectOperatorVersions returns all app-operator deployments, which
+// namespace they are present in and the number of ready replicas.
 func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]map[string]int32, error) {
 	operatorVersions := map[string]map[string]int32{}
 
