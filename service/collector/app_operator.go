@@ -102,12 +102,12 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 		}
 
 		for namespace, ready := range instances {
-			if version == project.AppTenantVersion() {
+			if version == project.WorkloadAppVersion() {
 				// There should be a single app-operator instance with major version
-				// 1 for Helm 2 tenant clusters.
+				// 1 for Helm 2 workload clusters.
 				ready, err = helm2AppOperatorReady(operatorVersions)
 				if err != nil {
-					a.logger.Errorf(ctx, err, "failed to check helm 2 app-operator ready")
+					a.logger.Errorf(ctx, err, "failed to check helm 2 %#q ready", project.OperatorName())
 					ready = 0
 				}
 			}
