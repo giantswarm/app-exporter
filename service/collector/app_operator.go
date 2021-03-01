@@ -165,10 +165,6 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 			namespace = "giantswarm"
 		}
 
-		appNamespaces = map[string]bool{
-			namespace: true,
-		}
-
 		appNamespaces[namespace] = true
 		appVersions[version] = appNamespaces
 	}
