@@ -4,8 +4,8 @@ go 1.15
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
-	github.com/giantswarm/apiextensions/v3 v3.18.2
-	github.com/giantswarm/app/v4 v4.4.0
+	github.com/giantswarm/apiextensions/v3 v3.19.0
+	github.com/giantswarm/app/v4 v4.5.0
 	github.com/giantswarm/apptest v0.10.2
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
