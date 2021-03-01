@@ -6,6 +6,7 @@ const (
 )
 
 const (
+	labelApp       = "app"
 	labelCatalog   = "catalog"
 	labelName      = "name"
 	labelNamespace = "namespace"
