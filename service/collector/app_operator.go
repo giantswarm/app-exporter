@@ -149,6 +149,8 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 		appNamespaces, ok := appVersions[version]
 		if ok {
 			continue
+		} else {
+			appNamespaces = map[string]bool{}
 		}
 
 		namespace := app.Namespace
