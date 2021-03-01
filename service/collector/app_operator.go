@@ -147,24 +147,26 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 	for _, app := range l.Items {
 		version := app.Labels[label.AppOperatorVersion]
 		appNamespaces, ok := appVersions[version]
-		if !ok {
-			namespace := app.Namespace
+		if ok {
+			continue
+		}
 
-			v, err := semver.NewVersion(version)
-			if err != nil {
-				a.logger.Errorf(ctx, err, "failed to parse version %#q", version)
-				continue
-			}
-			if v.Major() < 4 {
-				// If the app-operator version is >= 4.0.0 it will be running in
-				// the workload cluster namespace. For older releases we just
-				// need to check the giantswarm namespace.
-				namespace = "giantswarm"
-			}
+		namespace := app.Namespace
 
-			appNamespaces = map[string]bool{
-				namespace: true,
-			}
+		v, err := semver.NewVersion(version)
+		if err != nil {
+			a.logger.Errorf(ctx, err, "failed to parse version %#q", version)
+			continue
+		}
+		if v.Major() < 4 {
+			// If the app-operator version is >= 4.0.0 it will be running in
+			// the workload cluster namespace. For older releases we just
+			// need to check the giantswarm namespace.
+			namespace = "giantswarm"
+		}
+
+		appNamespaces = map[string]bool{
+			namespace: true,
 		}
 
 		appNamespaces[namespace] = true
