@@ -13,6 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/yaml"
 )
 
 var (
@@ -47,6 +48,7 @@ type AppConfig struct {
 	Logger    micrologger.Logger
 
 	DefaultTeam string
+	Provider    string
 }
 
 // App is the main struct for this collector.
@@ -55,6 +57,7 @@ type App struct {
 	logger    micrologger.Logger
 
 	defaultTeam string
+	provider    string
 }
 
 // NewApp creates a new App metrics collector
@@ -69,22 +72,26 @@ func NewApp(config AppConfig) (*App, error) {
 	if config.DefaultTeam == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.DefaultTeam must not be empty", config)
 	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
+	}
 
-	c := &App{
+	a := &App{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
 		defaultTeam: config.DefaultTeam,
+		provider:    config.Provider,
 	}
 
-	return c, nil
+	return a, nil
 }
 
 // Collect is the main metrics collection function.
-func (c *App) Collect(ch chan<- prometheus.Metric) error {
+func (a *App) Collect(ch chan<- prometheus.Metric) error {
 	ctx := context.Background()
 
-	err := c.collectAppStatus(ctx, ch)
+	err := a.collectAppStatus(ctx, ch)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -93,22 +100,22 @@ func (c *App) Collect(ch chan<- prometheus.Metric) error {
 }
 
 // Describe emits the description for the metrics collected here.
-func (c *App) Describe(ch chan<- *prometheus.Desc) error {
+func (a *App) Describe(ch chan<- *prometheus.Desc) error {
 	ch <- appDesc
 	ch <- appCordonExpireTimeDesc
 	return nil
 }
 
-func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric) error {
-	r, err := c.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
+func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric) error {
+	r, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	for _, app := range r.Items {
-		team, err := c.getTeam(ctx, app)
+		team, err := a.getTeam(ctx, app)
 		if err != nil {
-			c.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
+			a.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
 			continue
 		}
 
@@ -131,7 +138,7 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 
 		t, err := convertToTime(key.CordonUntil(app))
 		if err != nil {
-			c.logger.Errorf(ctx, err, "could not convert cordon-until for app %q", key.AppName(app))
+			a.logger.Errorf(ctx, err, "could not convert cordon-until for app %q", key.AppName(app))
 			continue
 		}
 
@@ -146,19 +153,62 @@ func (c *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	return nil
 }
 
-func (c *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
-	name := key.AppCatalogEntryName(app.Spec.Catalog, app.Name, app.Spec.Version)
+func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owner) (string, error) {
+	for _, o := range owners {
+		if key.CatalogName(app) == o.Catalog && a.provider == o.Provider {
+			return o.Team, nil
+		} else if key.CatalogName(app) == o.Catalog && o.Provider == "" {
+			return o.Team, nil
+		} else if o.Catalog == "" && a.provider == o.Provider {
+			return o.Team, nil
+		}
+	}
 
-	ace, err := c.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
+	// If no owning team is found we fall back to the team annotation.
+	return "", nil
+}
+
+func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
+	var team string
+
+	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+
+	ace, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		return c.defaultTeam, nil
+		return a.defaultTeam, nil
 	} else if err != nil {
 		return "", microerror.Mask(err)
 	}
 
-	team := key.AppCatalogEntryTeam(*ace)
+	// Owners annotation takes precedence if it exists.
+	ownersYAML := key.AppCatalogEntryOwners(*ace)
+
+	if ownersYAML != "" {
+		owners := []owner{}
+
+		err = yaml.Unmarshal([]byte(ownersYAML), &owners)
+		if err != nil {
+			// If the YAML in the owners annotation is invalid log the error and
+			// fall back to trying the team annotation.
+			a.logger.Errorf(ctx, err, "could not parse owners YAML for app %q", key.AppName(app))
+		}
+
+		if len(owners) > 0 {
+			team, err = a.getOwningTeam(ctx, app, owners)
+			if err != nil {
+				return "", microerror.Mask(err)
+			}
+
+			if team != "" {
+				return team, nil
+			}
+		}
+	}
+
+	team = key.AppCatalogEntryTeam(*ace)
 	if team == "" {
-		team = c.defaultTeam
+		// If there is no team annotation we use the default.
+		team = a.defaultTeam
 	}
 
 	return team, nil

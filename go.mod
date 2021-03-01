@@ -20,6 +20,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	k8s.io/apimachinery v0.18.9
 	k8s.io/client-go v0.18.9
+	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (

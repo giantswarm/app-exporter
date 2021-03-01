@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added 
+
+- Get team from `application.giantswarm.io/team` or `application.giantswarm.io/owners`
+annotations in Chart.yaml. 
+
 ### Changed
 
-- Get team from `AppCatalogEntry` CRs not mapping configmap.
 - Update apiextensions to v3 and replace CAPI with Giant Swarm fork.
-- Update `giantswarm/app` to `v4.2.0`.
+
+###  Removed
+
+- App to team mapping configmap.
 
 ## [0.2.1] - 2020-10-01
 

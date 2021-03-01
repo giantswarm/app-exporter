@@ -12,6 +12,7 @@ type SetConfig struct {
 	Logger    micrologger.Logger
 
 	DefaultTeam string
+	Provider    string
 }
 
 // Set is basically only a wrapper for the operator's collector implementations.
@@ -29,6 +30,10 @@ func NewSet(config SetConfig) (*Set, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
+	}
+
 	var err error
 
 	var appCollector *App
@@ -38,6 +43,7 @@ func NewSet(config SetConfig) (*Set, error) {
 			Logger:    config.Logger,
 
 			DefaultTeam: config.DefaultTeam,
+			Provider:    config.Provider,
 		}
 
 		appCollector, err = NewApp(c)
