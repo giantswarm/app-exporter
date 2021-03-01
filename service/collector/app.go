@@ -153,17 +153,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	return nil
 }
 
-func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, ownersYAML string) (string, error) {
-	owners := []owner{}
-
-	err := yaml.Unmarshal([]byte(ownersYAML), &owners)
-	if err != nil {
-		// If the YAML in the owners annotation is invalid log the error and
-		// fall back to trying the team annotation.
-		a.logger.Errorf(ctx, err, "could not parse owners YAML for app %q", key.AppName(app))
-		return "", nil
-	}
-
+func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owner) (string, error) {
 	for _, o := range owners {
 		if key.CatalogName(app) == o.Catalog && a.provider == o.Provider {
 			return o.Team, nil
@@ -194,12 +184,25 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	ownersYAML := key.AppCatalogEntryOwners(*ace)
 
 	if ownersYAML != "" {
-		team, err = a.getOwningTeam(ctx, app, ownersYAML)
+		owners := []owner{}
+
+		err = yaml.Unmarshal([]byte(ownersYAML), &owners)
 		if err != nil {
-			return "", microerror.Mask(err)
+			// If the YAML in the owners annotation is invalid log the error and
+			// fall back to trying the team annotation.
+			a.logger.Errorf(ctx, err, "could not parse owners YAML for app %q", key.AppName(app))
 		}
 
-		return team, nil
+		if len(owners) > 0 {
+			team, err = a.getOwningTeam(ctx, app, owners)
+			if err != nil {
+				return "", microerror.Mask(err)
+			}
+
+			if team != "" {
+				return team, nil
+			}
+		}
 	}
 
 	team = key.AppCatalogEntryTeam(*ace)
