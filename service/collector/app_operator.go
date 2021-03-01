@@ -147,27 +147,18 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 	for _, app := range l.Items {
 		version := app.Labels[label.AppOperatorVersion]
 		appNamespaces, ok := appVersions[version]
-		if ok {
-			continue
-		} else {
-			appNamespaces = map[string]bool{}
+		if !ok {
+			namespace, err := calculateNamespace(app.Namespace, version)
+			if err != nil {
+				a.logger.Errorf(ctx, err, "failed to parse version %#q", version)
+				continue
+			}
+
+			appNamespaces = map[string]bool{
+				namespace: true,
+			}
 		}
 
-		namespace := app.Namespace
-
-		v, err := semver.NewVersion(version)
-		if err != nil {
-			a.logger.Errorf(ctx, err, "failed to parse version %#q", version)
-			continue
-		}
-		if v.Major() < 4 {
-			// If the app-operator version is >= 4.0.0 it will be running in
-			// the workload cluster namespace. For older releases we just
-			// need to check the giantswarm namespace.
-			namespace = "giantswarm"
-		}
-
-		appNamespaces[namespace] = true
 		appVersions[version] = appNamespaces
 	}
 
@@ -204,6 +195,21 @@ func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]m
 	}
 
 	return operatorVersions, nil
+}
+
+func calculateNamespace(namespace, version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+	if v.Major() < 4 {
+		// If the app-operator version is >= 4.0.0 it will be running in
+		// the workload cluster namespace. For older releases we just
+		// need to check the giantswarm namespace.
+		namespace = "giantswarm"
+	}
+
+	return namespace, nil
 }
 
 func helm2AppOperatorReady(operatorVersions map[string]map[string]int32) (int32, error) {
