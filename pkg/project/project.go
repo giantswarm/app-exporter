@@ -5,18 +5,12 @@ const (
 )
 
 var (
-	description = "The app-exporter does something."
+	description = "The app-exporter is a Prometheus exporter for the Giant Swarm App Platform."
 	gitSHA      = "n/a"
 	name        = "app-exporter"
 	source      = "https://github.com/giantswarm/app-exporter"
 	version     = "0.2.2-dev"
 )
-
-// AppTenantVersion is always 1.0.0 for tenant cluster app CRs using Helm 2.
-// For app CRs using Helm 3 we use project.Version().
-func AppTenantVersion() string {
-	return "1.0.0"
-}
 
 func Description() string {
 	return description
@@ -24,6 +18,11 @@ func Description() string {
 
 func GitSHA() string {
 	return gitSHA
+}
+
+// Helm2AppVersion is always 1.0.0 for workload cluster app CRs using Helm 2.
+func Helm2AppVersion() string {
+	return "1.0.0"
 }
 
 func OperatorName() string {

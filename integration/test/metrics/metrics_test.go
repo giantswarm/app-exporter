@@ -93,7 +93,7 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected nil got %#q", err)
 		}
 
-		expectedMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",version=\"%s\"} 1",
+		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",version=\"%s\"} 1",
 			app.Spec.Name,
 			app.Spec.Catalog,
 			app.Name,
@@ -101,7 +101,7 @@ func TestMetrics(t *testing.T) {
 			app.Status.Release.Status,
 			app.Spec.Version)
 
-		config.Logger.Debugf(ctx, "checking for expected metric\n%s", expectedMetric)
+		config.Logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
@@ -109,11 +109,21 @@ func TestMetrics(t *testing.T) {
 		}
 
 		metrics := string(respBytes)
-		if !strings.Contains(metrics, expectedMetric) {
-			t.Fatalf("expected metric\n\n%s\n\nnot found in response\n\n%s", expectedMetric, metrics)
+		if !strings.Contains(metrics, expectedAppMetric) {
+			t.Fatalf("expected app metric\n\n%s\n\nnot found in response\n\n%s", expectedAppMetric, metrics)
 		}
 
-		config.Logger.Debugf(ctx, "found expected metric")
+		config.Logger.Debugf(ctx, "found expected app metric")
+
+		expectedAppOperatorMetric := "app_operator_ready_total{namespace=\"giantswarm\",version=\"0.0.0\"} 1"
+
+		config.Logger.Debugf(ctx, "checking for expected app-operator metric\n%s", expectedAppOperatorMetric)
+
+		if !strings.Contains(metrics, expectedAppOperatorMetric) {
+			t.Fatalf("expected app metric\n\n%s\n\nnot found in response\n\n%s", expectedAppOperatorMetric, metrics)
+		}
+
+		config.Logger.Debugf(ctx, "found expected app-operator metric")
 	}
 }
 

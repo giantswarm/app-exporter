@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added 
+### Added
 
 - Add app label to app metrics with the name of the app.
+- Extend app-operator ready metric to include per workload cluster instances.
 - Get team from `application.giantswarm.io/team` or `application.giantswarm.io/owners`
 annotations in Chart.yaml. 
 
@@ -17,12 +18,11 @@ annotations in Chart.yaml.
 
 - Update apiextensions to v3 and replace CAPI with Giant Swarm fork.
 
-###  Removed
+### Removed
 
 - App to team mapping configmap.
 
 ## [0.2.1] - 2020-10-01
-
 ### Fixed
 
 - Update deployment annotation to use checksum instead of helm revision to

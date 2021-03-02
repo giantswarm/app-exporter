@@ -20,6 +20,7 @@ var (
 		prometheus.BuildFQName(namespace, "ready", "total"),
 		"Gauge with ready app-operator instances per app CR version.",
 		[]string{
+			labelNamespace,
 			labelVersion,
 		},
 		nil,
@@ -87,41 +88,56 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 	}
 
 	for version := range appVersions {
-		var ready int32
+		if version != project.Helm2AppVersion() {
+			instances, ok := operatorVersions[version]
+			if !ok {
+				a.logger.Debugf(ctx, "no %#q found for version %#q", project.OperatorName(), version)
 
-		if version == project.AppTenantVersion() {
-			// There should be a single app-operator instance with major version
-			// 1 for Helm 2 tenant clusters.
-			ready, err = helm2AppOperatorReady(operatorVersions)
-			if err != nil {
-				a.logger.Errorf(ctx, err, "failed to check helm 2 app-operator ready")
-				ready = 0
+				ch <- prometheus.MustNewConstMetric(
+					appOperatorDesc,
+					prometheus.GaugeValue,
+					0,
+					"",
+					version,
+				)
 			}
+
+			for namespace, ready := range instances {
+				ch <- prometheus.MustNewConstMetric(
+					appOperatorDesc,
+					prometheus.GaugeValue,
+					float64(ready),
+					namespace,
+					version,
+				)
+			}
+
 		} else {
-			// For all other versions there should be a 1:1 mapping from app CR
-			// version to app-operator version.
-			result, ok := operatorVersions[version]
-			if ok {
-				ready = result
-			} else {
-				a.logger.Debugf(ctx, "no app-operator found for version %#q", version)
+			// There should be a single app-operator instance with major version
+			// 1 for Helm 2 workload clusters.
+			ready, err := helm2AppOperatorReady(operatorVersions)
+			if err != nil {
+				a.logger.Errorf(ctx, err, "failed to check helm 2 %#q ready", project.OperatorName())
 				ready = 0
 			}
-		}
 
-		ch <- prometheus.MustNewConstMetric(
-			appOperatorDesc,
-			prometheus.GaugeValue,
-			float64(ready),
-			version,
-		)
+			ch <- prometheus.MustNewConstMetric(
+				appOperatorDesc,
+				prometheus.GaugeValue,
+				float64(ready),
+				"giantswarm",
+				version,
+			)
+		}
 	}
 
 	return nil
 }
 
-func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]bool, error) {
-	appVersions := map[string]bool{}
+// collectAppVersions returns all app CR versions in the cluster and which
+// namespaces they are present in.
+func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[string]bool, error) {
+	appVersions := map[string]map[string]bool{}
 
 	l, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -130,42 +146,85 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]bool, 
 
 	for _, app := range l.Items {
 		version := app.Labels[label.AppOperatorVersion]
-		appVersions[version] = true
+		appNamespaces, ok := appVersions[version]
+		if !ok {
+			namespace, err := calculateNamespace(app.Namespace, version)
+			if err != nil {
+				a.logger.Errorf(ctx, err, "failed to parse version %#q", version)
+				continue
+			}
+
+			appNamespaces = map[string]bool{
+				namespace: true,
+			}
+		}
+
+		appVersions[version] = appNamespaces
 	}
 
 	return appVersions, nil
 }
 
-func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]int32, error) {
-	operatorVersions := map[string]int32{}
+// collectOperatorVersions returns all app-operator deployments, which
+// namespace they are present in and the number of ready replicas.
+func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]map[string]int32, error) {
+	operatorVersions := map[string]map[string]int32{}
 
 	lo := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=%s", label.App, project.OperatorName()),
 	}
-	d, err := a.k8sClient.K8sClient().AppsV1().Deployments("giantswarm").List(ctx, lo)
+	d, err := a.k8sClient.K8sClient().AppsV1().Deployments("").List(ctx, lo)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	for _, deploy := range d.Items {
+		namespace := deploy.Namespace
+		replicas := deploy.Status.ReadyReplicas
 		version := deploy.Labels[label.AppKubernetesVersion]
-		operatorVersions[version] = deploy.Status.ReadyReplicas
+
+		instances, ok := operatorVersions[version]
+		if !ok {
+			instances = map[string]int32{
+				namespace: replicas,
+			}
+		}
+
+		instances[namespace] = replicas
+		operatorVersions[version] = instances
 	}
 
 	return operatorVersions, nil
 }
 
-func helm2AppOperatorReady(operatorVersions map[string]int32) (int32, error) {
+func calculateNamespace(namespace, version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+	if v.Major() < 4 {
+		// If the app-operator version is >= 4.0.0 it will be running in
+		// the workload cluster namespace. For older releases we just
+		// need to check the giantswarm namespace.
+		namespace = "giantswarm"
+	}
+
+	return namespace, nil
+}
+
+func helm2AppOperatorReady(operatorVersions map[string]map[string]int32) (int32, error) {
 	var helm2AppOperators int32
 
-	for version, ready := range operatorVersions {
-		v, err := semver.NewVersion(version)
-		if err != nil {
-			return 0, microerror.Mask(err)
-		}
+	for version, instances := range operatorVersions {
+		for _, ready := range instances {
+			v, err := semver.NewVersion(version)
+			if err != nil {
+				return 0, microerror.Mask(err)
+			}
 
-		if v.Major() == 1 {
-			helm2AppOperators += ready
+			if v.Major() == 1 {
+				helm2AppOperators += ready
+			}
 		}
 	}
 
