@@ -170,8 +170,16 @@ func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owne
 	return "", nil
 }
 
+// getTeam returns the team to assign for this app CR. It first checks the App CR.
+// If the team annotation does not exist it checks the AppCatalogEntry CR. Finally
+// it returns the default team so metrics always have a team.
 func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	var team string
+
+	// Team annotation on the App CR takes precedence if it exists.
+	if key.AppTeam(app) != "" {
+		return key.AppTeam(app), nil
+	}
 
 	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
