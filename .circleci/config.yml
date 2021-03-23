@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@2.1.0
+  architect: giantswarm/architect@2.4.0
 
 workflows:
   build:
@@ -63,7 +63,6 @@ workflows:
             tags:
               only: /^v.*/
 
-
       - architect/push-to-app-catalog:
           context: "architect"
           name: push-app-exporter-to-control-plane-catalog
@@ -76,7 +75,21 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-              
+       
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-app-exporter-to-shared-app-collection
+          app_name: "app-exporter"
+          app_collection_repo: "shared-app-collection"
+          requires:
+            - push-app-exporter-to-aliyun
+            - push-app-exporter-to-control-plane-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
       - architect/push-to-app-collection:
           context: architect
           name: push-app-exporter-to-aws-app-collection
