@@ -15,5 +15,6 @@
       "excludePackagePatterns": ["^github.com\/giantswarm" ,"^k8s.io", "^sigs.k8s.io"],
       "groupName": "etc modules"
     }
-  ]
+  ],
+  "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
 }
