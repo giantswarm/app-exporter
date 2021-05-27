@@ -1,10 +1,13 @@
 image:
   name: "giantswarm/app-exporter"
   tag: "[[ .Version ]]"
-Installation:
-  V1:
-    Registry:
-      Domain: quay.io
+
+registry:
+  domain: docker.io
+
+provider:
+  kind: aws
+
 pod:
   user:
     id: 1000
