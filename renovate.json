@@ -16,5 +16,6 @@
       "groupName": "etc modules"
     }
   ],
-  "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
+  "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
+  "schedule": ["after 9am on thursday"]
 }
