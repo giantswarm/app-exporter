@@ -23,6 +23,7 @@ var (
 		[]string{
 			labelName,
 			labelNamespace,
+			labelDesiredVersion,
 			labelStatus,
 			labelTeam,
 			labelVersion,
@@ -126,6 +127,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			gaugeValue,
 			app.Name,
 			app.Namespace,
+			app.Status.Version,
 			app.Status.Release.Status,
 			team,
 			// Getting version from spec, not status since the version in the spec is the desired version.
