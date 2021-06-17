@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `deployed_version`, `version_mismatch` label to app metrics.
+
 ### Changed
 
 - Prepare helm values to configuration management.
