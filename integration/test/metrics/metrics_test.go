@@ -102,7 +102,7 @@ func TestMetrics(t *testing.T) {
 			app.Namespace,
 			app.Status.Release.Status,
 			app.Spec.Version,
-			strconv.FormatBool(app.Spec.Version == app.Status.Version))
+			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
 		config.Logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
 
