@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -93,14 +94,15 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected nil got %#q", err)
 		}
 
-		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",desired_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",version=\"%s\"} 1",
+		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",desired_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			app.Spec.Name,
 			app.Spec.Catalog,
 			app.Status.Version,
 			app.Name,
 			app.Namespace,
 			app.Status.Release.Status,
-			app.Spec.Version)
+			app.Spec.Version,
+			strconv.FormatBool(app.Spec.Version == app.Status.Version))
 
 		config.Logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
 
