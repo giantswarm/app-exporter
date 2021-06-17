@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,9 +24,11 @@ var (
 		[]string{
 			labelName,
 			labelNamespace,
+			labelDeployedVersion,
 			labelStatus,
 			labelTeam,
 			labelVersion,
+			labelVersionMismatch,
 			labelCatalog,
 			labelApp,
 		},
@@ -126,10 +129,12 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			gaugeValue,
 			app.Name,
 			app.Namespace,
+			app.Status.Version,
 			app.Status.Release.Status,
 			team,
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			app.Spec.Version,
+			strconv.FormatBool(app.Spec.Version != app.Status.Version),
 			app.Spec.Catalog,
 			app.Spec.Name,
 		)
