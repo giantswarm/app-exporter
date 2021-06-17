@@ -24,7 +24,7 @@ var (
 		[]string{
 			labelName,
 			labelNamespace,
-			labelDesiredVersion,
+			labelDeployedVersion,
 			labelStatus,
 			labelTeam,
 			labelVersion,

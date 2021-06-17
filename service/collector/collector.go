@@ -8,7 +8,7 @@ const (
 const (
 	labelApp             = "app"
 	labelCatalog         = "catalog"
-	labelDesiredVersion  = "desired_version"
+	labelDeployedVersion = "deployed_version"
 	labelName            = "name"
 	labelNamespace       = "namespace"
 	labelStatus          = "status"

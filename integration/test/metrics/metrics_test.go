@@ -94,7 +94,7 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected nil got %#q", err)
 		}
 
-		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",desired_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",version=\"%s\",version_mismatch=\"%s\"} 1",
+		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",deployed_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			app.Spec.Name,
 			app.Spec.Catalog,
 			app.Status.Version,
