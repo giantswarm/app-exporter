@@ -9,7 +9,7 @@ var (
 	gitSHA      = "n/a"
 	name        = "app-exporter"
 	source      = "https://github.com/giantswarm/app-exporter"
-	version     = "0.5.0"
+	version     = "0.5.1-dev"
 )
 
 func Description() string {
