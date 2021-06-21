@@ -4,8 +4,8 @@ go 1.15
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
-	github.com/giantswarm/apiextensions/v3 v3.26.0
-	github.com/giantswarm/app/v4 v4.12.0
+	github.com/giantswarm/apiextensions/v3 v3.27.0
+	github.com/giantswarm/app/v5 v5.0.1
 	github.com/giantswarm/apptest v0.10.3
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
@@ -16,9 +16,9 @@ require (
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/microkit v0.2.2
 	github.com/giantswarm/micrologger v0.5.0
-	github.com/giantswarm/operatorkit/v2 v2.0.2
+	github.com/giantswarm/operatorkit/v5 v5.0.0
 	github.com/prometheus/client_golang v1.11.0
-	github.com/spf13/viper v1.7.1
+	github.com/spf13/viper v1.8.0
 	k8s.io/apimachinery v0.18.19
 	k8s.io/client-go v0.18.19
 	sigs.k8s.io/yaml v1.2.0

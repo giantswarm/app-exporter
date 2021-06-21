@@ -2,11 +2,12 @@ package collector
 
 import (
 	"context"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
-	"github.com/giantswarm/app/v4/pkg/key"
+	"github.com/giantswarm/app/v5/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -23,9 +24,11 @@ var (
 		[]string{
 			labelName,
 			labelNamespace,
+			labelDeployedVersion,
 			labelStatus,
 			labelTeam,
 			labelVersion,
+			labelVersionMismatch,
 			labelCatalog,
 			labelApp,
 		},
@@ -126,10 +129,12 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			gaugeValue,
 			app.Name,
 			app.Namespace,
+			app.Status.Version,
 			app.Status.Release.Status,
 			team,
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			app.Spec.Version,
+			strconv.FormatBool(app.Spec.Version != app.Status.Version),
 			app.Spec.Catalog,
 			app.Spec.Name,
 		)
