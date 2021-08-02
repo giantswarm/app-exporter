@@ -56,11 +56,4 @@ spec:
           initialDelaySeconds: 30
           timeoutSeconds: 1
         resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-          limits:
-            cpu: 100m
-            memory: 100Mi
-      imagePullSecrets:
-      - name: {{ include "resource.pullSecret.name" . }}
+{{ toYaml .Values.deployment | indent 10 }}
