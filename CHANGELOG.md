@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Revert VPA as resources are too low on management clusters with high number of apps.
+
 ## [0.6.0] - 2021-08-06
 
 ### Added

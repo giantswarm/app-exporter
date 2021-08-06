@@ -25,6 +25,3 @@ pod:
 project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"
-
-verticalPodAutoscaler:
-  enabled: true
