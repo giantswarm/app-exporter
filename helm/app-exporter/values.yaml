@@ -1,3 +1,11 @@
+deployment:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
 image:
   name: "giantswarm/app-exporter"
   tag: "[[ .Version ]]"
@@ -13,6 +21,10 @@ pod:
     id: 1000
   group:
     id: 1000
+
 project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"
+
+verticalPodAutoscaler:
+  enabled: true
