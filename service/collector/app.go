@@ -197,12 +197,11 @@ func (a *App) getTeamMappings(ctx context.Context) (map[string]string, error) {
 	}
 
 	for _, ace := range aces.Items {
-		team := ""
-
 		name := key.AppCatalogEntryName(ace.Spec.Catalog.Name, ace.Spec.AppName, ace.Spec.Version)
 
 		// Owners annotation takes precedence if it exists.
 		ownersYAML := key.AppCatalogEntryOwners(ace)
+		ownersTeam := ""
 
 		if ownersYAML != "" {
 			owners := []owner{}
@@ -215,14 +214,18 @@ func (a *App) getTeamMappings(ctx context.Context) (map[string]string, error) {
 			}
 
 			if len(owners) > 0 {
-				team, err = a.getOwningTeam(ctx, ace, owners)
+				ownersTeam, err = a.getOwningTeam(ctx, ace, owners)
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
 			}
 		}
+		if ownersTeam != "" {
+			teamMappings[name] = ownersTeam
+			continue
+		}
 
-		team = key.AppCatalogEntryTeam(ace)
+		team := key.AppCatalogEntryTeam(ace)
 		if team == "" {
 			// If there is no team annotation we use the default.
 			team = a.defaultTeam
