@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -9,10 +10,10 @@ import (
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/app/v5/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
+	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 )
@@ -186,17 +187,35 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		return key.AppTeam(app), nil
 	}
 
-	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
-
-	ace, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
-	if apierrors.IsNotFound(err) {
+	lo := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("%s=%s,%s=%s,%s=%s",
+			label.CatalogName,
+			key.CatalogName(app),
+			label.AppKubernetesName,
+			key.AppName(app),
+			label.AppKubernetesVersion,
+			key.Version(app)),
+	}
+	aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceAll).List(ctx, lo)
+	if len(aces.Items) == 0 {
+		// No result so use default team.
+		return a.defaultTeam, nil
+	} else if len(aces.Items) > 1 {
+		// Something is wrong so use default team but log the dupe result.
+		a.logger.Debugf(ctx, "expected 1 result for catalog %#q app %#q version %#q but found %d",
+			key.CatalogName(app),
+			key.AppName(app),
+			key.Version(app),
+			len(aces.Items))
 		return a.defaultTeam, nil
 	} else if err != nil {
 		return "", microerror.Mask(err)
 	}
 
+	ace := aces.Items[0]
+
 	// Owners annotation takes precedence if it exists.
-	ownersYAML := key.AppCatalogEntryOwners(*ace)
+	ownersYAML := key.AppCatalogEntryOwners(ace)
 
 	if ownersYAML != "" {
 		owners := []owner{}
@@ -220,7 +239,7 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		}
 	}
 
-	team = key.AppCatalogEntryTeam(*ace)
+	team = key.AppCatalogEntryTeam(ace)
 	if team == "" {
 		// If there is no team annotation we use the default.
 		team = a.defaultTeam

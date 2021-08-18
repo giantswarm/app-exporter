@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Use labels to select AppCatalogEntry CRs for routing alerts to teams.
+
 ## [0.6.1] - 2021-08-06
 
 ### Fixed
