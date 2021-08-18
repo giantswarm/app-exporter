@@ -187,7 +187,6 @@ func (a *App) getOwningTeam(ctx context.Context, ace v1alpha1.AppCatalogEntry, o
 // getTeamMappings returns the team mapping for each AppCatalogEntry CR.
 // If not it uses the default team so metrics always have a team.
 func (a *App) getTeamMappings(ctx context.Context) (map[string]string, error) {
-	var team string
 	var err error
 
 	teamMappings := map[string]string{}
@@ -198,6 +197,8 @@ func (a *App) getTeamMappings(ctx context.Context) (map[string]string, error) {
 	}
 
 	for _, ace := range aces.Items {
+		team := ""
+
 		name := key.AppCatalogEntryName(ace.Spec.Catalog.Name, ace.Spec.AppName, ace.Spec.Version)
 
 		// Owners annotation takes precedence if it exists.
