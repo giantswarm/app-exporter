@@ -2,7 +2,6 @@ package collector
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -10,7 +9,6 @@ import (
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/app/v5/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
-	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
@@ -112,16 +110,26 @@ func (a *App) Describe(ch chan<- *prometheus.Desc) error {
 }
 
 func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric) error {
-	r, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
+	r, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps(metav1.NamespaceAll).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	teamMappings, err := a.getTeamMappings(ctx)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	for _, app := range r.Items {
-		team, err := a.getTeam(ctx, app)
-		if err != nil {
-			a.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
-			continue
+		aceName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+		team, ok := teamMappings[aceName]
+		if !ok {
+			team = a.defaultTeam
+		}
+
+		// Team annotation on the App CR takes precedence if it exists.
+		if key.AppTeam(app) != "" {
+			team = key.AppTeam(app)
 		}
 
 		ch <- prometheus.MustNewConstMetric(
@@ -161,11 +169,11 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	return nil
 }
 
-func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owner) (string, error) {
+func (a *App) getOwningTeam(ctx context.Context, ace v1alpha1.AppCatalogEntry, owners []owner) (string, error) {
 	for _, o := range owners {
-		if key.CatalogName(app) == o.Catalog && a.provider == o.Provider {
+		if ace.Spec.Catalog.Name == o.Catalog && a.provider == o.Provider {
 			return o.Team, nil
-		} else if key.CatalogName(app) == o.Catalog && o.Provider == "" {
+		} else if ace.Spec.Catalog.Name == o.Catalog && o.Provider == "" {
 			return o.Team, nil
 		} else if o.Catalog == "" && a.provider == o.Provider {
 			return o.Team, nil
@@ -176,76 +184,53 @@ func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owne
 	return "", nil
 }
 
-// getTeam returns the team to assign for this app CR. It first checks the App CR.
-// If the team annotation does not exist it checks the AppCatalogEntry CR. Finally
-// it returns the default team so metrics always have a team.
-func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
+// getTeamMappings returns the team mapping for each AppCatalogEntry CR.
+// If not it uses the default team so metrics always have a team.
+func (a *App) getTeamMappings(ctx context.Context) (map[string]string, error) {
 	var team string
+	var err error
 
-	// Team annotation on the App CR takes precedence if it exists.
-	if key.AppTeam(app) != "" {
-		return key.AppTeam(app), nil
+	teamMappings := map[string]string{}
+
+	aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceAll).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
 
-	lo := metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("%s=%s,%s=%s,%s=%s",
-			label.CatalogName,
-			key.CatalogName(app),
-			label.AppKubernetesName,
-			key.AppName(app),
-			label.AppKubernetesVersion,
-			key.Version(app)),
-	}
-	aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceAll).List(ctx, lo)
-	if len(aces.Items) == 0 {
-		// No result so use default team.
-		return a.defaultTeam, nil
-	} else if len(aces.Items) > 1 {
-		// Something is wrong so use default team but log the dupe result.
-		a.logger.Debugf(ctx, "expected 1 result for catalog %#q app %#q version %#q but found %d",
-			key.CatalogName(app),
-			key.AppName(app),
-			key.Version(app),
-			len(aces.Items))
-		return a.defaultTeam, nil
-	} else if err != nil {
-		return "", microerror.Mask(err)
-	}
+	for _, ace := range aces.Items {
+		name := key.AppCatalogEntryName(ace.Spec.Catalog.Name, ace.Spec.AppName, ace.Spec.Version)
 
-	ace := aces.Items[0]
+		// Owners annotation takes precedence if it exists.
+		ownersYAML := key.AppCatalogEntryOwners(ace)
 
-	// Owners annotation takes precedence if it exists.
-	ownersYAML := key.AppCatalogEntryOwners(ace)
+		if ownersYAML != "" {
+			owners := []owner{}
 
-	if ownersYAML != "" {
-		owners := []owner{}
-
-		err = yaml.Unmarshal([]byte(ownersYAML), &owners)
-		if err != nil {
-			// If the YAML in the owners annotation is invalid log the error and
-			// fall back to trying the team annotation.
-			a.logger.Errorf(ctx, err, "could not parse owners YAML for app %q", key.AppName(app))
-		}
-
-		if len(owners) > 0 {
-			team, err = a.getOwningTeam(ctx, app, owners)
+			err = yaml.Unmarshal([]byte(ownersYAML), &owners)
 			if err != nil {
-				return "", microerror.Mask(err)
+				// If the YAML in the owners annotation is invalid log the error and
+				// fall back to trying the team annotation.
+				a.logger.Errorf(ctx, err, "could not parse owners YAML for AppCatalogEntry '%s/%s'", ace.Namespace, ace.Name)
 			}
 
-			if team != "" {
-				return team, nil
+			if len(owners) > 0 {
+				team, err = a.getOwningTeam(ctx, ace, owners)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
 			}
 		}
+
+		team = key.AppCatalogEntryTeam(ace)
+		if team == "" {
+			// If there is no team annotation we use the default.
+			team = a.defaultTeam
+		}
+
+		teamMappings[name] = team
 	}
 
-	team = key.AppCatalogEntryTeam(ace)
-	if team == "" {
-		// If there is no team annotation we use the default.
-		team = a.defaultTeam
-	}
-
-	return team, nil
+	return teamMappings, nil
 }
 
 func convertToTime(input string) (time.Time, error) {
