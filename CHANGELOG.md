@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Find the relevant AppCatalogEntry CRs by searching all namespaces.
+
 ## [0.6.1] - 2021-08-06
 
 ### Fixed

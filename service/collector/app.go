@@ -179,6 +179,7 @@ func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owne
 // If the team annotation does not exist it checks the AppCatalogEntry CR. Finally
 // it returns the default team so metrics always have a team.
 func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
+	var err error
 	var team string
 
 	// Team annotation on the App CR takes precedence if it exists.
@@ -188,11 +189,23 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 
 	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
-	ace, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
-	if apierrors.IsNotFound(err) {
+	var ace *v1alpha1.AppCatalogEntry
+	{
+		// Check giantswarm namespace first as it has more CRs.
+		namespaces := []string{"giantswarm", metav1.NamespaceDefault}
+		for _, ns := range namespaces {
+			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, name, metav1.GetOptions{})
+			if apierrors.IsNotFound(err) {
+				// no-op
+				continue
+			} else if err != nil {
+				return "", microerror.Mask(err)
+			}
+		}
+	}
+
+	if ace == nil {
 		return a.defaultTeam, nil
-	} else if err != nil {
-		return "", microerror.Mask(err)
 	}
 
 	// Owners annotation takes precedence if it exists.
