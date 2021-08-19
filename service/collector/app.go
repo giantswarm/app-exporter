@@ -191,7 +191,8 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 
 	var ace *v1alpha1.AppCatalogEntry
 	{
-		namespaces := []string{metav1.NamespaceDefault, "giantswarm"}
+		// Check giantswarm namespace first as it has more CRs.
+		namespaces := []string{"giantswarm", metav1.NamespaceDefault}
 		for _, ns := range namespaces {
 			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, name, metav1.GetOptions{})
 			if apierrors.IsNotFound(err) {
