@@ -188,11 +188,23 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 
 	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
-	ace, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
-	if apierrors.IsNotFound(err) {
+	var ace *v1alpha1.AppCatalogEntry
+	{
+		var err error
+		namespaces := []string{metav1.NamespaceDefault, "giantswarm"}
+		for _, ns := range namespaces {
+			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, name, metav1.GetOptions{})
+			if apierrors.IsNotFound(err) {
+				// no-op
+				continue
+			} else if err != nil {
+				return "", microerror.Mask(err)
+			}
+		}
+	}
+
+	if ace == nil {
 		return a.defaultTeam, nil
-	} else if err != nil {
-		return "", microerror.Mask(err)
 	}
 
 	// Owners annotation takes precedence if it exists.
