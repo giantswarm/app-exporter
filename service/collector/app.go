@@ -240,7 +240,7 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 // getTeamMappings returns a map of AppCatalogEntry CR names to teams. This
 // reduces the number of API calls we need to make to fetch the teams metadata.
 func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[string]string, error) {
-	var teamMappings map[string]string
+	teamMappings := map[string]string{}
 
 	for _, app := range apps {
 		appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
