@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix finding AppCatalogEntry CRs and reduce number of CRs fetched.
+
 ## [0.7.0] - 2021-08-19
 
 ### Fixed
