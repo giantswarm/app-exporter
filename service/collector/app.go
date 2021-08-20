@@ -2,7 +2,6 @@ package collector
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -10,10 +9,10 @@ import (
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/app/v5/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
-	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 )
@@ -123,7 +122,8 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	}
 
 	for _, app := range r.Items {
-		team := teamMappings[appTeamMappingKey(app)]
+		appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+		team := teamMappings[appCatalogEntryName]
 		if team == "" {
 			// Set the default team if there is no mapping.
 			team = a.defaultTeam
@@ -192,35 +192,25 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	var team string
 	var err error
 
-	var ace v1alpha1.AppCatalogEntry
+	appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+
+	var ace *v1alpha1.AppCatalogEntry
 	{
 		// Check giantswarm namespace first as it has more CRs.
 		namespaces := []string{"giantswarm", metav1.NamespaceDefault}
 		for _, ns := range namespaces {
-			lo := metav1.ListOptions{
-				// Use the team mapping from the latest release
-				// so we don't need to check all versions.
-				LabelSelector: fmt.Sprintf("%s=%s,%s=%s,latest=true",
-					label.CatalogName,
-					key.CatalogName(app),
-					label.AppKubernetesName,
-					key.AppName(app)),
-			}
-			aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).List(ctx, lo)
-			if err != nil {
+			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, appCatalogEntryName, metav1.GetOptions{})
+			if apierrors.IsNotFound(err) {
+				// no-op
+				continue
+			} else if err != nil {
 				return "", microerror.Mask(err)
-			}
-
-			if len(aces.Items) == 1 {
-				ace = aces.Items[0]
-			} else {
-				a.logger.Debugf(ctx, "expected 1 AppCatalogEntry for Catalog %#q App %#q found %d", key.CatalogName(app), key.AppName(app), len(aces.Items))
 			}
 		}
 	}
 
 	// Owners annotation takes precedence if it exists.
-	ownersYAML := key.AppCatalogEntryOwners(ace)
+	ownersYAML := key.AppCatalogEntryOwners(*ace)
 
 	if ownersYAML != "" {
 		owners := []owner{}
@@ -244,7 +234,7 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		}
 	}
 
-	return key.AppCatalogEntryTeam(ace), nil
+	return key.AppCatalogEntryTeam(*ace), nil
 }
 
 // getTeamMappings returns a map of AppCatalogEntry CR names to teams. This
@@ -253,22 +243,20 @@ func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[str
 	teamMappings := map[string]string{}
 
 	for _, app := range apps {
-		_, ok := teamMappings[appTeamMappingKey(app)]
+		appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+
+		_, ok := teamMappings[appCatalogEntryName]
 		if !ok {
 			team, err := a.getTeam(ctx, app)
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
 
-			teamMappings[appTeamMappingKey(app)] = team
+			teamMappings[appCatalogEntryName] = team
 		}
 	}
 
 	return teamMappings, nil
-}
-
-func appTeamMappingKey(app v1alpha1.App) string {
-	return fmt.Sprintf("%s-%s", key.CatalogName(app), key.AppName(app))
 }
 
 func convertToTime(input string) (time.Time, error) {
