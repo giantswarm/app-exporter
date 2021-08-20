@@ -116,11 +116,22 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		return microerror.Mask(err)
 	}
 
+	teamMappings, err := a.getTeamMappings(ctx, r.Items)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
 	for _, app := range r.Items {
-		team, err := a.getTeam(ctx, app)
-		if err != nil {
-			a.logger.Errorf(ctx, err, "could not get team for app %q", key.AppName(app))
-			continue
+		appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+		team := teamMappings[appCatalogEntryName]
+		if team == "" {
+			// Set the default team if there is no mapping.
+			team = a.defaultTeam
+		}
+
+		// Team annotation on the App CR overrides if it exists.
+		if key.AppTeam(app) != "" {
+			team = key.AppTeam(app)
 		}
 
 		ch <- prometheus.MustNewConstMetric(
@@ -175,37 +186,30 @@ func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owne
 	return "", nil
 }
 
-// getTeam returns the team to assign for this app CR. It first checks the App CR.
-// If the team annotation does not exist it checks the AppCatalogEntry CR. Finally
-// it returns the default team so metrics always have a team.
+// getTeam returns the team to assign for this app CR. It checks the
+// AppCatalogEntry CR to see if it has owners or team annotations.
 func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
-	var err error
 	var team string
+	var err error
 
-	// Team annotation on the App CR takes precedence if it exists.
-	if key.AppTeam(app) != "" {
-		return key.AppTeam(app), nil
-	}
-
-	name := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+	appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
 	var ace *v1alpha1.AppCatalogEntry
 	{
 		// Check giantswarm namespace first as it has more CRs.
 		namespaces := []string{"giantswarm", metav1.NamespaceDefault}
 		for _, ns := range namespaces {
-			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, name, metav1.GetOptions{})
+			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, appCatalogEntryName, metav1.GetOptions{})
 			if apierrors.IsNotFound(err) {
-				// no-op
+				// Check next namespace.
 				continue
+			} else if ace != nil {
+				// Use this CR.
+				break
 			} else if err != nil {
 				return "", microerror.Mask(err)
 			}
 		}
-	}
-
-	if ace == nil {
-		return a.defaultTeam, nil
 	}
 
 	// Owners annotation takes precedence if it exists.
@@ -233,13 +237,29 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		}
 	}
 
-	team = key.AppCatalogEntryTeam(*ace)
-	if team == "" {
-		// If there is no team annotation we use the default.
-		team = a.defaultTeam
+	return key.AppCatalogEntryTeam(*ace), nil
+}
+
+// getTeamMappings returns a map of AppCatalogEntry CR names to teams. This
+// reduces the number of API calls we need to make to fetch the teams metadata.
+func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[string]string, error) {
+	teamMappings := map[string]string{}
+
+	for _, app := range apps {
+		appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+
+		_, ok := teamMappings[appCatalogEntryName]
+		if !ok {
+			team, err := a.getTeam(ctx, app)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+
+			teamMappings[appCatalogEntryName] = team
+		}
 	}
 
-	return team, nil
+	return teamMappings, nil
 }
 
 func convertToTime(input string) (time.Time, error) {
