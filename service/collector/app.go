@@ -202,8 +202,11 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, appCatalogEntryName, metav1.GetOptions{})
 			if apierrors.IsNotFound(err) {
 				a.logger.Debugf(ctx, "DEBUG '%s/%s' AppCatalogEntry not found", ns, appCatalogEntryName)
-				// no-op
+				// Check next namespace.
 				continue
+			} else if ace != nil {
+				// Use this CR.
+				break
 			} else if err != nil {
 				return "", microerror.Mask(err)
 			}
