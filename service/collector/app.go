@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -25,6 +26,7 @@ var (
 			labelName,
 			labelNamespace,
 			labelDeployedVersion,
+			labelLatestVersion,
 			labelStatus,
 			labelTeam,
 			labelVersion,
@@ -116,6 +118,11 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		return microerror.Mask(err)
 	}
 
+	latestAppVersions, err := a.getLatestAppVersions(ctx)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
 	teamMappings, err := a.getTeamMappings(ctx, r.Items)
 	if err != nil {
 		return microerror.Mask(err)
@@ -134,6 +141,10 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team = key.AppTeam(app)
 		}
 
+		// For managed apps in public catalogs we set the latest version
+		// label to show if an upgrade is available.
+		latestVersion := latestAppVersions[fmt.Sprintf("%s-%s", key.CatalogName(app), key.AppName(app))]
+
 		ch <- prometheus.MustNewConstMetric(
 			appDesc,
 			prometheus.GaugeValue,
@@ -141,6 +152,8 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			app.Name,
 			app.Namespace,
 			app.Status.Version,
+			// Set latest version for apps in public catalogs.
+			latestVersion,
 			app.Status.Release.Status,
 			team,
 			// Getting version from spec, not status since the version in the spec is the desired version.
@@ -169,6 +182,24 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		)
 	}
 	return nil
+}
+
+func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, error) {
+	latestAppVersions := map[string]string{}
+
+	lo := metav1.ListOptions{
+		LabelSelector: "latest=true",
+	}
+	aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).List(ctx, lo)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	for _, ace := range aces.Items {
+		latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = ace.Spec.Version
+	}
+
+	return latestAppVersions, nil
 }
 
 func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owner) (string, error) {
