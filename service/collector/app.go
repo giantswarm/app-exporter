@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/app/v5/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
+	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
@@ -188,18 +189,18 @@ func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, erro
 	latestAppVersions := map[string]string{}
 
 	l := metav1.ListOptions{
-		LabelSelector: "application.giantswarm.io/catalog-type!=community",
+		LabelSelector: fmt.Sprintf("%s=public,%s!=community", label.CatalogVisibility, label.CatalogType),
 	}
-	catalogs, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Catalogs(metav1.NamespaceDefault).List(ctx, l)
+	catalogs, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Catalogs(metav1.NamespaceAll).List(ctx, l)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	for _, catalog := range catalogs.Items {
 		lo := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("application.giantswarm.io/catalog=%s,latest=true", catalog.Name),
+			LabelSelector: fmt.Sprintf("%s=%s,latest=true", label.CatalogName, catalog.Name),
 		}
-		aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).List(ctx, lo)
+		aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(catalog.Namespace).List(ctx, lo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

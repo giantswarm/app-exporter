@@ -10,6 +10,7 @@ rules:
     resources:
       - apps
       - appcatalogentries
+      - catalogs
     verbs:
       - get
       - list
