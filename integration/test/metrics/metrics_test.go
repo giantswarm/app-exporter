@@ -97,12 +97,12 @@ func TestMetrics(t *testing.T) {
 		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			app.Spec.Name,
 			app.Spec.Catalog,
-			app.Status.Version,
-			"", // Latest version is empty as there is no upgrade.
+			app.Status.Version, // deployed_version
+			app.Spec.Version,   // latest_version
 			app.Name,
 			app.Namespace,
 			app.Status.Release.Status,
-			app.Spec.Version,
+			app.Spec.Version, // version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
 		config.Logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
