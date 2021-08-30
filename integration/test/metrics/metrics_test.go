@@ -98,11 +98,11 @@ func TestMetrics(t *testing.T) {
 			app.Spec.Name,
 			app.Spec.Catalog,
 			app.Status.Version, // deployed_version
-			app.Spec.Version,   // latest_version
+			"",                 // latest_version is empty
 			app.Name,
 			app.Namespace,
 			app.Status.Release.Status,
-			app.Spec.Version, // version
+			app.Spec.Version, // version is the desired version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
 		config.Logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)

@@ -187,16 +187,26 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, error) {
 	latestAppVersions := map[string]string{}
 
-	lo := metav1.ListOptions{
-		LabelSelector: "latest=true",
+	l := metav1.ListOptions{
+		LabelSelector: "application.giantswarm.io/catalog-type!=community",
 	}
-	aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).List(ctx, lo)
+	catalogs, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Catalogs(metav1.NamespaceDefault).List(ctx, l)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	for _, ace := range aces.Items {
-		latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = ace.Spec.Version
+	for _, catalog := range catalogs.Items {
+		lo := metav1.ListOptions{
+			LabelSelector: fmt.Sprintf("application.giantswarm.io/catalog=%s,latest=true", catalog.Name),
+		}
+		aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(metav1.NamespaceDefault).List(ctx, lo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		for _, ace := range aces.Items {
+			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = ace.Spec.Version
+		}
 	}
 
 	return latestAppVersions, nil
