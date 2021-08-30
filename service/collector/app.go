@@ -185,9 +185,14 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 	return nil
 }
 
+// getLatestAppVersions checks for the latest version of each app in public catalogs.
+// There will be an AppCatalogEntry CR with the label latest=true for the latest
+// entry according to semantic versioning.
 func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, error) {
 	latestAppVersions := map[string]string{}
 
+	// TODO: Remove community once helm-stable catalog is removed.
+	// https://github.com/giantswarm/giantswarm/issues/17490
 	l := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("%s=public,%s!=community", label.CatalogVisibility, label.CatalogType),
 	}
