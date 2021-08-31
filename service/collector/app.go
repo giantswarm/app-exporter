@@ -30,6 +30,7 @@ var (
 			labelLatestVersion,
 			labelStatus,
 			labelTeam,
+			labelUpgradeAvailable,
 			labelVersion,
 			labelVersionMismatch,
 			labelCatalog,
@@ -142,9 +143,10 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team = key.AppTeam(app)
 		}
 
-		// For managed apps in public catalogs we set the latest version
-		// label to show if an upgrade is available.
+		// For optional apps in public catalogs we check if an upgrade
+		// is available.
 		latestVersion := latestAppVersions[fmt.Sprintf("%s-%s", key.CatalogName(app), key.AppName(app))]
+		upgradeAvailable := latestVersion != "" && latestVersion != app.Spec.Version
 
 		ch <- prometheus.MustNewConstMetric(
 			appDesc,
@@ -153,10 +155,10 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			app.Name,
 			app.Namespace,
 			app.Status.Version,
-			// Set latest version for apps in public catalogs.
 			latestVersion,
 			app.Status.Release.Status,
 			team,
+			strconv.FormatBool(upgradeAvailable),
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			app.Spec.Version,
 			strconv.FormatBool(app.Spec.Version != app.Status.Version),
