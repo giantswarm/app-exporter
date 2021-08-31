@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add latest_version label to show if App CRs in public catalogs have an
-upgrade available.
+- Add latest_version and upgrade_available labels to show if App CRs
+in public catalogs have an upgrade available.
 
 ## [0.7.1] - 2021-08-20
 
