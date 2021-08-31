@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -9,6 +10,7 @@ import (
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/app/v5/pkg/key"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
+	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
@@ -25,8 +27,10 @@ var (
 			labelName,
 			labelNamespace,
 			labelDeployedVersion,
+			labelLatestVersion,
 			labelStatus,
 			labelTeam,
+			labelUpgradeAvailable,
 			labelVersion,
 			labelVersionMismatch,
 			labelCatalog,
@@ -116,6 +120,11 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		return microerror.Mask(err)
 	}
 
+	latestAppVersions, err := a.getLatestAppVersions(ctx)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
 	teamMappings, err := a.getTeamMappings(ctx, r.Items)
 	if err != nil {
 		return microerror.Mask(err)
@@ -134,6 +143,11 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team = key.AppTeam(app)
 		}
 
+		// For optional apps in public catalogs we check if an upgrade
+		// is available.
+		latestVersion := latestAppVersions[fmt.Sprintf("%s-%s", key.CatalogName(app), key.AppName(app))]
+		upgradeAvailable := latestVersion != "" && latestVersion != app.Spec.Version
+
 		ch <- prometheus.MustNewConstMetric(
 			appDesc,
 			prometheus.GaugeValue,
@@ -141,8 +155,10 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			app.Name,
 			app.Namespace,
 			app.Status.Version,
+			latestVersion,
 			app.Status.Release.Status,
 			team,
+			strconv.FormatBool(upgradeAvailable),
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			app.Spec.Version,
 			strconv.FormatBool(app.Spec.Version != app.Status.Version),
@@ -169,6 +185,39 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		)
 	}
 	return nil
+}
+
+// getLatestAppVersions checks for the latest version of each app in public catalogs.
+// There will be an AppCatalogEntry CR with the label latest=true for the latest
+// entry according to semantic versioning.
+func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, error) {
+	latestAppVersions := map[string]string{}
+
+	// TODO: Remove community once helm-stable catalog is removed.
+	// https://github.com/giantswarm/giantswarm/issues/17490
+	l := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("%s=public,%s!=community", label.CatalogVisibility, label.CatalogType),
+	}
+	catalogs, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Catalogs(metav1.NamespaceAll).List(ctx, l)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	for _, catalog := range catalogs.Items {
+		lo := metav1.ListOptions{
+			LabelSelector: fmt.Sprintf("%s=%s,latest=true", label.CatalogName, catalog.Name),
+		}
+		aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(catalog.Namespace).List(ctx, lo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		for _, ace := range aces.Items {
+			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = ace.Spec.Version
+		}
+	}
+
+	return latestAppVersions, nil
 }
 
 func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owner) (string, error) {
