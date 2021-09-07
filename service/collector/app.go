@@ -24,17 +24,18 @@ var (
 		prometheus.BuildFQName(namespace, "app", "info"),
 		"Managed apps status.",
 		[]string{
-			labelName,
-			labelNamespace,
+			labelApp,
+			labelAppVersion,
+			labelCatalog,
 			labelDeployedVersion,
 			labelLatestVersion,
+			labelName,
+			labelNamespace,
 			labelStatus,
 			labelTeam,
 			labelUpgradeAvailable,
 			labelVersion,
 			labelVersionMismatch,
-			labelCatalog,
-			labelApp,
 		},
 		nil,
 	)
@@ -153,6 +154,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			prometheus.GaugeValue,
 			gaugeValue,
 			app.Name,
+			appVersion(app),
 			app.Namespace,
 			app.Status.Version,
 			latestVersion,
@@ -309,6 +311,16 @@ func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[str
 	}
 
 	return teamMappings, nil
+}
+
+// appVersion returns the AppVersion if it differs from the Version. This is so
+// we can show the upstream chart version packaged by the app.
+func appVersion(app v1alpha1.App) string {
+	if app.Status.AppVersion != app.Status.Version {
+		return app.Status.Version
+	}
+
+	return ""
 }
 
 func convertToTime(input string) (time.Time, error) {

@@ -7,6 +7,7 @@ const (
 
 const (
 	labelApp              = "app"
+	labelAppVersion       = "app_version"
 	labelCatalog          = "catalog"
 	labelDeployedVersion  = "deployed_version"
 	labelLatestVersion    = "latest_version"
