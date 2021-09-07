@@ -40,7 +40,7 @@ workflows:
       - architect/push-to-docker:
           context: "architect"
           name: push-app-exporter-to-docker
-          image: "quay.io/giantswarm/app-exporter"
+          image: "docker.io/giantswarm/app-exporter"
           username_envar: "DOCKER_USERNAME"
           password_envar: "DOCKER_PASSWORD"
           requires:
