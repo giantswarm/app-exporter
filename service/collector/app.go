@@ -160,11 +160,11 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			app.Status.Release.Status,
 			team,
 			strconv.FormatBool(upgradeAvailable),
+			// Set the upstream chart version if the AppVersion differs from the Version.
+			upstreamChartVersion(app.Status.AppVersion, app.Status.Version),
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			app.Spec.Version,
 			strconv.FormatBool(app.Spec.Version != app.Status.Version),
-			// Set the upstream chart version if the AppVersion differs from the Version.
-			upstreamChartVersion(app.Status.AppVersion, app.Status.Version),
 			app.Spec.Catalog,
 			app.Spec.Name,
 		)
