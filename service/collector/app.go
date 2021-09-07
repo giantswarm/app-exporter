@@ -153,19 +153,19 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			appDesc,
 			prometheus.GaugeValue,
 			gaugeValue,
-			app.Name,
+			app.Spec.Name,
 			appVersion(app),
-			app.Namespace,
+			app.Spec.Catalog,
 			app.Status.Version,
 			latestVersion,
+			app.Name,
+			app.Namespace,
 			app.Status.Release.Status,
 			team,
 			strconv.FormatBool(upgradeAvailable),
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			app.Spec.Version,
 			strconv.FormatBool(app.Spec.Version != app.Status.Version),
-			app.Spec.Catalog,
-			app.Spec.Name,
 		)
 
 		if !key.IsAppCordoned(app) {
@@ -317,7 +317,7 @@ func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[str
 // we can show the upstream chart version packaged by the app.
 func appVersion(app v1alpha1.App) string {
 	if app.Status.AppVersion != app.Status.Version {
-		return app.Status.Version
+		return app.Status.AppVersion
 	}
 
 	return ""
