@@ -39,6 +39,19 @@ workflows:
 
       - architect/push-to-docker:
           context: "architect"
+          name: push-app-exporter-to-docker
+          image: "quay.io/giantswarm/app-exporter"
+          username_envar: "DOCKER_USERNAME"
+          password_envar: "DOCKER_PASSWORD"
+          requires:
+            - go-build
+          # Needed to trigger job also on git tag.
+          filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-docker:
+          context: "architect"
           name: push-app-exporter-to-quay
           image: "quay.io/giantswarm/app-exporter"
           username_envar: "QUAY_USERNAME"
@@ -70,6 +83,7 @@ workflows:
           app_catalog_test: "control-plane-test-catalog"
           chart: "app-exporter"
           requires:
+            - push-app-exporter-to-docker
             - push-app-exporter-to-quay
           # Needed to trigger job also on git tag.
           filters:
