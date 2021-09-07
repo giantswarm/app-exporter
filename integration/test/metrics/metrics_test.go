@@ -94,7 +94,13 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected nil got %#q", err)
 		}
 
-		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
+		var upstreamChartVersion string
+
+		if app.Status.AppVersion != app.Status.Version {
+			upstreamChartVersion = app.Status.AppVersion
+		}
+
+		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",upgrade_available=\"%s\",upstream_chart_version=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			app.Spec.Name,
 			app.Spec.Catalog,
 			app.Status.Version, // deployed_version
@@ -102,7 +108,8 @@ func TestMetrics(t *testing.T) {
 			app.Name,
 			app.Namespace,
 			app.Status.Release.Status,
-			"false",          // upgrade_avaiable is false
+			"false", // upgrade_available is false,
+			upstreamChartVersion,
 			app.Spec.Version, // version is the desired version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 

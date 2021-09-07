@@ -31,6 +31,7 @@ var (
 			labelStatus,
 			labelTeam,
 			labelUpgradeAvailable,
+			labelUpstreamChartVersion,
 			labelVersion,
 			labelVersionMismatch,
 			labelCatalog,
@@ -162,6 +163,8 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			app.Spec.Version,
 			strconv.FormatBool(app.Spec.Version != app.Status.Version),
+			// Set the upstream chart version if the AppVersion differs from the Version.
+			upstreamChartVersion(app.Status.AppVersion, app.Status.Version),
 			app.Spec.Catalog,
 			app.Spec.Name,
 		)
@@ -325,4 +328,14 @@ func convertToTime(input string) (time.Time, error) {
 	}
 
 	return t, nil
+}
+
+// upstreamChartVersion returns the AppVersion for the App CR if it differs from the
+// Version. This is so we can show the upstream chart version packaged by the App.
+func upstreamChartVersion(appVersion, version string) string {
+	if appVersion != version {
+		return appVersion
+	}
+
+	return ""
 }
