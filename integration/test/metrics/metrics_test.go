@@ -94,8 +94,15 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected nil got %#q", err)
 		}
 
-		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",catalog=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
+		var appVersion string
+
+		if app.Status.AppVersion != app.Status.Version {
+			appVersion = app.Status.AppVersion
+		}
+
+		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"batman\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			app.Spec.Name,
+			appVersion,
 			app.Spec.Catalog,
 			app.Status.Version, // deployed_version
 			"",                 // latest_version is empty
