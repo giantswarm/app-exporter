@@ -3,6 +3,7 @@ appVersion: "[[ .AppVersion ]]"
 description: "Chart holding app-exporter."
 home: "https://github.com/giantswarm/app-exporter"
 name: "app-exporter"
+kubeVersion: ">= 1.20.0"
 version: "[[ .Version ]]"
 annotations:
   application.giantswarm.io/team: "batman"
