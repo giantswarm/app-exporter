@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -27,8 +26,8 @@ import (
 )
 
 const (
-	namespace  string = metav1.NamespaceDefault
-	serverPort int    = 8000
+	namespace  = metav1.NamespaceDefault
+	serverPort = 8000
 )
 
 // TestMetrics checks the exporter emits app info metrics for its own app CR.
@@ -56,7 +55,7 @@ func TestMetrics(t *testing.T) {
 		c := k8sclient.ClientsConfig{
 			Logger: logger,
 
-			KubeConfigPath: os.Getenv("ATS_KUBE_CONFIG_PATH"),
+			KubeConfigPath: KubeConfigPath(),
 		}
 
 		k8sClients, err = k8sclient.NewClients(c)
