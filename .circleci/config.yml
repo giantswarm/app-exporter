@@ -12,31 +12,7 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-
-      - architect/integration-test:
-          name: "basic-integration-test"
-          install-app-platform: true
-          test-dir: "integration/test/metrics"
-          filters:
-            # Do not trigger the job on merge to master.
-            branches:
-              ignore:
-                - master
-          requires:
-            - push-app-exporter-to-control-plane-catalog
-
-      - architect/integration-test:
-          name: "upgrade-integration-test"
-          install-app-platform: true
-          test-dir: "integration/test/upgrade"
-          filters:
-            # Do not trigger the job on merge to master.
-            branches:
-              ignore:
-                - master
-          requires:
-            - push-app-exporter-to-control-plane-catalog
-
+      
       - architect/push-to-docker:
           context: "architect"
           name: push-app-exporter-to-docker
@@ -82,6 +58,7 @@ workflows:
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
           chart: "app-exporter"
+          persist_chart_archive: true
           requires:
             - push-app-exporter-to-docker
             - push-app-exporter-to-quay
@@ -89,6 +66,14 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+      
+      - architect/run-tests-with-ats:
+          name: run-tests-with-ats
+          app-test-suite_version: 0.2.0
+          app-test-suite_container_tag: 0.2.0
+          chart_archive_prefix: "app-exporter" # optional
+          requires:
+            - push-app-exporter-to-control-plane-catalog
        
       - architect/push-to-app-collection:
           context: architect
