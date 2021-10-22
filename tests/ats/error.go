@@ -1,5 +1,5 @@
-//go:build smoke
-// +build smoke
+//go:build functional || smoke
+// +build functional smoke
 
 package ats
 

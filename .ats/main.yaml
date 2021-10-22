@@ -1,3 +1,4 @@
+app-tests-deploy-namespace: giantswarm
 smoke-tests-cluster-type: kind
 functional-tests-cluster-type: kind
 upgrade-tests-cluster-type: kind

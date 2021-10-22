@@ -1,5 +1,5 @@
-//go:build smoke
-// +build smoke
+//go:build functional || smoke
+// +build functional smoke
 
 package ats
 
@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	namespace  string = metav1.NamespaceDefault
+	namespace  string = "giantswarm"
 	serverPort int    = 8000
 )
 
