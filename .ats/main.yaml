@@ -1,4 +1,3 @@
-app-tests-deploy-namespace: giantswarm
 functional-tests-cluster-type: kind
 steps: functional
 test-executor: gotest

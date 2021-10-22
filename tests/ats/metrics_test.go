@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	namespace  string = "giantswarm"
+	namespace  string = metav1.NamespaceDefault
 	serverPort int    = 8000
 )
 
