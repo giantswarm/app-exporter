@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -16,8 +17,10 @@ import (
 
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/backoff"
+	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/k8sportforward/v2"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/app-exporter/pkg/project"
@@ -168,7 +171,7 @@ func TestMetrics(t *testing.T) {
 	}
 }
 
-func waitForPod(ctx context.Context) (string, error) {
+func waitForPod(ctx context.Context, k8sClients *k8sclient.Clients) (string, error) {
 	var err error
 	var podName string
 
@@ -177,7 +180,7 @@ func waitForPod(ctx context.Context) (string, error) {
 			FieldSelector: "status.phase=Running",
 			LabelSelector: fmt.Sprintf("app=%s", project.Name()),
 		}
-		pods, err := config.K8sClients.K8sClient().CoreV1().Pods(namespace).List(ctx, lo)
+		pods, err := k8sClients.K8sClient().CoreV1().Pods(namespace).List(ctx, lo)
 		if err != nil {
 			return microerror.Mask(err)
 		}
