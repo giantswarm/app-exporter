@@ -1,3 +1,3 @@
 functional-tests-cluster-type: kind
-steps: functional
+skip-steps: upgrade
 test-executor: gotest
