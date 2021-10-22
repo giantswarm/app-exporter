@@ -71,7 +71,6 @@ workflows:
           name: run-tests-with-ats
           app-test-suite_version: v0.2.0
           app-test-suite_container_tag: 0.2.0
-          chart_archive_prefix: "app-exporter" # optional
           requires:
             - push-app-exporter-to-control-plane-catalog
        
