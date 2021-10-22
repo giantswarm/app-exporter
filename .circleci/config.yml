@@ -13,30 +13,6 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/integration-test:
-          name: "basic-integration-test"
-          install-app-platform: true
-          test-dir: "integration/test/metrics"
-          filters:
-            # Do not trigger the job on merge to master.
-            branches:
-              ignore:
-                - master
-          requires:
-            - push-app-exporter-to-control-plane-catalog
-
-      - architect/integration-test:
-          name: "upgrade-integration-test"
-          install-app-platform: true
-          test-dir: "integration/test/upgrade"
-          filters:
-            # Do not trigger the job on merge to master.
-            branches:
-              ignore:
-                - master
-          requires:
-            - push-app-exporter-to-control-plane-catalog
-
       - architect/push-to-docker:
           context: "architect"
           name: push-app-exporter-to-docker
@@ -75,6 +51,13 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+
+      - architect/run-tests-with-ats:
+          name: run-tests-with-ats
+          app-test-suite_version: v0.2.0
+          app-test-suite_container_tag: 0.2.0
+          requires:
+            - push-app-exporter-to-control-plane-catalog
 
       - architect/push-to-app-catalog:
           context: "architect"
