@@ -1,7 +1,7 @@
-//go:build k8srequired
-// +build k8srequired
+//go:build functional
+// +build functional
 
-package metrics
+package ats
 
 import "github.com/giantswarm/microerror"
 

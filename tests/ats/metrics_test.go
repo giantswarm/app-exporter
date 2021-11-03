@@ -1,7 +1,7 @@
-//go:build k8srequired
-// +build k8srequired
+//go:build functional
+// +build functional
 
-package metrics
+package ats
 
 import (
 	"context"
@@ -16,12 +16,18 @@ import (
 
 	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/backoff"
+	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/k8sportforward/v2"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/app-exporter/integration/key"
 	"github.com/giantswarm/app-exporter/pkg/project"
+)
+
+const (
+	namespace  = metav1.NamespaceDefault
+	serverPort = 8000
 )
 
 // TestMetrics checks the exporter emits app info metrics for its own app CR.
@@ -34,10 +40,34 @@ func TestMetrics(t *testing.T) {
 
 	ctx := context.Background()
 
+	var logger micrologger.Logger
+	{
+		c := micrologger.Config{}
+
+		logger, err = micrologger.New(c)
+		if err != nil {
+			t.Fatalf("could not create logger %v", err)
+		}
+	}
+
+	var k8sClients *k8sclient.Clients
+	{
+		c := k8sclient.ClientsConfig{
+			Logger: logger,
+
+			KubeConfigPath: KubeConfigPath(),
+		}
+
+		k8sClients, err = k8sclient.NewClients(c)
+		if err != nil {
+			t.Fatalf("could not create k8sclients %v", err)
+		}
+	}
+
 	var fw *k8sportforward.Forwarder
 	{
 		c := k8sportforward.ForwarderConfig{
-			RestConfig: config.K8sClients.RESTConfig(),
+			RestConfig: k8sClients.RESTConfig(),
 		}
 
 		fw, err = k8sportforward.NewForwarder(c)
@@ -48,33 +78,33 @@ func TestMetrics(t *testing.T) {
 
 	var podName string
 	{
-		config.Logger.Debugf(ctx, "waiting for %#q pod", project.Name())
+		logger.Debugf(ctx, "waiting for %#q pod", project.Name())
 
-		podName, err = waitForPod(ctx)
+		podName, err = waitForPod(ctx, k8sClients)
 		if err != nil {
 			t.Fatalf("could not get %#q pod %#v", project.Name(), err)
 		}
 
-		config.Logger.Debugf(ctx, "waited for %#q pod", project.Name())
+		logger.Debugf(ctx, "waited for %#q pod", project.Name())
 	}
 
 	var tunnel *k8sportforward.Tunnel
 	{
-		config.Logger.Debugf(ctx, "creating tunnel to pod %#q on port %d", podName, key.ServerPort())
+		logger.Debugf(ctx, "creating tunnel to pod %#q on port %d", podName, serverPort)
 
-		tunnel, err = fw.ForwardPort(key.Namespace(), podName, key.ServerPort())
+		tunnel, err = fw.ForwardPort(namespace, podName, serverPort)
 		if err != nil {
 			t.Fatalf("could not create tunnel %v", err)
 		}
 
-		config.Logger.Debugf(ctx, "created tunnel to pod %#q on port %d", podName, key.ServerPort())
+		logger.Debugf(ctx, "created tunnel to pod %#q on port %d", podName, serverPort)
 	}
 
 	var metricsResp *http.Response
 	{
 		metricsURL := fmt.Sprintf("http://%s/metrics", tunnel.LocalAddress())
 
-		config.Logger.Debugf(ctx, "getting metrics from %#q", metricsURL)
+		logger.Debugf(ctx, "getting metrics from %#q", metricsURL)
 
 		metricsResp, err = waitForServer(metricsURL)
 		if err != nil {
@@ -85,12 +115,12 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected http status %#q got %#q", http.StatusOK, metricsResp.StatusCode)
 		}
 
-		config.Logger.Debugf(ctx, "got metrics from %#q", metricsURL)
+		logger.Debugf(ctx, "got metrics from %#q", metricsURL)
 	}
 
 	var app *v1alpha1.App
 	{
-		app, err = config.K8sClients.G8sClient().ApplicationV1alpha1().Apps(key.Namespace()).Get(ctx, project.Name(), metav1.GetOptions{})
+		app, err = k8sClients.G8sClient().ApplicationV1alpha1().Apps(namespace).Get(ctx, project.Name(), metav1.GetOptions{})
 		if err != nil {
 			t.Fatalf("expected nil got %#q", err)
 		}
@@ -114,7 +144,7 @@ func TestMetrics(t *testing.T) {
 			app.Spec.Version, // version is the desired version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
-		config.Logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
+		logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
@@ -126,21 +156,21 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected app metric\n\n%s\n\nnot found in response\n\n%s", expectedAppMetric, metrics)
 		}
 
-		config.Logger.Debugf(ctx, "found expected app metric")
+		logger.Debugf(ctx, "found expected app metric")
 
 		expectedAppOperatorMetric := "app_operator_ready_total{namespace=\"giantswarm\",version=\"0.0.0\"} 1"
 
-		config.Logger.Debugf(ctx, "checking for expected app-operator metric\n%s", expectedAppOperatorMetric)
+		logger.Debugf(ctx, "checking for expected app-operator metric\n%s", expectedAppOperatorMetric)
 
 		if !strings.Contains(metrics, expectedAppOperatorMetric) {
 			t.Fatalf("expected app metric\n\n%s\n\nnot found in response\n\n%s", expectedAppOperatorMetric, metrics)
 		}
 
-		config.Logger.Debugf(ctx, "found expected app-operator metric")
+		logger.Debugf(ctx, "found expected app-operator metric")
 	}
 }
 
-func waitForPod(ctx context.Context) (string, error) {
+func waitForPod(ctx context.Context, k8sClients *k8sclient.Clients) (string, error) {
 	var err error
 	var podName string
 
@@ -149,7 +179,7 @@ func waitForPod(ctx context.Context) (string, error) {
 			FieldSelector: "status.phase=Running",
 			LabelSelector: fmt.Sprintf("app=%s", project.Name()),
 		}
-		pods, err := config.K8sClients.K8sClient().CoreV1().Pods(key.Namespace()).List(ctx, lo)
+		pods, err := k8sClients.K8sClient().CoreV1().Pods(namespace).List(ctx, lo)
 		if err != nil {
 			return microerror.Mask(err)
 		}
