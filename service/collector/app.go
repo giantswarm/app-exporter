@@ -281,14 +281,28 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 			if err != nil {
 				return "", microerror.Mask(err)
 			}
-
-			if team != "" {
-				return team, nil
-			}
 		}
 	}
 
-	return key.AppCatalogEntryTeam(*ace), nil
+	// Use team annotation if there are no owners.
+	if team == "" {
+		team = key.AppCatalogEntryTeam(*ace)
+	}
+
+	// Team may have been retired. If so we try to map it to the new team.
+	retiredTeamMappings := map[string]string{
+		"batman":      "honeybadger",
+		"biscuit":     "honeybadger",
+		"celestial":   "phoenix",
+		"firecracker": "phoenix",
+		"ludacris":    "honeybadger",
+	}
+	newTeam := retiredTeamMappings[team]
+	if newTeam != "" {
+		return newTeam, nil
+	}
+
+	return team, nil
 }
 
 // getTeamMappings returns a map of AppCatalogEntry CR names to teams. This

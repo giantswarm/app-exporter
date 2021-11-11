@@ -101,7 +101,7 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand := newCommand.DaemonCommand().CobraCommand()
 
-	daemonCommand.PersistentFlags().String(f.Service.Collector.Apps.DefaultTeam, "batman", "The default team for alerting.")
+	daemonCommand.PersistentFlags().String(f.Service.Collector.Apps.DefaultTeam, "honeybadger", "The default team for alerting.")
 	daemonCommand.PersistentFlags().String(f.Service.Collector.Provider.Kind, "", "Provider of the management cluster. One of aws, azure, kvm.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.Address, "http://127.0.0.1:6443", "Address used to connect to Kubernetes. When empty in-cluster config is created.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Kubernetes.InCluster, false, "Whether to use the in-cluster config to authenticate with Kubernetes.")
