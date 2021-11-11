@@ -207,7 +207,7 @@ func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, erro
 	}
 
 	catalogs := &v1alpha1.CatalogList{}
-	err = a.k8sClient.CtrlClient().List(ctx, catalogs, client.MatchingLabelsSelector{catalogLabels})
+	err = a.k8sClient.CtrlClient().List(ctx, catalogs, &client.ListOptions{LabelSelector: catalogLabels})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
