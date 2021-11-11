@@ -16,7 +16,7 @@ data:
     service:
       collector:
         apps:
-          defaultTeam: "batman"
+          defaultTeam: "honeybadger"
         provider:
           kind: '{{ .Values.provider.kind }}'
       kubernetes:
