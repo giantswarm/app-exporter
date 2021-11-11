@@ -18,11 +18,11 @@ data:
         apps:
           defaultTeam: "honeybadger"
           retiredTeams: |
-            batman: "honeybadger",
-            biscuit: "honeybadger",
-            celestial: "phoenix",
-            firecracker: "phoenix",
-            ludacris: "honeybadger",
+            batman: "honeybadger"
+            biscuit: "honeybadger"
+            celestial: "phoenix"
+            firecracker: "phoenix"
+            ludacris: "honeybadger"
         provider:
           kind: '{{ .Values.provider.kind }}'
       kubernetes:
