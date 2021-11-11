@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove helm 2 app-operator ready logic as migration is complete.
+
 ## [0.9.0] - 2021-09-08
 
 ### Added

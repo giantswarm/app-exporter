@@ -88,44 +88,25 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 	}
 
 	for version := range appVersions {
-		if version != project.Helm2AppVersion() {
-			instances, ok := operatorVersions[version]
-			if !ok {
-				a.logger.Debugf(ctx, "no %#q found for version %#q", project.OperatorName(), version)
-
-				ch <- prometheus.MustNewConstMetric(
-					appOperatorDesc,
-					prometheus.GaugeValue,
-					0,
-					"",
-					version,
-				)
-			}
-
-			for namespace, ready := range instances {
-				ch <- prometheus.MustNewConstMetric(
-					appOperatorDesc,
-					prometheus.GaugeValue,
-					float64(ready),
-					namespace,
-					version,
-				)
-			}
-
-		} else {
-			// There should be a single app-operator instance with major version
-			// 1 for Helm 2 workload clusters.
-			ready, err := helm2AppOperatorReady(operatorVersions)
-			if err != nil {
-				a.logger.Errorf(ctx, err, "failed to check helm 2 %#q ready", project.OperatorName())
-				ready = 0
-			}
+		instances, ok := operatorVersions[version]
+		if !ok {
+			a.logger.Debugf(ctx, "no %#q found for version %#q", project.OperatorName(), version)
 
 			ch <- prometheus.MustNewConstMetric(
 				appOperatorDesc,
 				prometheus.GaugeValue,
+				0,
+				"",
+				version,
+			)
+		}
+
+		for namespace, ready := range instances {
+			ch <- prometheus.MustNewConstMetric(
+				appOperatorDesc,
+				prometheus.GaugeValue,
 				float64(ready),
-				"giantswarm",
+				namespace,
 				version,
 			)
 		}
@@ -210,23 +191,4 @@ func calculateNamespace(namespace, version string) (string, error) {
 	}
 
 	return namespace, nil
-}
-
-func helm2AppOperatorReady(operatorVersions map[string]map[string]int32) (int32, error) {
-	var helm2AppOperators int32
-
-	for version, instances := range operatorVersions {
-		for _, ready := range instances {
-			v, err := semver.NewVersion(version)
-			if err != nil {
-				return 0, microerror.Mask(err)
-			}
-
-			if v.Major() == 1 {
-				helm2AppOperators += ready
-			}
-		}
-	}
-
-	return helm2AppOperators, nil
 }
