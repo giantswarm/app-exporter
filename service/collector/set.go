@@ -11,8 +11,9 @@ type SetConfig struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	DefaultTeam string
-	Provider    string
+	DefaultTeam         string
+	Provider            string
+	RetiredTeamsMapping map[string]string
 }
 
 // Set is basically only a wrapper for the operator's collector implementations.
@@ -42,8 +43,9 @@ func NewSet(config SetConfig) (*Set, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 
-			DefaultTeam: config.DefaultTeam,
-			Provider:    config.Provider,
+			DefaultTeam:         config.DefaultTeam,
+			Provider:            config.Provider,
+			RetiredTeamsMapping: config.RetiredTeamsMapping,
 		}
 
 		appCollector, err = NewApp(c)

@@ -56,8 +56,9 @@ type AppConfig struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	DefaultTeam string
-	Provider    string
+	DefaultTeam         string
+	Provider            string
+	RetiredTeamsMapping map[string]string
 }
 
 // App is the main struct for this collector.
@@ -65,8 +66,9 @@ type App struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 
-	defaultTeam string
-	provider    string
+	defaultTeam         string
+	provider            string
+	retiredTeamsMapping map[string]string
 }
 
 // NewApp creates a new App metrics collector
@@ -84,13 +86,17 @@ func NewApp(config AppConfig) (*App, error) {
 	if config.Provider == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
 	}
+	if config.RetiredTeamsMapping == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.RetiredTeamsMapping must not be empty", config)
+	}
 
 	a := &App{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
-		defaultTeam: config.DefaultTeam,
-		provider:    config.Provider,
+		defaultTeam:         config.DefaultTeam,
+		provider:            config.Provider,
+		retiredTeamsMapping: config.RetiredTeamsMapping,
 	}
 
 	return a, nil
@@ -290,14 +296,7 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	}
 
 	// Team may have been retired. If so we try to map it to the new team.
-	retiredTeamMappings := map[string]string{
-		"batman":      "honeybadger",
-		"biscuit":     "honeybadger",
-		"celestial":   "phoenix",
-		"firecracker": "phoenix",
-		"ludacris":    "honeybadger",
-	}
-	newTeam := retiredTeamMappings[team]
+	newTeam := a.retiredTeamsMapping[team]
 	if newTeam != "" {
 		return newTeam, nil
 	}

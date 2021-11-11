@@ -13,6 +13,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
+	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/app-exporter/flag"
 	"github.com/giantswarm/app-exporter/pkg/project"
@@ -95,14 +96,23 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var retiredTeamsMapping map[string]string
+	{
+		retiredTeamsMapping, err = newRetiredTeamsMapping(config.Viper.GetString(config.Flag.Service.Collector.Apps.RetiredTeams))
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var operatorCollector *collector.Set
 	{
 		c := collector.SetConfig{
 			K8sClient: k8sClient,
 			Logger:    config.Logger,
 
-			DefaultTeam: config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
-			Provider:    config.Viper.GetString(config.Flag.Service.Collector.Provider.Kind),
+			DefaultTeam:         config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
+			Provider:            config.Viper.GetString(config.Flag.Service.Collector.Provider.Kind),
+			RetiredTeamsMapping: retiredTeamsMapping,
 		}
 
 		operatorCollector, err = collector.NewSet(c)
@@ -141,4 +151,14 @@ func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 		go s.operatorCollector.Boot(ctx) // nolint:errcheck
 	})
+}
+
+func newRetiredTeamsMapping(input string) (map[string]string, error) {
+	teams := map[string]string{}
+	err := yaml.Unmarshal([]byte(input), &teams)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return teams, nil
 }

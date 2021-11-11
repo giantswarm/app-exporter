@@ -1,5 +1,6 @@
 package apps
 
 type Apps struct {
-	DefaultTeam string
+	DefaultTeam  string
+	RetiredTeams string
 }
