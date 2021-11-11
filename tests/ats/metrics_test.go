@@ -55,6 +55,9 @@ func TestMetrics(t *testing.T) {
 	{
 		c := k8sclient.ClientsConfig{
 			Logger: logger,
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				v1alpha1.AddToScheme,
+			},
 
 			KubeConfigPath: KubeConfigPath(),
 		}
@@ -122,7 +125,7 @@ func TestMetrics(t *testing.T) {
 	var app *v1alpha1.App
 	{
 		app = &v1alpha1.App{}
-		app, err = k8sClients.CtrlClient().Get(ctx, types.NamespacedName{Namespace: namespace, Name: project.Name()}, app)
+		err = k8sClients.CtrlClient().Get(ctx, types.NamespacedName{Namespace: namespace, Name: project.Name()}, app)
 		if err != nil {
 			t.Fatalf("expected nil got %#q", err)
 		}
