@@ -21,6 +21,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/giantswarm/app-exporter/pkg/project"
 )
@@ -54,6 +55,9 @@ func TestMetrics(t *testing.T) {
 	{
 		c := k8sclient.ClientsConfig{
 			Logger: logger,
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				v1alpha1.AddToScheme,
+			},
 
 			KubeConfigPath: KubeConfigPath(),
 		}
@@ -120,7 +124,8 @@ func TestMetrics(t *testing.T) {
 
 	var app *v1alpha1.App
 	{
-		app, err = k8sClients.G8sClient().ApplicationV1alpha1().Apps(namespace).Get(ctx, project.Name(), metav1.GetOptions{})
+		app = &v1alpha1.App{}
+		err = k8sClients.CtrlClient().Get(ctx, types.NamespacedName{Namespace: namespace, Name: project.Name()}, app)
 		if err != nil {
 			t.Fatalf("expected nil got %#q", err)
 		}

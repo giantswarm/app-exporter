@@ -16,6 +16,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 )
 
@@ -116,7 +119,8 @@ func (a *App) Describe(ch chan<- *prometheus.Desc) error {
 }
 
 func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric) error {
-	r, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
+	apps := &v1alpha1.AppList{}
+	err := a.k8sClient.CtrlClient().List(ctx, apps)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -126,12 +130,12 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		return microerror.Mask(err)
 	}
 
-	teamMappings, err := a.getTeamMappings(ctx, r.Items)
+	teamMappings, err := a.getTeamMappings(ctx, apps.Items)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	for _, app := range r.Items {
+	for _, app := range apps.Items {
 		appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 		team := teamMappings[appCatalogEntryName]
 		if team == "" {
@@ -197,19 +201,23 @@ func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, erro
 
 	// TODO: Remove community once helm-stable catalog is removed.
 	// https://github.com/giantswarm/giantswarm/issues/17490
-	l := metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("%s=public,%s!=community", label.CatalogVisibility, label.CatalogType),
+	catalogLabels, err := labels.Parse(fmt.Sprintf("%s=public,%s!=community", label.CatalogVisibility, label.CatalogType))
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
-	catalogs, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Catalogs(metav1.NamespaceAll).List(ctx, l)
+
+	catalogs := &v1alpha1.CatalogList{}
+	err = a.k8sClient.CtrlClient().List(ctx, catalogs, &client.ListOptions{LabelSelector: catalogLabels})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	for _, catalog := range catalogs.Items {
-		lo := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("%s=%s,latest=true", label.CatalogName, catalog.Name),
-		}
-		aces, err := a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(catalog.Namespace).List(ctx, lo)
+		aces := &v1alpha1.AppCatalogEntryList{}
+		err = a.k8sClient.CtrlClient().List(ctx, aces, client.InNamespace(catalog.Namespace), client.MatchingLabels{
+			label.CatalogName: catalog.Name,
+			"latest":          "true",
+		})
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -245,12 +253,12 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 
 	appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
-	var ace *v1alpha1.AppCatalogEntry
+	ace := &v1alpha1.AppCatalogEntry{}
 	{
 		// Check giantswarm namespace first as it has more CRs.
 		namespaces := []string{"giantswarm", metav1.NamespaceDefault}
 		for _, ns := range namespaces {
-			ace, err = a.k8sClient.G8sClient().ApplicationV1alpha1().AppCatalogEntries(ns).Get(ctx, appCatalogEntryName, metav1.GetOptions{})
+			err = a.k8sClient.CtrlClient().Get(ctx, types.NamespacedName{Namespace: ns, Name: appCatalogEntryName}, ace)
 			if apierrors.IsNotFound(err) {
 				// Check next namespace.
 				continue
