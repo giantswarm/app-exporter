@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -120,12 +121,13 @@ func (a *AppOperator) collectAppOperatorStatus(ctx context.Context, ch chan<- pr
 func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[string]bool, error) {
 	appVersions := map[string]map[string]bool{}
 
-	l, err := a.k8sClient.G8sClient().ApplicationV1alpha1().Apps("").List(ctx, metav1.ListOptions{})
+	apps := &v1alpha1.AppList{}
+	err := a.k8sClient.CtrlClient().List(ctx, apps)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	for _, app := range l.Items {
+	for _, app := range apps.Items {
 		version := app.Labels[label.AppOperatorVersion]
 		appNamespaces, ok := appVersions[version]
 		if !ok {

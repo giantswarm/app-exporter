@@ -1,6 +1,6 @@
 module github.com/giantswarm/app-exporter
 
-go 1.15
+go 1.16
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
@@ -20,6 +20,7 @@ require (
 	github.com/spf13/viper v1.9.0
 	k8s.io/apimachinery v0.20.12
 	k8s.io/client-go v0.20.12
+	sigs.k8s.io/controller-runtime v0.6.4
 	sigs.k8s.io/yaml v1.3.0
 )
 
