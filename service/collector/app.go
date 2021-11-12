@@ -151,7 +151,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 
 		// Team annotation on the App CR overrides if it exists.
 		if key.AppTeam(app) != "" {
-			team = key.AppTeam(app)
+			team = formatTeamName(key.AppTeam(app))
 		}
 
 		// For optional apps in public catalogs we check if an upgrade
@@ -303,6 +303,9 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		team = key.AppCatalogEntryTeam(*ace)
 	}
 
+	// Normalize team name e.g. remove team- prefix if its present.
+	team = formatTeamName(team)
+
 	// Team may have been retired. If so we try to map it to the new team.
 	newTeam := a.retiredTeamsMapping[team]
 	if newTeam != "" {
@@ -358,4 +361,10 @@ func convertToTime(input string) (time.Time, error) {
 	}
 
 	return t, nil
+}
+
+// formatTeamName allows for normalizing the team name. This is needed as our
+// GitHub team names use the prefix team but in Prometheus this isn't present.
+func formatTeamName(input string) string {
+	return strings.TrimPrefix(input, "team-")
 }
