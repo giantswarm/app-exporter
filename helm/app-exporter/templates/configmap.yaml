@@ -16,7 +16,13 @@ data:
     service:
       collector:
         apps:
-          defaultTeam: "batman"
+          defaultTeam: "honeybadger"
+          retiredTeams: |
+            batman: "honeybadger"
+            biscuit: "honeybadger"
+            celestial: "phoenix"
+            firecracker: "phoenix"
+            ludacris: "honeybadger"
         provider:
           kind: '{{ .Values.provider.kind }}'
       kubernetes:

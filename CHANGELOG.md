@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change default team and route retired teams to new teams for app metrics. 
+
 ### Removed
 
 - Remove helm 2 app-operator ready logic as migration is complete.
