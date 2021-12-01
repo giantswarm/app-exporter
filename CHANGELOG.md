@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use `apiextensions-application` instead of `apiextensions` for CRDs to remove
 CAPI dependency.
 
+### Fixed
+
+- Add `halo` to `cabbage` to retired teams mapping.
+
 ## [0.10.0] - 2021-11-12
 
 ### Changed

@@ -17,11 +17,13 @@ data:
       collector:
         apps:
           defaultTeam: "honeybadger"
+          # TODO Remove once old releases are archived https://github.com/giantswarm/giantswarm/issues/20027
           retiredTeams: |
             batman: "honeybadger"
             biscuit: "honeybadger"
             celestial: "phoenix"
             firecracker: "phoenix"
+            halo: "cabbage"
             ludacris: "honeybadger"
         provider:
           kind: '{{ .Values.provider.kind }}'
