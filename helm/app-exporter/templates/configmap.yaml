@@ -23,6 +23,7 @@ data:
             biscuit: "honeybadger"
             celestial: "phoenix"
             firecracker: "phoenix"
+            halo: "cabbage"
             ludacris: "honeybadger"
         provider:
           kind: '{{ .Values.provider.kind }}'
