@@ -155,7 +155,9 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		}
 
 		// Trim `v` prefix from App CR version if there is any
-		appSpecVersion := strings.TrimPrefix(app.Spec.Version, "v")
+		// TBR: once Flux supports more sophisticated regexes
+		// 		we can get rid of this trimming
+		appSpecVersion := key.Version(app)
 
 		// For optional apps in public catalogs we check if an upgrade
 		// is available.
