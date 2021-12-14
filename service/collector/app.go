@@ -154,10 +154,15 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team = formatTeamName(key.AppTeam(app))
 		}
 
+		// Trim `v` prefix from App CR version if there is any
+		// TODO once Flux supports more sophisticated regexes
+		// we can get rid of this trimming.
+		appSpecVersion := key.Version(app)
+
 		// For optional apps in public catalogs we check if an upgrade
 		// is available.
 		latestVersion := latestAppVersions[fmt.Sprintf("%s-%s", key.CatalogName(app), key.AppName(app))]
-		upgradeAvailable := latestVersion != "" && latestVersion != app.Spec.Version
+		upgradeAvailable := latestVersion != "" && latestVersion != appSpecVersion
 
 		ch <- prometheus.MustNewConstMetric(
 			appDesc,
@@ -174,8 +179,8 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team,
 			strconv.FormatBool(upgradeAvailable),
 			// Getting version from spec, not status since the version in the spec is the desired version.
-			app.Spec.Version,
-			strconv.FormatBool(app.Spec.Version != app.Status.Version),
+			appSpecVersion,
+			strconv.FormatBool(appSpecVersion != app.Status.Version),
 		)
 
 		if !key.IsAppCordoned(app) {

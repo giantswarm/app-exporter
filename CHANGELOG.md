@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+
+- Use `key.Version()` to get App CR version. This is to support `v`-prefixed App CR versions.
+
 ## [0.10.1] - 2021-12-01
 
 ### Changed
@@ -22,7 +26,7 @@ CAPI dependency.
 
 ### Changed
 
-- Change default team and route retired teams to new teams for app metrics. 
+- Change default team and route retired teams to new teams for app metrics.
 
 ### Removed
 
@@ -89,7 +93,7 @@ exists. Otherwise check the AppCatalogEntry CR.
 - Add app label to app metrics with the name of the app.
 - Extend app-operator ready metric to include per workload cluster instances.
 - Get team from `application.giantswarm.io/team` or `application.giantswarm.io/owners`
-annotations in Chart.yaml. 
+annotations in Chart.yaml.
 
 ### Changed
 
