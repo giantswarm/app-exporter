@@ -6,18 +6,18 @@ require (
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/giantswarm/apiextensions-application v0.1.0
 	github.com/giantswarm/app/v6 v6.1.0
-	github.com/giantswarm/backoff v0.2.0
-	github.com/giantswarm/exporterkit v0.2.1
+	github.com/giantswarm/backoff v1.0.0
+	github.com/giantswarm/exporterkit v1.0.0
 	github.com/giantswarm/k8sclient/v6 v6.0.0
 	github.com/giantswarm/k8smetadata v0.7.1
 	github.com/giantswarm/k8sportforward/v2 v2.0.0
-	github.com/giantswarm/microendpoint v0.2.0
-	github.com/giantswarm/microerror v0.3.0
-	github.com/giantswarm/microkit v0.2.2
-	github.com/giantswarm/micrologger v0.5.0
+	github.com/giantswarm/microendpoint v1.0.0
+	github.com/giantswarm/microerror v0.4.0
+	github.com/giantswarm/microkit v1.0.0
+	github.com/giantswarm/micrologger v0.6.0
 	github.com/giantswarm/operatorkit/v6 v6.0.0
 	github.com/prometheus/client_golang v1.11.0
-	github.com/spf13/viper v1.9.0
+	github.com/spf13/viper v1.10.0
 	k8s.io/apimachinery v0.21.4
 	k8s.io/client-go v0.21.4
 	sigs.k8s.io/controller-runtime v0.9.7
