@@ -4,7 +4,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"sync"
 
 	applicationv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
@@ -164,15 +163,11 @@ func (s *Service) Boot(ctx context.Context) {
 }
 
 func newMapping(input string) (map[string]string, error) {
-	fmt.Printf("INPUT\n%s", input)
-
 	mapping := map[string]string{}
 	err := yaml.Unmarshal([]byte(input), &mapping)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-
-	fmt.Printf("MAPPING\n%s", mapping)
 
 	return mapping, nil
 }
