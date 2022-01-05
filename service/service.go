@@ -96,9 +96,17 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var appTeamMappings map[string]string
+	{
+		appTeamMappings, err = newMapping(config.Viper.GetString(config.Flag.Service.Collector.Apps.AppTeamMappings))
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var retiredTeamsMapping map[string]string
 	{
-		retiredTeamsMapping, err = newRetiredTeamsMapping(config.Viper.GetString(config.Flag.Service.Collector.Apps.RetiredTeams))
+		retiredTeamsMapping, err = newMapping(config.Viper.GetString(config.Flag.Service.Collector.Apps.RetiredTeams))
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -110,6 +118,7 @@ func New(config Config) (*Service, error) {
 			K8sClient: k8sClient,
 			Logger:    config.Logger,
 
+			AppTeamMappings:     appTeamMappings,
 			DefaultTeam:         config.Viper.GetString(config.Flag.Service.Collector.Apps.DefaultTeam),
 			Provider:            config.Viper.GetString(config.Flag.Service.Collector.Provider.Kind),
 			RetiredTeamsMapping: retiredTeamsMapping,
@@ -153,12 +162,12 @@ func (s *Service) Boot(ctx context.Context) {
 	})
 }
 
-func newRetiredTeamsMapping(input string) (map[string]string, error) {
-	teams := map[string]string{}
-	err := yaml.Unmarshal([]byte(input), &teams)
+func newMapping(input string) (map[string]string, error) {
+	mapping := map[string]string{}
+	err := yaml.Unmarshal([]byte(input), &mapping)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	return teams, nil
+	return mapping, nil
 }

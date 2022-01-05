@@ -59,6 +59,7 @@ type AppConfig struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
+	AppTeamMappings     map[string]string
 	DefaultTeam         string
 	Provider            string
 	RetiredTeamsMapping map[string]string
@@ -69,6 +70,7 @@ type App struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 
+	appTeamMappings     map[string]string
 	defaultTeam         string
 	provider            string
 	retiredTeamsMapping map[string]string
@@ -97,6 +99,7 @@ func NewApp(config AppConfig) (*App, error) {
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
+		appTeamMappings:     config.AppTeamMappings,
 		defaultTeam:         config.DefaultTeam,
 		provider:            config.Provider,
 		retiredTeamsMapping: config.RetiredTeamsMapping,
@@ -261,6 +264,15 @@ func (a *App) getOwningTeam(ctx context.Context, app v1alpha1.App, owners []owne
 func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	var team string
 	var err error
+
+	// Team has been configured manually via the configmap. This can be used
+	// if the team annotation is missing in Chart.yaml. Make sure the
+	// annotation is added and once its present for all deployments of the
+	// app the mapping can be removed.
+	team = a.appTeamMappings[key.AppName(app)]
+	if team != "" {
+		return team, nil
+	}
 
 	appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
