@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add manual mapping of apps to teams for alert routing when team annotation
+in Chart.yaml is missing.
+
 ## [0.11.0] - 2021-12-15
 
 ## Changed

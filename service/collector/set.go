@@ -11,6 +11,7 @@ type SetConfig struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
+	AppTeamMappings     map[string]string
 	DefaultTeam         string
 	Provider            string
 	RetiredTeamsMapping map[string]string
@@ -43,6 +44,7 @@ func NewSet(config SetConfig) (*Set, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 
+			AppTeamMappings:     config.AppTeamMappings,
 			DefaultTeam:         config.DefaultTeam,
 			Provider:            config.Provider,
 			RetiredTeamsMapping: config.RetiredTeamsMapping,
