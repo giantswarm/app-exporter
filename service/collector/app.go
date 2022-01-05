@@ -265,12 +265,17 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 	var team string
 	var err error
 
+	if key.AppName(app) == "efk-stack-app" {
+		a.logger.Debugf(ctx, "EFK DEBUG %#v", a.appTeamMappings)
+	}
+
 	// Team has been configured manually via the configmap. This can be used
 	// if the team annotation is missing in Chart.yaml. Make sure the
 	// annotation is added and once its present for all deployments of the
 	// app the mapping can be removed.
 	team = a.appTeamMappings[key.AppName(app)]
 	if team != "" {
+		a.logger.Debugf(ctx, "TEAM %s", team)
 		return team, nil
 	}
 

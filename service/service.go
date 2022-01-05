@@ -163,11 +163,11 @@ func (s *Service) Boot(ctx context.Context) {
 }
 
 func newMapping(input string) (map[string]string, error) {
-	teams := map[string]string{}
-	err := yaml.Unmarshal([]byte(input), &teams)
+	mapping := map[string]string{}
+	err := yaml.Unmarshal([]byte(input), &mapping)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	return teams, nil
+	return mapping, nil
 }
