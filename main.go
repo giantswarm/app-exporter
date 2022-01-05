@@ -101,6 +101,7 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand := newCommand.DaemonCommand().CobraCommand()
 
+	daemonCommand.PersistentFlags().String(f.Service.Collector.Apps.AppTeamMappings, "", "The mapping of retired teams to new teams for alerting.")
 	daemonCommand.PersistentFlags().String(f.Service.Collector.Apps.DefaultTeam, "honeybadger", "The default team for alerting.")
 	daemonCommand.PersistentFlags().String(f.Service.Collector.Apps.RetiredTeams, "", "The mapping of retired teams to new teams for alerting.")
 	daemonCommand.PersistentFlags().String(f.Service.Collector.Provider.Kind, "", "Provider of the management cluster. One of aws, azure, kvm.")

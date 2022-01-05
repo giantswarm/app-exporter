@@ -16,6 +16,8 @@ data:
     service:
       collector:
         apps:
+          # appTeamMappings can be used when the team annotation is missing in Chart.yaml.
+          # Make sure you also add the missing annotation.
           appTeamMappings: |
             efk-stack-app: "atlas"
           defaultTeam: "honeybadger"
