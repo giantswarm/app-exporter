@@ -241,8 +241,8 @@ github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2H
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/giantswarm/apiextensions-application v0.3.0 h1:U1dQPNo7DXdH4VAFXdPhAWZNI98XE4nMonaUFhclIqo=
 github.com/giantswarm/apiextensions-application v0.3.0/go.mod h1:O6mg+EdXC9CyTLgi0d3rf6QTXrQX/79iw4kjMJRinig=
-github.com/giantswarm/app/v6 v6.3.0 h1:ESXftdmaVzRLRCzDOdZTDRd9wgXauEpgKgN6JLKOrkg=
-github.com/giantswarm/app/v6 v6.3.0/go.mod h1:kqVk28i/32j/ngeqrDx4dBL4JX70ZO3tIp/cLfAfrUk=
+github.com/giantswarm/app/v6 v6.5.1 h1:pmBR7/La2CvnWBHRkfc1jyy3CyIbKvSAjxb7GUoBloo=
+github.com/giantswarm/app/v6 v6.5.1/go.mod h1:mCikT+N+d+jDDNQJx/b9ee/BaGfJMJ9UY0Wpxw8qv7k=
 github.com/giantswarm/backoff v0.2.0/go.mod h1:Z3WRsFilSJ5H5VlFa4XhraoPr+9pmZgYasoY2OSfNOk=
 github.com/giantswarm/backoff v1.0.0 h1:1oeTvyPsm1tJrHlSmfxbIWuoCNWPOkWJCb8kfLvE2T0=
 github.com/giantswarm/backoff v1.0.0/go.mod h1:l/WqbggvG5Ndxxws0LUgVEvP5E82Qj5/PF8SMip/1QM=
@@ -252,8 +252,9 @@ github.com/giantswarm/exporterkit v1.0.0/go.mod h1:XO9HfOOIxcWM+9r8KKIuYHtFGdTbY
 github.com/giantswarm/k8sclient/v6 v6.1.0 h1:UdIh2P4LeFz+PDxprwNbV7Nic2q7YAAAtKdv4Ov+v1s=
 github.com/giantswarm/k8sclient/v6 v6.1.0/go.mod h1:mF0FgQHqCrAhk5EGiyN7RfgMMsz7CP3GoaFsfZ5KHps=
 github.com/giantswarm/k8smetadata v0.6.0/go.mod h1:k3DYCMdspxhk7efLkQdX1b8UZ71ijOCG3ZoIU8+5xgw=
-github.com/giantswarm/k8smetadata v0.7.1 h1:Wc49mhisTc1BgaDGEPtnP7VCozuoa3DI/Txx4p++sdo=
 github.com/giantswarm/k8smetadata v0.7.1/go.mod h1:k3DYCMdspxhk7efLkQdX1b8UZ71ijOCG3ZoIU8+5xgw=
+github.com/giantswarm/k8smetadata v0.8.0 h1:GQT6UKl7TBasZOoyydzAHfmwuHKp9Us4lJ+koF0q6V0=
+github.com/giantswarm/k8smetadata v0.8.0/go.mod h1:k3DYCMdspxhk7efLkQdX1b8UZ71ijOCG3ZoIU8+5xgw=
 github.com/giantswarm/k8sportforward/v2 v2.0.0 h1:tbu1i0+iRQ8ShTUwh55YizqBpYn5T9ltsr0ibNwH5Og=
 github.com/giantswarm/k8sportforward/v2 v2.0.0/go.mod h1:YfTaZsgLH1K9BX2zOy+QvvvUTdc744BvRlKrEfVwYfM=
 github.com/giantswarm/microendpoint v0.2.0/go.mod h1:SSkSp4Q4iSW7vwkil+/E3IXy9Q8To8vXmT5VCg24RDg=
@@ -385,8 +386,9 @@ github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.3/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
-github.com/google/go-cmp v0.5.6 h1:BKbKCqvP6I+rmFHt06ZmyQtvB8xAkWdhFyr0ZUNZcxQ=
 github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/google/go-cmp v0.5.7 h1:81/ik6ipDQS2aGcBfIN5dHDB36BwrStyeAQquSYCV4o=
+github.com/google/go-cmp v0.5.7/go.mod h1:n+brtR0CgQNWTVd5ZUFpTBC8YFBDLK/h/bpaJ8/DtOE=
 github.com/google/go-github/v39 v39.2.0/go.mod h1:C1s8C5aCC9L+JXIYpJM5GYytdX52vC1bLvHEF1IhBrE=
 github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO6wN/zVPAxq5ck=
 github.com/google/go-querystring v1.1.0/go.mod h1:Kcdr2DB4koayq7X8pmAG4sNG59So17icRSOU623lUBU=

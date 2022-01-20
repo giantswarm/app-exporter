@@ -5,11 +5,11 @@ go 1.16
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/giantswarm/apiextensions-application v0.3.0
-	github.com/giantswarm/app/v6 v6.3.0
+	github.com/giantswarm/app/v6 v6.5.1
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/exporterkit v1.0.0
 	github.com/giantswarm/k8sclient/v6 v6.1.0
-	github.com/giantswarm/k8smetadata v0.7.1
+	github.com/giantswarm/k8smetadata v0.8.0
 	github.com/giantswarm/k8sportforward/v2 v2.0.0
 	github.com/giantswarm/microendpoint v1.0.0
 	github.com/giantswarm/microerror v0.4.0
