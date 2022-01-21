@@ -167,6 +167,11 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		latestVersion := latestAppVersions[fmt.Sprintf("%s-%s", key.CatalogName(app), key.AppName(app))]
 		upgradeAvailable := latestVersion != "" && latestVersion != appSpecVersion
 
+		releaseStatus := app.Status.Release.Status
+		if releaseStatus == "" {
+			releaseStatus = notInstalledStatus
+		}
+
 		ch <- prometheus.MustNewConstMetric(
 			appDesc,
 			prometheus.GaugeValue,
@@ -178,7 +183,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			latestVersion,
 			app.Name,
 			app.Namespace,
-			app.Status.Release.Status,
+			releaseStatus,
 			team,
 			strconv.FormatBool(upgradeAvailable),
 			// Getting version from spec, not status since the version in the spec is the desired version.
