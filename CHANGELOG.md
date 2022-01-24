@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Set release status to `not-installed` when it is empty string.
+
 ## [0.12.0] - 2022-01-05
 
 ### Added

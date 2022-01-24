@@ -1,8 +1,9 @@
 package collector
 
 const (
-	gaugeValue float64 = 1
-	namespace  string  = "app_operator"
+	gaugeValue         float64 = 1
+	namespace          string  = "app_operator"
+	notInstalledStatus string  = "not-installed"
 )
 
 const (
