@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `cluster_missing` label to the metric for detecting org-namespace App CRs without `giantswarm.io/cluster` Kubernetes label.
+
 ## [0.12.1] - 2022-01-24
 
 ### Fixed
