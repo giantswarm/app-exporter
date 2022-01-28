@@ -10,7 +10,7 @@ const (
 	labelApp              = "app"
 	labelAppVersion       = "app_version"
 	labelCatalog          = "catalog"
-	labelClusterMissing   = "cluster_mising"
+	labelClusterMissing   = "cluster_missing"
 	labelDeployedVersion  = "deployed_version"
 	labelLatestVersion    = "latest_version"
 	labelName             = "name"
