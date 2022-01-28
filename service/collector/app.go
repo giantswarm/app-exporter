@@ -163,9 +163,8 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		// we can get rid of this trimming.
 		appSpecVersion := key.Version(app)
 
-		// missingClusterLabel returns "true" if `giantswarm.io/cluster` label is missing
-		// on the org-namespaced app. It returns "false" in other cases, this including
-		// cluster-namespaced app.
+		// clusterMissing is true if `giantswarm.io/cluster` label is missing
+		// on the org-namespaced app. Otherwise it's false.
 		clusterMissing := key.IsInOrgNamespace(app) && key.ClusterLabel(app) == ""
 
 		// For optional apps in public catalogs we check if an upgrade
