@@ -6,4 +6,4 @@ name: "app-exporter"
 version: "[[ .Version ]]"
 annotations:
   application.giantswarm.io/team: "honeybadger"
-  config.giantswarm.io/version: ross-test
+  config.giantswarm.io/version: ross-test-2
