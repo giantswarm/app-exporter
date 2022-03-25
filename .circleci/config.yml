@@ -141,9 +141,9 @@ workflows:
 
       - architect/push-to-app-collection:
           context: architect
-          name: push-app-exporter-to-vmware-app-collection
+          name: push-app-exporter-to-vsphere-app-collection
           app_name: "app-exporter"
-          app_collection_repo: "vmware-app-collection"
+          app_collection_repo: "vsphere-app-collection"
           requires:
             - push-app-exporter-to-control-plane-catalog
           filters:
