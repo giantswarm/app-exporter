@@ -14,10 +14,8 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 )
@@ -162,6 +160,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		// TODO once Flux supports more sophisticated regexes
 		// we can get rid of this trimming.
 		appSpecVersion := key.Version(app)
+		appStatusVersion := formatVersion(app.Status.Version)
 
 		// clusterMissing is true if `giantswarm.io/cluster` label is missing
 		// on the org-namespaced app. Otherwise it's false.
@@ -185,7 +184,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			appVersion(app),
 			app.Spec.Catalog,
 			strconv.FormatBool(clusterMissing),
-			app.Status.Version,
+			appStatusVersion,
 			latestVersion,
 			app.Name,
 			app.Namespace,
@@ -194,7 +193,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			strconv.FormatBool(upgradeAvailable),
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			appSpecVersion,
-			strconv.FormatBool(appSpecVersion != app.Status.Version),
+			strconv.FormatBool(appSpecVersion != appStatusVersion),
 		)
 
 		if !key.IsAppCordoned(app) {
@@ -248,7 +247,7 @@ func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, erro
 		}
 
 		for _, ace := range aces.Items {
-			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = ace.Spec.Version
+			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = formatVersion(ace.Spec.Version)
 		}
 	}
 
@@ -285,20 +284,60 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		return team, nil
 	}
 
-	appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+	// Use label selector for fetching AppCatalogEntry instead of getting it
+	// by name. This is to use `app.kubernetes.io/version in (X.X.X, vX.X.X)`
+	// for handling both possible versions, with- and without- prefix.
+	// This is to handle certain cases where ACEs are created with `v*` prefix
+	// versions which we do trim in the `app` package, what would result in getting
+	// non-existing entry here. OR selector solves this issue.
+	//
+	// Previously used:
+	// appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
+	selector, err := labels.Parse(fmt.Sprintf(
+		"%s=%s,%s=%s,%s in (%s,%s)",
+		label.CatalogName,
+		key.CatalogName(app),
+		label.AppKubernetesName,
+		key.AppName(app),
+		label.AppKubernetesVersion,
+		app.Spec.Version,
+		key.Version(app),
+	))
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
 
 	ace := &v1alpha1.AppCatalogEntry{}
 	{
 		// Check giantswarm namespace first as it has more CRs.
 		namespaces := []string{"giantswarm", metav1.NamespaceDefault}
 		for _, ns := range namespaces {
-			err = a.k8sClient.CtrlClient().Get(ctx, types.NamespacedName{Namespace: ns, Name: appCatalogEntryName}, ace)
-			if apierrors.IsNotFound(err) {
+			aceList := &v1alpha1.AppCatalogEntryList{}
+
+			err = a.k8sClient.CtrlClient().List(
+				ctx,
+				aceList,
+				client.InNamespace(ns),
+				&client.ListOptions{LabelSelector: selector},
+			)
+			if len(aceList.Items) == 0 {
 				// Check next namespace.
 				continue
-			} else if ace != nil {
+			} else if len(aceList.Items) == 1 {
 				// Use this CR.
+				ace = &aceList.Items[0]
 				break
+			} else if len(aceList.Items) > 1 {
+				// It shouldn't be more than 1 matching selector, as these labels are
+				// set exclusively to the given name and version.
+				a.logger.Errorf(
+					ctx,
+					invalidExecutionError,
+					"found more than 1 AppCatalogEntry for %q-%q app in %q catalog",
+					key.AppName(app),
+					key.Version(app),
+					key.CatalogName(app),
+				)
 			} else if err != nil {
 				return "", microerror.Mask(err)
 			}
@@ -368,8 +407,10 @@ func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[str
 // appVersion returns the AppVersion if it differs from the Version. This is so
 // we can show the upstream chart version packaged by the app.
 func appVersion(app v1alpha1.App) string {
-	if app.Status.AppVersion != app.Status.Version {
-		return app.Status.AppVersion
+	statusVersion := formatVersion(app.Status.Version)
+	statusAppVersion := formatVersion(app.Status.AppVersion)
+	if statusAppVersion != statusVersion {
+		return statusAppVersion
 	}
 
 	return ""
@@ -395,4 +436,10 @@ func convertToTime(input string) (time.Time, error) {
 // GitHub team names use the prefix team but in Prometheus this isn't present.
 func formatTeamName(input string) string {
 	return strings.TrimPrefix(input, "team-")
+}
+
+// formatVersion normalizes version representation by removing `v` prefix.
+// It matters for customers Catalogs, ACEs and apps created out of them.
+func formatVersion(input string) string {
+	return strings.TrimPrefix(input, "v")
 }
