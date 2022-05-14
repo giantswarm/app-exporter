@@ -24,6 +24,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/giantswarm/app-exporter/pkg/project"
+
+	expkey "github.com/giantswarm/app-exporter/internal/key"
 )
 
 const (
@@ -133,7 +135,7 @@ func TestMetrics(t *testing.T) {
 		var appVersion string
 
 		if app.Status.AppVersion != app.Status.Version {
-			appVersion = formatVersion(app.Status.AppVersion)
+			appVersion = expkey.FormatVersion(app.Status.AppVersion)
 		}
 
 		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"honeybadger\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
@@ -141,13 +143,13 @@ func TestMetrics(t *testing.T) {
 			appVersion,
 			app.Spec.Catalog,
 			"false",
-			formatVersion(app.Status.Version), // deployed_version
-			"",                                // latest_version is empty
+			expkey.FormatVersion(app.Status.Version), // deployed_version
+			"",                                       // latest_version is empty
 			app.Name,
 			app.Namespace,
 			app.Status.Release.Status,
-			"false",                         // upgrade_avaiable is false
-			formatVersion(app.Spec.Version), // version is the desired version
+			"false",                                // upgrade_avaiable is false
+			expkey.FormatVersion(app.Spec.Version), // version is the desired version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
 		logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
@@ -174,12 +176,6 @@ func TestMetrics(t *testing.T) {
 
 		logger.Debugf(ctx, "found expected app-operator metric")
 	}
-}
-
-// formatVersion normalizes version representation by removing `v` prefix.
-// It matters for customers Catalogs, ACEs and apps created out of them.
-func formatVersion(input string) string {
-	return strings.TrimPrefix(input, "v")
 }
 
 func waitForPod(ctx context.Context, k8sClients *k8sclient.Clients) (string, error) {

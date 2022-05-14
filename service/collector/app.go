@@ -20,6 +20,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
+
+	expkey "github.com/giantswarm/app-exporter/internal/key"
 )
 
 var (
@@ -162,7 +164,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		// TODO once Flux supports more sophisticated regexes
 		// we can get rid of this trimming.
 		appSpecVersion := key.Version(app)
-		appStatusVersion := formatVersion(app.Status.Version)
+		appStatusVersion := expkey.FormatVersion(app.Status.Version)
 
 		// clusterMissing is true if `giantswarm.io/cluster` label is missing
 		// on the org-namespaced app. Otherwise it's false.
@@ -249,7 +251,7 @@ func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, erro
 		}
 
 		for _, ace := range aces.Items {
-			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = formatVersion(ace.Spec.Version)
+			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = expkey.FormatVersion(ace.Spec.Version)
 		}
 	}
 
@@ -376,8 +378,8 @@ func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[str
 // appVersion returns the AppVersion if it differs from the Version. This is so
 // we can show the upstream chart version packaged by the app.
 func appVersion(app v1alpha1.App) string {
-	statusVersion := formatVersion(app.Status.Version)
-	statusAppVersion := formatVersion(app.Status.AppVersion)
+	statusVersion := expkey.FormatVersion(app.Status.Version)
+	statusAppVersion := expkey.FormatVersion(app.Status.AppVersion)
 	if statusAppVersion != statusVersion {
 		return statusAppVersion
 	}
@@ -405,10 +407,4 @@ func convertToTime(input string) (time.Time, error) {
 // GitHub team names use the prefix team but in Prometheus this isn't present.
 func formatTeamName(input string) string {
 	return strings.TrimPrefix(input, "team-")
-}
-
-// formatVersion normalizes version representation by removing `v` prefix.
-// It matters for customers Catalogs, ACEs and apps created out of them.
-func formatVersion(input string) string {
-	return strings.TrimPrefix(input, "v")
 }

@@ -23,7 +23,7 @@ import (
 )
 
 // fakeCollector implements prometheus.Collector interface and
-// is wrapper for the App that implements exporterkit interface
+// is wrapper for the App that implements exporterkit.Collector
 type fakeCollector struct {
 	app *App
 }
