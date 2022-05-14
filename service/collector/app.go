@@ -14,8 +14,10 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 )
@@ -284,60 +286,27 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		return team, nil
 	}
 
-	// Use label selector for fetching AppCatalogEntry instead of getting it
-	// by name. This is to use `app.kubernetes.io/version in (X.X.X, vX.X.X)`
-	// for handling both possible versions, with- and without- prefix.
-	// This is to handle certain cases where ACEs are created with `v*` prefix
-	// versions which we do trim in the `app` package, what would result in getting
-	// non-existing entry here. OR selector solves this issue.
-	//
-	// Previously used:
-	// appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
-	selector, err := labels.Parse(fmt.Sprintf(
-		"%s=%s,%s=%s,%s in (%s,%s)",
-		label.CatalogName,
-		key.CatalogName(app),
-		label.AppKubernetesName,
-		key.AppName(app),
-		label.AppKubernetesVersion,
-		app.Spec.Version,
-		key.Version(app),
-	))
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
+	// Note, for custom catalogs carrying the `v`-prefixed app versions, constructing
+	// the name like this will give incorrect result without the prefix, resulting in
+	// `IsNotFound` error. On the `IsNotFound` error we could fall back to checking
+	// next name constructed with just the `app.Spec.Version` (without stripping), however
+	// it does not seem necessary at the moment as we do not control the `owners` nor `team`
+	// annotations on apps outside our catalogs, hence trying to get it here at all
+	// cost might be pointless after all.
+	appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
 	ace := &v1alpha1.AppCatalogEntry{}
 	{
 		// Check giantswarm namespace first as it has more CRs.
 		namespaces := []string{"giantswarm", metav1.NamespaceDefault}
 		for _, ns := range namespaces {
-			aceList := &v1alpha1.AppCatalogEntryList{}
-
-			err = a.k8sClient.CtrlClient().List(
-				ctx,
-				aceList,
-				client.InNamespace(ns),
-				&client.ListOptions{LabelSelector: selector},
-			)
-			if len(aceList.Items) == 0 {
+			err = a.k8sClient.CtrlClient().Get(ctx, types.NamespacedName{Namespace: ns, Name: appCatalogEntryName}, ace)
+			if apierrors.IsNotFound(err) {
 				// Check next namespace.
 				continue
-			} else if len(aceList.Items) == 1 {
+			} else if ace != nil {
 				// Use this CR.
-				ace = &aceList.Items[0]
 				break
-			} else if len(aceList.Items) > 1 {
-				// It shouldn't be more than 1 matching selector, as these labels are
-				// set exclusively to the given name and version.
-				a.logger.Errorf(
-					ctx,
-					invalidExecutionError,
-					"found more than 1 AppCatalogEntry for %q-%q app in %q catalog",
-					key.AppName(app),
-					key.Version(app),
-					key.CatalogName(app),
-				)
 			} else if err != nil {
 				return "", microerror.Mask(err)
 			}

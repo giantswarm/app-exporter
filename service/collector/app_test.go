@@ -388,7 +388,7 @@ func Test_getTeamMappings(t *testing.T) {
 				newACE("example", "customer", "default", "v0.1.0", "", "customer-team", false),
 			},
 			expectedTeamMappings: map[string]string{
-				"customer-example-1.0.0":           "customer-team",
+				"customer-example-1.0.0":           "",
 				"giantswarm-hello-world-app-0.2.0": "honeybadger",
 			},
 			retiredTeamsMapping: map[string]string{},
@@ -424,7 +424,7 @@ func Test_getTeamMappings(t *testing.T) {
 				),
 			},
 			expectedTeamMappings: map[string]string{
-				"customer-example-1.0.0":           "customer-team",
+				"customer-example-1.0.0":           "",
 				"giantswarm-hello-world-app-0.3.0": "honeybadger",
 			},
 			retiredTeamsMapping: map[string]string{
