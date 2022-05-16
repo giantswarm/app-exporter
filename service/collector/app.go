@@ -20,6 +20,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
+
+	expkey "github.com/giantswarm/app-exporter/internal/key"
 )
 
 var (
@@ -162,6 +164,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		// TODO once Flux supports more sophisticated regexes
 		// we can get rid of this trimming.
 		appSpecVersion := key.Version(app)
+		appStatusVersion := expkey.FormatVersion(app.Status.Version)
 
 		// clusterMissing is true if `giantswarm.io/cluster` label is missing
 		// on the org-namespaced app. Otherwise it's false.
@@ -185,7 +188,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			appVersion(app),
 			app.Spec.Catalog,
 			strconv.FormatBool(clusterMissing),
-			app.Status.Version,
+			appStatusVersion,
 			latestVersion,
 			app.Name,
 			app.Namespace,
@@ -194,7 +197,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			strconv.FormatBool(upgradeAvailable),
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			appSpecVersion,
-			strconv.FormatBool(appSpecVersion != app.Status.Version),
+			strconv.FormatBool(appSpecVersion != appStatusVersion),
 		)
 
 		if !key.IsAppCordoned(app) {
@@ -248,7 +251,7 @@ func (a *App) getLatestAppVersions(ctx context.Context) (map[string]string, erro
 		}
 
 		for _, ace := range aces.Items {
-			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = ace.Spec.Version
+			latestAppVersions[fmt.Sprintf("%s-%s", ace.Spec.Catalog.Name, ace.Spec.AppName)] = expkey.FormatVersion(ace.Spec.Version)
 		}
 	}
 
@@ -285,6 +288,13 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 		return team, nil
 	}
 
+	// Note, for custom catalogs carrying the `v`-prefixed app versions, constructing
+	// the name like this will give incorrect result without the prefix, resulting in
+	// `IsNotFound` error. On the `IsNotFound` error we could fall back to checking
+	// next name constructed with just the `app.Spec.Version` (without stripping), however
+	// it does not seem necessary at the moment as we do not control the `owners` nor `team`
+	// annotations on apps outside our catalogs, hence trying to get it here at all
+	// cost might be pointless after all.
 	appCatalogEntryName := key.AppCatalogEntryName(key.CatalogName(app), key.AppName(app), key.Version(app))
 
 	ace := &v1alpha1.AppCatalogEntry{}
@@ -368,8 +378,10 @@ func (a *App) getTeamMappings(ctx context.Context, apps []v1alpha1.App) (map[str
 // appVersion returns the AppVersion if it differs from the Version. This is so
 // we can show the upstream chart version packaged by the app.
 func appVersion(app v1alpha1.App) string {
-	if app.Status.AppVersion != app.Status.Version {
-		return app.Status.AppVersion
+	statusVersion := expkey.FormatVersion(app.Status.Version)
+	statusAppVersion := expkey.FormatVersion(app.Status.AppVersion)
+	if statusAppVersion != statusVersion {
+		return statusAppVersion
 	}
 
 	return ""
