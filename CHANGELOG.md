@@ -11,10 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Normalize all the versions the exporter works with.
 
-### Changed
-
-- Change how exporter fetches the ACE for a given App CR.
-
 ## [0.13.0] - 2022-01-28
 
 ### Added
