@@ -30,10 +30,17 @@ replace (
 	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.3
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
+	github.com/gin-gonic/gin v1.4.0 => github.com/gin-gonic/gin v1.8.1
 	// Use go-logr/logr v0.1.0 due to breaking changes in v0.2.0 that can't be applied.
 	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
+	github.com/labstack/echo/v4 v4.1.11 => github.com/labstack/echo/v4 v4.7.2
+	github.com/microcosm-cc/bluemonday v1.0.2 => github.com/microcosm-cc/bluemonday v1.0.18
+	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.2.0
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.8.4
 	github.com/opencontainers/runc v0.1.1 => github.com/opencontainers/runc v1.0.0-rc7
+	github.com/pkg/sftp v1.10.1 => github.com/pkg/sftp v1.13.5
+	github.com/valyala/fasthttp v1.6.0 => github.com/valyala/fasthttp v1.37.0
 	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
 	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.0.0
 )
