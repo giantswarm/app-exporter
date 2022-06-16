@@ -69,7 +69,8 @@ workflows:
 
       - architect/run-tests-with-ats:
           name: run-tests-with-ats
-          app-test-suite_container_tag: 0.2.3-65a7bcde99ecb826e2f68f5add648ca452eae1da
+          app-test-suite_version: 544c80904442665a0aa53ce4ef9affc8c4000a13
+          app-test-suite_container_tag: 0.2.3-ba623121363c178cb6c0aee655bb8500d618fa82
           requires:
             - push-app-exporter-to-control-plane-catalog
 
