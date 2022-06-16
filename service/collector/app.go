@@ -306,11 +306,10 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 			if apierrors.IsNotFound(err) {
 				// Check next namespace.
 				continue
-			} else if ace != nil {
-				// Use this CR.
-				break
 			} else if err != nil {
 				return "", microerror.Mask(err)
+			} else {
+				break
 			}
 		}
 	}
