@@ -9,6 +9,9 @@ metadata:
 spec:
   endpoints:
     - port: web
+      {{- if hasPrefix "cn-" .provider.region }}
+      scrapeTimeout: 30s
+      {{- end }}
   selector:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}
