@@ -9,7 +9,7 @@ metadata:
 spec:
   endpoints:
     - port: web
-      {{- if hasPrefix "cn-" .provider.region }}
+      {{- if hasPrefix "cn-" .Values.provider.region }}
       scrapeTimeout: 30s
       {{- end }}
   selector:
