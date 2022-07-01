@@ -15,6 +15,7 @@ registry:
 
 provider:
   kind: aws
+  region: ""
 
 pod:
   user:
