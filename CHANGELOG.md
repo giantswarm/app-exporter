@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Increase scrape timeout to 30s in China.
+
 ## [0.15.0] - 2022-06-17
 
 ### Added
