@@ -3,11 +3,11 @@ package collector
 import (
 	"context"
 	"fmt"
+	"github.com/giantswarm/micrologger/microloggertest"
 	"reflect"
 	"testing"
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
-	"github.com/giantswarm/micrologger/microloggertest"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
@@ -44,6 +44,48 @@ func Test_collectAppVersions(t *testing.T) {
 				},
 				"5.9.2": {
 					"xyz01": true,
+				},
+			},
+		},
+		{
+			name: fmt.Sprintf("case 2: Skip app with invalid %#q label", label.AppOperatorVersion),
+			apps: []*v1alpha1.App{
+				newTestApp("hello-world-1", "abc01", map[string]string{
+					label.AppOperatorVersion: "6.3.0",
+				}),
+				newTestApp("hello-world-2", "xyz01", map[string]string{
+					label.AppOperatorVersion: "this-is-not-a-valid-version",
+				}),
+				newTestApp("hello-world-3", "testing", map[string]string{
+					label.AppOperatorVersion: "6.4.0",
+				}),
+			},
+			expectedAppVersions: map[string]map[string]bool{
+				"6.3.0": {
+					"abc01": true,
+				},
+				"6.4.0": {
+					"testing": true,
+				},
+			},
+		},
+		{
+			name: fmt.Sprintf("case 3: Skip app with missing %#q label", label.AppOperatorVersion),
+			apps: []*v1alpha1.App{
+				newTestApp("hello-world-1", "abc01", map[string]string{
+					label.AppOperatorVersion: "6.3.0",
+				}),
+				newTestApp("hello-world-2", "org-example", map[string]string{}),
+				newTestApp("hello-world-3", "testing", map[string]string{
+					label.AppOperatorVersion: "6.4.0",
+				}),
+			},
+			expectedAppVersions: map[string]map[string]bool{
+				"6.3.0": {
+					"abc01": true,
+				},
+				"6.4.0": {
+					"testing": true,
 				},
 			},
 		},
