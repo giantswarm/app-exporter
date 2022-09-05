@@ -142,7 +142,6 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 			}
 		}
 
-		appNamespaces[app.Namespace] = true
 		appVersions[version] = appNamespaces
 	}
 
