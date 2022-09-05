@@ -3,15 +3,14 @@ package collector
 import (
 	"context"
 	"fmt"
-	"github.com/giantswarm/micrologger/microloggertest"
 	"reflect"
 	"testing"
 
-	"github.com/giantswarm/k8smetadata/pkg/label"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v6/pkg/k8sclienttest"
+	"github.com/giantswarm/k8smetadata/pkg/label"
+	"github.com/giantswarm/micrologger/microloggertest"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake"
