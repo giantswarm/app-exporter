@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixes
+
+- Fix skipping app namespaces if the app-operator version was already scraped
+
+### Changed
+
+- Skip collecting app versions for apps in the org-* namespaces as apps in these (typically CAPI cluster) namespaces the `app-operator.giantswarm.io/version` is not mandatory / makes sense
+
 ## [0.16.1] - 2022-07-01
 
 ### Fixes

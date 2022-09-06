@@ -6,6 +6,7 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	"github.com/giantswarm/app/v6/pkg/key"
 	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -128,6 +129,12 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 	}
 
 	for _, app := range apps.Items {
+		// Skip apps that are in `org-*` namespaces (CAPI, `app-operator.giantswarm.io/version` label is not mandatory there)
+		if key.IsInOrgNamespace(app) {
+			a.logger.Debugf(ctx, "Skipping collecting App versions in `org-*` namespaces for app %#q in %#q", app.Name, app.Namespace)
+			continue
+		}
+
 		version := app.Labels[label.AppOperatorVersion]
 		appNamespaces, ok := appVersions[version]
 		if !ok {
@@ -142,6 +149,7 @@ func (a *AppOperator) collectAppVersions(ctx context.Context) (map[string]map[st
 			}
 		}
 
+		appNamespaces[app.Namespace] = true
 		appVersions[version] = appNamespaces
 	}
 
