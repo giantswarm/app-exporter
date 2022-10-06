@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Reduce scrape timeout to 30s to prevent Prometheus from crashing.
+
 ## [0.17.0] - 2022-10-06
 
 ### Changed
