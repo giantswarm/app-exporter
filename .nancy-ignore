@@ -25,3 +25,6 @@ sonatype-2021-1485 until=2022-10-31
 
 # pkg:golang/github.com/nats-io/jwt@v1.2.2
 CVE-2021-3127 until=2022-10-31
+
+# pkg:golang/github.com/labstack/echo/v4@v4.7.2
+sonatype-2022-5436 until=2022-10-31
