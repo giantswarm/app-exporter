@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Make scrape timeout configurable and set the default to 45s.
+
+## [0.16.2] - 2022-09-06
+
+### Fixes
+
+- Fix skipping app namespaces if the app-operator version was already scraped
+
+### Changed
+
+- Skip collecting app versions for apps in the org-* namespaces as apps in these (typically CAPI cluster) namespaces the `app-operator.giantswarm.io/version` is not mandatory / makes sense
+
 ## [0.16.1] - 2022-07-01
 
 ### Fixes
@@ -167,7 +181,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.16.1...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.16.2...HEAD
+[0.16.2]: https://github.com/giantswarm/app-exporter/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/giantswarm/app-exporter/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/giantswarm/app-exporter/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/giantswarm/app-exporter/compare/v0.14.0...v0.15.0
