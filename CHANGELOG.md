@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2022-10-06
+
 ### Changed
 
 - Make scrape timeout configurable and set the default to 45s.
@@ -181,7 +183,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.16.2...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/giantswarm/app-exporter/compare/v0.16.2...v0.17.0
 [0.16.2]: https://github.com/giantswarm/app-exporter/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/giantswarm/app-exporter/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/giantswarm/app-exporter/compare/v0.15.0...v0.16.0
