@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Make scrape timeout configurable and set the default to 45s.
+
 ## [0.16.2] - 2022-09-06
 
 ### Fixes
