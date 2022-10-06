@@ -30,4 +30,4 @@ project:
 # Please note scrapeTimeout set here works only if the cluster app-exporter is
 # deployed to supports monitoring.coreos.com/v1 CRs. Otherwise it has no
 # influence over the Prometheus scraping timeout.
-scrapeTimeout: "45s"
+scrapeTimeout: "30s"
