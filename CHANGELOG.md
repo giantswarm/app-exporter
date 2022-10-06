@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.1] - 2022-10-06
+
 ### Changed
 
 - Reduce scrape timeout to 30s to prevent Prometheus from crashing.
@@ -187,7 +189,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.17.0...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.17.1...HEAD
+[0.17.1]: https://github.com/giantswarm/app-exporter/compare/v0.17.0...v0.17.1
 [0.17.0]: https://github.com/giantswarm/app-exporter/compare/v0.16.2...v0.17.0
 [0.16.2]: https://github.com/giantswarm/app-exporter/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/giantswarm/app-exporter/compare/v0.16.0...v0.16.1
