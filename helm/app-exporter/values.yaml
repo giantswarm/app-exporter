@@ -32,4 +32,5 @@ project:
 # influence over the default Prometheus configuration.
 scrape:
   timeout: "45s"
+  # make sure the interval is greater than the timeout
   interval: "60s"
