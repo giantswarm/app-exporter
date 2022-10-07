@@ -9,7 +9,8 @@ metadata:
 spec:
   endpoints:
     - port: web
-      scrapeTimeout: {{ .Values.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.scrape.timeout }}
+      interval: {{ .Values.scrape.interval }}
   selector:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}
