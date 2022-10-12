@@ -138,7 +138,7 @@ func TestMetrics(t *testing.T) {
 			appVersion = expkey.FormatVersion(app.Status.AppVersion)
 		}
 
-		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"honeybadger\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
+		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			app.Spec.Name,
 			appVersion,
 			app.Spec.Catalog,
