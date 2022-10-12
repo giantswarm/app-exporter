@@ -18,10 +18,10 @@ data:
         apps:
           # appTeamMappings can be used when the team annotation is missing in Chart.yaml.
           # Make sure you also add the missing annotation.
-          appTeamMappings: {{ .Values.config.appTeamMappings }}
-          defaultTeam: {{ .Values.config.alertDefaultTeam }}
+          appTeamMappings: "{{ .Values.config.appTeamMappings }}"
+          defaultTeam: "{{ .Values.config.alertDefaultTeam }}"
           # TODO Remove once old releases are archived https://github.com/giantswarm/giantswarm/issues/20027
-          retiredTeams: {{ .Values.config.retiredTeamsMapping }}
+          retiredTeams: "{{ .Values.config.retiredTeamsMapping }}"
         provider:
           kind: '{{ .Values.provider.kind }}'
       kubernetes:
