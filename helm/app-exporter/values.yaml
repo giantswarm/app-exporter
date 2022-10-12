@@ -26,3 +26,13 @@ pod:
 project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"
+
+config:
+  debug: true
+  listenPort: 8000
+  # a team name to use in 'team:' label if we fail to detect the value automatically
+  alertDefaultTeam: noteam
+  # string of format '| efk-stack-app: "atlas"'
+  appTeamMappings: ""
+    # string of format '| batman: "honeybadger"'
+  retiredTeamsMapping: ""
