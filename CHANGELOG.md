@@ -17,6 +17,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     appTeamMappings: ""
     retiredTeamsMapping: ""
 
+## [0.17.2] - 2022-10-11
+
+### Changed
+
+- Increase scrape timeout to 45s and add interval greater than the scrape timeout.
+
+## [0.17.1] - 2022-10-06
+
+### Changed
+
+- Reduce scrape timeout to 30s to prevent Prometheus from crashing.
+
+## [0.17.0] - 2022-10-06
+
+### Changed
+
+- Make scrape timeout configurable and set the default to 45s.
 
 ## [0.16.2] - 2022-09-06
 
@@ -188,7 +205,10 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.16.2...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.17.2...HEAD
+[0.17.2]: https://github.com/giantswarm/app-exporter/compare/v0.17.1...v0.17.2
+[0.17.1]: https://github.com/giantswarm/app-exporter/compare/v0.17.0...v0.17.1
+[0.17.0]: https://github.com/giantswarm/app-exporter/compare/v0.16.2...v0.17.0
 [0.16.2]: https://github.com/giantswarm/app-exporter/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/giantswarm/app-exporter/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/giantswarm/app-exporter/compare/v0.15.0...v0.16.0
