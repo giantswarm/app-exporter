@@ -27,6 +27,15 @@ project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"
 
+config:
+  debug: true
+  listenPort: 8000
+  # a team name to use in 'team:' label if we fail to detect the value automatically
+  alertDefaultTeam: noteam
+  # string of format '| efk-stack-app: "atlas"'
+  appTeamMappings: ""
+    # string of format '| batman: "honeybadger"'
+  retiredTeamsMapping: ""
 # Please note scrape section works only if the cluster app-exporter is
 # deployed to supports monitoring.coreos.com/v1 CRs. Otherwise it has no
 # influence over the default Prometheus configuration.

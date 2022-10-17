@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- ability to configure the following parts of the app:
+  - config:
+    debug: true
+    listenPort: 8000
+    alertDefaultTeam: noteam
+    appTeamMappings: ""
+    retiredTeamsMapping: ""
+
 ## [0.17.2] - 2022-10-11
 
 ### Changed

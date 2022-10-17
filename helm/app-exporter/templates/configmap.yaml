@@ -10,25 +10,18 @@ data:
     server:
       enable:
         debug:
-          server: true
+          server: {{ .Values.config.debug }}
       listen:
-        address: 'http://0.0.0.0:8000'
+        address: http://0.0.0.0:{{ .Values.config.listenPort }}
     service:
       collector:
         apps:
           # appTeamMappings can be used when the team annotation is missing in Chart.yaml.
           # Make sure you also add the missing annotation.
-          appTeamMappings: |
-            efk-stack-app: "atlas"
-          defaultTeam: "honeybadger"
+          appTeamMappings: | {{ nindent 12 .Values.config.appTeamMappings }}
+          defaultTeam: "{{ .Values.config.alertDefaultTeam }}"
           # TODO Remove once old releases are archived https://github.com/giantswarm/giantswarm/issues/20027
-          retiredTeams: |
-            batman: "honeybadger"
-            biscuit: "honeybadger"
-            celestial: "phoenix"
-            firecracker: "phoenix"
-            halo: "cabbage"
-            ludacris: "honeybadger"
+          retiredTeams: | {{ nindent 12 .Values.config.retiredTeamsMapping }}
         provider:
           kind: '{{ .Values.provider.kind }}'
       kubernetes:
