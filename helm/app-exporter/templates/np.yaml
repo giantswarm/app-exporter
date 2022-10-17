@@ -10,7 +10,7 @@ spec:
   - {}
   ingress:
   - ports:
-    - port: 8000
+    - port: {{ .Values.config.listenPort }}
       protocol: TCP
   podSelector:
     matchLabels:
