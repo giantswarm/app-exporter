@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
 {{- if not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") }}
+    giantswarm.io/monitoring: "false"
 {{- end }}
 spec:
   ports:
