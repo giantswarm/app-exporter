@@ -5,15 +5,6 @@ metadata:
   namespace: {{ include "resource.default.namespace"  . }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
-{{- if not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") }}
-    giantswarm.io/monitoring: "true"
-  annotations:
-    prometheus.io/scrape: "true"
-{{- else }}
-    giantswarm.io/monitoring: "false"
-  annotations:
-    prometheus.io/scrape: "false"
-{{- end }}
 spec:
   ports:
   - name: web
