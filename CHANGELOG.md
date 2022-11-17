@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fix
 
-- Drop second target for Prometheus and hence leave only the one configured via the `ServiceMonitor`.
+- Configure `ServiceMonitor` to honor labels and drop Prometheus label.
 
 ## [0.17.3] - 2022-10-17
 
