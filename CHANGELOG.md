@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.4] - 2022-11-18
+
 ### Fix
 
 - Configure `ServiceMonitor` to honor labels and drop Prometheus label.
@@ -211,7 +213,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.17.3...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.17.4...HEAD
+[0.17.4]: https://github.com/giantswarm/app-exporter/compare/v0.17.3...v0.17.4
 [0.17.3]: https://github.com/giantswarm/app-exporter/compare/v0.17.2...v0.17.3
 [0.17.2]: https://github.com/giantswarm/app-exporter/compare/v0.17.1...v0.17.2
 [0.17.1]: https://github.com/giantswarm/app-exporter/compare/v0.17.0...v0.17.1
