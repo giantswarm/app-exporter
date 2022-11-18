@@ -11,6 +11,7 @@ spec:
     - port: web
       scrapeTimeout: {{ .Values.scrape.timeout }}
       interval: {{ .Values.scrape.interval }}
+      honorLabels: true
   selector:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}

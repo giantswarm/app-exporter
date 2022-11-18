@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fix
+
+- Configure `ServiceMonitor` to honor labels and drop Prometheus label.
+
 ## [0.17.3] - 2022-10-17
 
 ### Added
