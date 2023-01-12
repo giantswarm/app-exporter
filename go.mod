@@ -38,11 +38,11 @@ replace (
 	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.10.0
 	github.com/microcosm-cc/bluemonday => github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/nats-io/jwt => github.com/nats-io/jwt v1.2.2
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.10
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.11
 	github.com/opencontainers/runc v0.1.1 => github.com/opencontainers/runc v1.0.0-rc7
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.5
 	github.com/urfave/negroni => github.com/urfave/negroni v1.0.0
-	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.43.0
+	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.44.0
 	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
 	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.0.0
 )
