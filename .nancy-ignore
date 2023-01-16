@@ -1,7 +1,6 @@
 # pkg:golang/github.com/hashicorp/consul/api@v1.15.3
 # imported from: github.com/spf13/viper@v1.11.0 (current latest)
 CVE-2022-29153 until=2023-06-30
-CVE-2022-24687 until=2023-06-30
 
 # pkg:golang/github.com/hashicorp/consul/sdk@v0.11.0
 # imported from:
@@ -17,7 +16,7 @@ CVE-2021-41803 until=2023-06-30
 CVE-2021-23772 until=2023-06-30
 
 # pkg:golang/k8s.io/apiserver@v0.21.4
-sonatype-2022-6522 until=2023-02-01
+sonatype-2022-6522 until=2023-06-30
 
 # pkg:golang/github.com/urfave/negroni@v1.0.0
 # imported from: github.com/giantswarm/operatorkit/v7@v7.0.1
