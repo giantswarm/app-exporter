@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add runtime default seccomp profile to app-exporter.
+
 ## [0.17.4] - 2022-11-18
 
 ### Fix
