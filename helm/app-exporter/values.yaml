@@ -43,7 +43,7 @@ scrape:
   timeout: "45s"
   # make sure the interval is greater than the timeout
   interval: "60s"
-  
+
 # Add seccomp profile to pod security context
 podSecurityContext:
   seccompProfile:
@@ -52,4 +52,4 @@ podSecurityContext:
 # Add seccomp profile to container security context
 securityContext:
   seccompProfile:
-    type: RuntimeDefault  
+    type: RuntimeDefault
