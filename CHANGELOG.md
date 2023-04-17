@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
 - Add runtime default seccomp profile to app-exporter.
+
+### Removed
+
+- Remove push to `shared-app-collection` as it is deprecated.
 
 ## [0.17.4] - 2022-11-18
 
