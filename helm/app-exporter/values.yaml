@@ -36,13 +36,16 @@ config:
   appTeamMappings: ""
     # string of format '| batman: "honeybadger"'
   retiredTeamsMapping: ""
+
 # Please note scrape section works only if the cluster app-exporter is
 # deployed to supports monitoring.coreos.com/v1 CRs. Otherwise it has no
 # influence over the default Prometheus configuration.
-scrape:
-  timeout: "45s"
-  # make sure the interval is greater than the timeout
+serviceMonitor:
+  enabled: true
+  # -- (duration) Prometheus scrape interval.
   interval: "60s"
+  # -- (duration) Prometheus scrape timeout.
+  scrapeTimeout: "45s"
 
 # Add seccomp profile to pod security context
 podSecurityContext:
