@@ -1,4 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
+{{- if .Values.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -9,8 +9,8 @@ metadata:
 spec:
   endpoints:
     - port: web
-      scrapeTimeout: {{ .Values.scrape.timeout }}
-      interval: {{ .Values.scrape.interval }}
+      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+      interval: {{ .Values.serviceMonitor.interval }}
       honorLabels: true
   selector:
     matchLabels:
