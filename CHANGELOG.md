@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Stop pushing to `openstack-app-collection`.
 
+### Changed
+
+- Updated default `securityContext` values to comply with PSS policies.
+
 ## [0.17.5] - 2023-04-25
 
 ### Added
