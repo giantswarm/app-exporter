@@ -43,6 +43,8 @@ replace (
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.5
 	github.com/urfave/negroni/v3 => github.com/urfave/negroni/v3 v3.0.0
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.43.0
+	// CVE-2023-3978
+	golang.org/x/net => golang.org/x/net v0.13.0
 	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
 	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.0.0
 )
