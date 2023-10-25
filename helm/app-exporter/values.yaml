@@ -61,3 +61,6 @@ securityContext:
   runAsNonRoot: true
   seccompProfile:
     type: RuntimeDefault
+
+podSecurityStandards:
+  enforced: false
