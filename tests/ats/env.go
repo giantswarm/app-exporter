@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	EnvVarKubeConfigPath = "ATS_KUBE_CONFIG_PATH"
+	EnvVarKubeConfigPath = "KUBECONFIG"
 )
 
 var (
