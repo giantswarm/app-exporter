@@ -30,7 +30,7 @@ replace (
 	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.5
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
-	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.2
+	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 	// Use go-logr/logr v0.1.0 due to breaking changes in v0.2.0 that can't be applied.
 	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
