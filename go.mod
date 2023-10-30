@@ -3,7 +3,7 @@ module github.com/giantswarm/app-exporter
 go 1.16
 
 require (
-	github.com/Masterminds/semver/v3 v3.2.0
+	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/giantswarm/apiextensions-application v0.3.0
 	github.com/giantswarm/app/v6 v6.6.1
 	github.com/giantswarm/backoff v1.0.0
