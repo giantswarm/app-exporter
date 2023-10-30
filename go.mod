@@ -35,7 +35,7 @@ replace (
 	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/kataras/iris/v12 => github.com/kataras/iris/v12 v12.1.8
-	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.10.0
+	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.11.2
 	github.com/microcosm-cc/bluemonday => github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.3.0
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.10
