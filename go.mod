@@ -110,6 +110,7 @@ replace (
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.6
 	github.com/urfave/negroni/v3 => github.com/urfave/negroni/v3 v3.0.0
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.50.0
+	google.golang.org/grpc => google.golang.org/grpc v1.59.0
 	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
 	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.110.1
 )
