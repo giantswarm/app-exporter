@@ -1,6 +1,8 @@
-# pkg:golang/golang.org/x/net@v0.4.0
-CVE-2023-39325
-CVE-2023-3978
+# pkg:golang/github.com/nats-io/nkeys@v0.4.5
+CVE-2023-46129
+
+# pkg:golang/github.com/hashicorp/consul/sdk@v0.8.0
+CVE-2022-24687
 
 # pkg:golang/github.com/gin-gonic/gin@v1.8.2
 CVE-2023-26125
