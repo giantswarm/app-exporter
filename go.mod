@@ -40,7 +40,7 @@ replace (
 	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.2
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.4
 	github.com/opencontainers/runc v0.1.1 => github.com/opencontainers/runc v1.0.0-rc7
-	github.com/pkg/sftp => github.com/pkg/sftp v1.13.5
+	github.com/pkg/sftp => github.com/pkg/sftp v1.13.6
 	github.com/urfave/negroni/v3 => github.com/urfave/negroni/v3 v3.0.0
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.50.0
 	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
