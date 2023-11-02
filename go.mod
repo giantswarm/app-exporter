@@ -104,7 +104,7 @@ replace (
 	github.com/kataras/iris/v12 => github.com/kataras/iris/v12 v12.2.7
 	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.11.2
 	github.com/microcosm-cc/bluemonday => github.com/microcosm-cc/bluemonday v1.0.21
-	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.2
+	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.3
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.4
 	github.com/opencontainers/runc v0.1.1 => github.com/opencontainers/runc v1.0.0-rc7
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.6
