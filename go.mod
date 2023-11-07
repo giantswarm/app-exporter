@@ -101,7 +101,7 @@ replace (
 	// Use go-logr/logr v0.1.0 due to breaking changes in v0.2.0 that can't be applied.
 	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
-	github.com/kataras/iris/v12 => github.com/kataras/iris/v12 v12.2.7
+	github.com/kataras/iris/v12 => github.com/kataras/iris/v12 v12.2.8
 	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.11.2
 	github.com/microcosm-cc/bluemonday => github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.3
