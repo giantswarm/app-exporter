@@ -1,6 +1,5 @@
-# pkg:golang/github.com/hashicorp/consul/api@v1.15.3
-# imported from: github.com/spf13/viper@v1.11.0 (current latest)
-CVE-2022-29153 until=2023-06-30
+# pkg:golang/github.com/nats-io/nkeys@v0.4.5
+CVE-2023-46129
 
 # pkg:golang/github.com/hashicorp/consul/sdk@v0.11.0
 # imported from:
@@ -38,13 +37,13 @@ CVE-2022-42709 until=2023-06-30
 CVE-2020-26892 until=2023-06-30
 CVE-2021-3127 until=2023-06-30
 
+
+# pkg:golang/github.com/hashicorp/consul/sdk@v0.8.0
+CVE-2022-24687
+
 # pkg:golang/github.com/gin-gonic/gin@v1.8.2
 CVE-2023-26125
 CVE-2023-29401
-
-
-# pkg:golang/google.golang.org/grpc@v1.50.1
-CVE-2023-32731
 
 CVE-2022-29153
 CVE-2021-41803
