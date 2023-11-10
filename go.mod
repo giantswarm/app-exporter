@@ -93,24 +93,11 @@ require (
 )
 
 replace (
-	github.com/Microsoft/hcsshim v0.8.7 => github.com/Microsoft/hcsshim v0.8.10
 	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.5
-	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
-	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 	// Use go-logr/logr v0.1.0 due to breaking changes in v0.2.0 that can't be applied.
 	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
-	github.com/kataras/iris/v12 => github.com/kataras/iris/v12 v12.2.8
-	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.11.3
-	github.com/microcosm-cc/bluemonday => github.com/microcosm-cc/bluemonday v1.0.21
-	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.3
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.5
-	github.com/opencontainers/runc v0.1.1 => github.com/opencontainers/runc v1.0.0-rc7
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.6
-	github.com/urfave/negroni/v3 => github.com/urfave/negroni/v3 v3.0.0
-	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.50.0
 	google.golang.org/grpc => google.golang.org/grpc v1.59.0
-	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
-	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.110.1
 )
