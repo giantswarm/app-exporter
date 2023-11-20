@@ -141,6 +141,19 @@ workflows:
 
       - architect/push-to-app-collection:
           context: architect
+          name: push-to-capz-app-collection
+          app_name: "app-exporter"
+          app_collection_repo: "capz-app-collection"
+          requires:
+            - push-app-exporter-to-control-plane-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
           name: push-to-gcp-app-collection
           app_name: "app-exporter"
           app_collection_repo: "gcp-app-collection"
