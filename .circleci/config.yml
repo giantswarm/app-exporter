@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@4.34.1
+  architect: giantswarm/architect@4.35.1
 
 workflows:
   build:
@@ -13,38 +13,10 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/push-to-docker:
-          context: "architect"
-          name: push-app-exporter-to-docker
-          image: "docker.io/giantswarm/app-exporter"
-          username_envar: "DOCKER_USERNAME"
-          password_envar: "DOCKER_PASSWORD"
-          requires:
-            - go-build
-          # Needed to trigger job also on git tag.
-          filters:
-            tags:
-              only: /^v.*/
-
-      - architect/push-to-docker:
-          context: "architect"
-          name: push-app-exporter-to-quay
-          image: "quay.io/giantswarm/app-exporter"
-          username_envar: "QUAY_USERNAME"
-          password_envar: "QUAY_PASSWORD"
-          requires:
-            - go-build
-          # Needed to trigger job also on git tag.
-          filters:
-            tags:
-              only: /^v.*/
-
-      - architect/push-to-docker:
-          context: "architect"
-          name: push-app-exporter-to-aliyun
-          image: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/app-exporter"
-          username_envar: "ALIYUN_USERNAME"
-          password_envar: "ALIYUN_PASSWORD"
+      - architect/push-to-registries:
+          context: architect
+          name: push-to-registries
+          image: giantswarm/app-exporter
           requires:
             - go-build
           # Needed to trigger job also on git tag.
@@ -53,15 +25,14 @@ workflows:
               only: /^v.*/
 
       - architect/push-to-app-catalog:
-          context: "architect"
-          name: push-app-exporter-to-control-plane-catalog
+          context: architect
+          name: push-to-control-plane-catalog
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
           chart: "app-exporter"
           persist_chart_archive: true
           requires:
-            - push-app-exporter-to-docker
-            - push-app-exporter-to-quay
+            - push-to-registries
           # Needed to trigger job also on git tag.
           filters:
             tags:
@@ -70,16 +41,16 @@ workflows:
       - architect/run-tests-with-ats:
           name: run-tests-with-ats
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-control-plane-catalog
 
       - architect/push-to-app-collection:
           context: architect
-          name: push-app-exporter-to-aws-app-collection
+          name: push-to-aws-app-collection
           app_name: "app-exporter"
           app_collection_repo: "aws-app-collection"
           requires:
-            - push-app-exporter-to-aliyun
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-registries
+            - push-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -88,11 +59,11 @@ workflows:
 
       - architect/push-to-app-collection:
           context: architect
-          name: push-app-exporter-to-azure-app-collection
+          name: push-to-azure-app-collection
           app_name: "app-exporter"
           app_collection_repo: "azure-app-collection"
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -101,11 +72,11 @@ workflows:
 
       - architect/push-to-app-collection:
           context: architect
-          name: push-app-exporter-to-vsphere-app-collection
+          name: push-to-vsphere-app-collection
           app_name: "app-exporter"
           app_collection_repo: "vsphere-app-collection"
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -119,7 +90,7 @@ workflows:
           app_name: "app-exporter"
           app_collection_repo: "cloud-director-app-collection"
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -132,7 +103,7 @@ workflows:
           app_name: "app-exporter"
           app_collection_repo: "capa-app-collection"
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -145,7 +116,7 @@ workflows:
           app_name: "app-exporter"
           app_collection_repo: "capz-app-collection"
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
@@ -158,7 +129,7 @@ workflows:
           app_name: "app-exporter"
           app_collection_repo: "gcp-app-collection"
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-to-control-plane-catalog
           filters:
             branches:
               ignore: /.*/
