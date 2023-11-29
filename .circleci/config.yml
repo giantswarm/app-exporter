@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@4.35.1
+  architect: giantswarm/architect@4.35.5
 
 workflows:
   build:
@@ -13,41 +13,11 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/push-to-docker:
-          context: "architect"
-          name: push-app-exporter-to-docker
-          image: "docker.io/giantswarm/app-exporter"
-          username_envar: "DOCKER_USERNAME"
-          password_envar: "DOCKER_PASSWORD"
+      - architect/push-to-registries:
+          context: architect
+          name: push-to-registries
           requires:
             - go-build
-          # Needed to trigger job also on git tag.
-          filters:
-            tags:
-              only: /^v.*/
-
-      - architect/push-to-docker:
-          context: "architect"
-          name: push-app-exporter-to-quay
-          image: "quay.io/giantswarm/app-exporter"
-          username_envar: "QUAY_USERNAME"
-          password_envar: "QUAY_PASSWORD"
-          requires:
-            - go-build
-          # Needed to trigger job also on git tag.
-          filters:
-            tags:
-              only: /^v.*/
-
-      - architect/push-to-docker:
-          context: "architect"
-          name: push-app-exporter-to-aliyun
-          image: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/app-exporter"
-          username_envar: "ALIYUN_USERNAME"
-          password_envar: "ALIYUN_PASSWORD"
-          requires:
-            - go-build
-          # Needed to trigger job also on git tag.
           filters:
             tags:
               only: /^v.*/
@@ -60,9 +30,7 @@ workflows:
           chart: "app-exporter"
           persist_chart_archive: true
           requires:
-            - push-app-exporter-to-docker
-            - push-app-exporter-to-quay
-          # Needed to trigger job also on git tag.
+            - push-to-registries
           filters:
             tags:
               only: /^v.*/
@@ -78,8 +46,8 @@ workflows:
           app_name: "app-exporter"
           app_collection_repo: "aws-app-collection"
           requires:
-            - push-app-exporter-to-aliyun
             - push-app-exporter-to-control-plane-catalog
+            - push-to-registries
           filters:
             branches:
               ignore: /.*/
