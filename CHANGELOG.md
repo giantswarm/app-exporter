@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.1] - 2023-12-05
+
 ### Changed
 
 - Configure gsoci.azurecr.io as the registry to use by default
@@ -250,7 +252,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.19.0...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v0.19.1...HEAD
+[0.19.1]: https://github.com/giantswarm/app-exporter/compare/v0.19.0...v0.19.1
 [0.19.0]: https://github.com/giantswarm/app-exporter/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/giantswarm/app-exporter/compare/v0.17.6...v0.18.0
 [0.17.6]: https://github.com/giantswarm/app-exporter/compare/v0.17.5...v0.17.6
