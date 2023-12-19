@@ -99,5 +99,5 @@ replace (
 	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.6
-	google.golang.org/grpc => google.golang.org/grpc v1.60.0
+	google.golang.org/grpc => google.golang.org/grpc v1.60.1
 )
