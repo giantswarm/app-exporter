@@ -62,5 +62,6 @@ securityContext:
   seccompProfile:
     type: RuntimeDefault
 
-podSecurityStandards:
-  enforced: false
+global:
+  podSecurityStandards:
+    enforced: false
