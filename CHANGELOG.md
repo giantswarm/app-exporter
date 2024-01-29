@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Move pss values under the global property
+- Move PSS values under the global property
 
 ## [0.19.1] - 2023-12-05
 
