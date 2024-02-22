@@ -95,7 +95,7 @@ require (
 replace (
 	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.5
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
-	github.com/go-logr/logr => github.com/go-logr/logr v0.4.0 // Pinned due to incompatiobility
+	github.com/go-logr/logr => github.com/go-logr/logr v1.4.1 // Pinned due to incompatiobility
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.6
 	google.golang.org/grpc => google.golang.org/grpc v1.62.0
