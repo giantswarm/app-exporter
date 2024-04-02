@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove legacy monitoring label.
+
 ## [0.19.2] - 2024-01-29
 
 ### Fixed
