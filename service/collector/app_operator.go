@@ -3,6 +3,7 @@ package collector
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
@@ -173,6 +174,9 @@ func (a *AppOperator) collectOperatorVersions(ctx context.Context) (map[string]m
 		namespace := deploy.Namespace
 		replicas := deploy.Status.ReadyReplicas
 		version := deploy.Labels[label.AppKubernetesVersion]
+
+		// Strip any -patch suffix from the version
+		version = strings.Split(version, "-")[0]
 
 		instances, ok := operatorVersions[version]
 		if !ok {
