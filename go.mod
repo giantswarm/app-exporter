@@ -9,7 +9,7 @@ require (
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/exporterkit v1.0.0
 	github.com/giantswarm/k8sclient/v6 v6.1.0
-	github.com/giantswarm/k8smetadata v0.13.0
+	github.com/giantswarm/k8smetadata v0.24.0
 	github.com/giantswarm/k8sportforward/v2 v2.0.0
 	github.com/giantswarm/microendpoint v1.0.0
 	github.com/giantswarm/microerror v0.4.1
