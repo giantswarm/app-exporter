@@ -4,12 +4,12 @@ go 1.19
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.1
-	github.com/giantswarm/apiextensions-application v0.3.0
-	github.com/giantswarm/app/v6 v6.6.1
+	github.com/giantswarm/apiextensions-application v0.6.0
+	github.com/giantswarm/app/v6 v6.15.6
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/exporterkit v1.0.0
 	github.com/giantswarm/k8sclient/v6 v6.1.0
-	github.com/giantswarm/k8smetadata v0.9.2
+	github.com/giantswarm/k8smetadata v0.13.0
 	github.com/giantswarm/k8sportforward/v2 v2.0.0
 	github.com/giantswarm/microendpoint v1.0.0
 	github.com/giantswarm/microerror v0.4.1
@@ -45,7 +45,7 @@ require (
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/imdario/mergo v0.3.12 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
@@ -86,7 +86,7 @@ require (
 	k8s.io/api v0.21.4 // indirect
 	k8s.io/apiextensions-apiserver v0.21.4 // indirect
 	k8s.io/klog/v2 v2.9.0 // indirect
-	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e // indirect
+	k8s.io/kube-openapi v0.0.0-20211110013926-83f114cd0513 // indirect
 	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 )
