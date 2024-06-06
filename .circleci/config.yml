@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@dev:6bc423710948b6238dfd58c1bc3b20d60ee0dcd4 # TODO: revert to release
+  architect: giantswarm/architect@5.2.1
 
 workflows:
   build:
