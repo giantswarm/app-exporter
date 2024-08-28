@@ -5,7 +5,7 @@ go 1.22.0
 toolchain go1.23.0
 
 require (
-	github.com/Masterminds/semver/v3 v3.2.1
+	github.com/Masterminds/semver/v3 v3.3.0
 	github.com/giantswarm/apiextensions-application v0.6.2
 	github.com/giantswarm/app/v7 v7.0.2
 	github.com/giantswarm/backoff v1.0.1
