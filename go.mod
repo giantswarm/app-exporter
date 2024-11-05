@@ -111,6 +111,6 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf => github.com/golang/protobuf v1.5.4 // CVE-2024-24786
-	github.com/pkg/sftp => github.com/pkg/sftp v1.13.6
+	github.com/pkg/sftp => github.com/pkg/sftp v1.13.7
 	google.golang.org/grpc => google.golang.org/grpc v1.67.1
 )
