@@ -10,7 +10,7 @@ require (
 	github.com/giantswarm/app/v7 v7.0.2
 	github.com/giantswarm/backoff v1.0.1
 	github.com/giantswarm/exporterkit v1.2.0
-	github.com/giantswarm/k8sclient/v7 v7.2.0
+	github.com/giantswarm/k8sclient/v8 v8.0.0
 	github.com/giantswarm/k8smetadata v0.25.0
 	github.com/giantswarm/k8sportforward/v2 v2.0.0
 	github.com/giantswarm/microendpoint v1.1.0
@@ -25,6 +25,8 @@ require (
 	sigs.k8s.io/controller-runtime v0.19.1
 	sigs.k8s.io/yaml v1.4.0
 )
+
+require github.com/giantswarm/k8sclient/v7 v7.2.0
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -98,7 +100,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.31.2 // indirect
-	k8s.io/apiextensions-apiserver v0.31.0 // indirect
+	k8s.io/apiextensions-apiserver v0.31.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240228011516-70dd3763d340 // indirect
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 // indirect
