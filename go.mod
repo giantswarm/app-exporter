@@ -22,7 +22,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	k8s.io/apimachinery v0.31.3
 	k8s.io/client-go v0.31.3
-	sigs.k8s.io/controller-runtime v0.19.1
+	sigs.k8s.io/controller-runtime v0.19.2
 	sigs.k8s.io/yaml v1.4.0
 )
 
