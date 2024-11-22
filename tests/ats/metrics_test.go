@@ -137,6 +137,7 @@ func TestMetrics(t *testing.T) {
 				Labels: map[string]string{
 					label.AppOperatorVersion: "0.0.0",
 					label.AppKubernetesName:  "test-app",
+					label.App:                "test-app",
 					label.Cluster:            "kind",
 					"foo":                    "bar",
 				},
@@ -164,7 +165,7 @@ func TestMetrics(t *testing.T) {
 
 	t.Logf("Waiting for test-app to come up...")
 
-	_, err = waitForPod(ctx, k8sClients, "test-app")
+	_, err = waitForPod(ctx, k8sClients, "test-app", "test-app")
 	if err != nil {
 		t.Fatalf("could not get test-app pod %#v", err)
 	}
@@ -185,7 +186,7 @@ func TestMetrics(t *testing.T) {
 	{
 		t.Logf("waiting for %#q pod", project.Name())
 
-		podName, err = waitForPod(ctx, k8sClients, namespace)
+		podName, err = waitForPod(ctx, k8sClients, namespace, project.Name())
 		if err != nil {
 			t.Fatalf("could not get %#q pod %#v", project.Name(), err)
 		}
@@ -277,14 +278,14 @@ func TestMetrics(t *testing.T) {
 	}
 }
 
-func waitForPod(ctx context.Context, k8sClients *k8sclient.Clients, namespace string) (string, error) {
+func waitForPod(ctx context.Context, k8sClients *k8sclient.Clients, namespace string, appLabelValue string) (string, error) {
 	var err error
 	var podName string
 
 	o := func() error {
 		lo := metav1.ListOptions{
 			FieldSelector: "status.phase=Running",
-			LabelSelector: fmt.Sprintf("app=%s", project.Name()),
+			LabelSelector: fmt.Sprintf("app=%s", appLabelValue),
 		}
 		pods, err := k8sClients.K8sClient().CoreV1().Pods(namespace).List(ctx, lo)
 		if err != nil {
