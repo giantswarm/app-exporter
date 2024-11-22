@@ -95,43 +95,53 @@ func Test_collectAppStatus(t *testing.T) {
 		{
 			name: "flawless",
 			apps: []*v1alpha1.App{
-				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", ""),
-				newApp("example", "customer", "default", "1.0.0", "", ""),
+				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", map[string]string{}),
+				newApp("example", "customer", "default", "1.0.0", "", "", map[string]string{}),
+				newApp("test-app", "default", "test-app", "1.0.0", "", "", map[string]string{
+					label.Cluster: "foo",
+				}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
 				newCatalog("customer", "default"),
+				newCatalog("default", "giantswarm"),
 			},
 			catalogsEntries: []*v1alpha1.AppCatalogEntry{
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("example", "customer", "default", "1.0.0", "", "", true),
+				newACE("test-app", "default", "giantswarm", "1.0.0", "", "", true),
 			},
 			expectedMetrics:      "testdata/expected.1",
-			expectedMetricsCount: 2,
+			expectedMetricsCount: 3,
 		},
 		{
 			name: "flawless with v* versions",
 			apps: []*v1alpha1.App{
-				newApp("hello-world-app", "giantswarm", "hello-world", "v0.3.0", "", ""),
-				newApp("example", "customer", "default", "v1.0.0", "", ""),
+				newApp("hello-world-app", "giantswarm", "hello-world", "v0.3.0", "", "", map[string]string{}),
+				newApp("example", "customer", "default", "v1.0.0", "", "", map[string]string{}),
+				newApp("test-app", "default", "test-app", "v1.0.0", "", "", map[string]string{
+					label.Cluster: "foo",
+				}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
 				newCatalog("customer", "default"),
+				newCatalog("default", "giantswarm"),
 			},
 			catalogsEntries: []*v1alpha1.AppCatalogEntry{
 				newACE("hello-world-app", "giantswarm", "default", "v0.3.0", "", "", true),
 				newACE("example", "customer", "default", "v1.0.0", "", "", true),
+				newACE("test-app", "default", "giantswarm", "1.0.0", "", "", true),
 			},
 			expectedMetrics:      "testdata/expected.1",
-			expectedMetricsCount: 2,
+			expectedMetricsCount: 3,
 		},
 		// It is RECOMMENDED to use mixed versions in the next tests
 		{
 			name: "app pending update",
 			apps: []*v1alpha1.App{
-				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", ""),
-				newApp("example", "customer", "default", "v1.0.0", "v0.9.0", ""),
+				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", map[string]string{}),
+				newApp("example", "customer", "default", "v1.0.0", "v0.9.0", "", map[string]string{}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -338,8 +348,8 @@ func Test_getTeamMappings(t *testing.T) {
 		{
 			name: "flawless",
 			apps: []v1alpha1.App{
-				*newApp("hello-world-app", "giantswarm", "hello-world", "0.2.0", "", ""),
-				*newApp("example", "customer", "default", "1.0.0", "", ""),
+				*newApp("hello-world-app", "giantswarm", "hello-world", "0.2.0", "", "", map[string]string{}),
+				*newApp("example", "customer", "default", "1.0.0", "", "", map[string]string{}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -367,8 +377,8 @@ func Test_getTeamMappings(t *testing.T) {
 		{
 			name: "flawless with v* versions",
 			apps: []v1alpha1.App{
-				*newApp("hello-world-app", "giantswarm", "hello-world", "0.2.0", "", ""),
-				*newApp("example", "customer", "default", "v1.0.0", "", ""),
+				*newApp("hello-world-app", "giantswarm", "hello-world", "0.2.0", "", "", map[string]string{}),
+				*newApp("example", "customer", "default", "v1.0.0", "", "", map[string]string{}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -396,8 +406,8 @@ func Test_getTeamMappings(t *testing.T) {
 		{
 			name: "flawless with team mappings",
 			apps: []v1alpha1.App{
-				*newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", ""),
-				*newApp("example", "customer", "default", "v1.0.0", "", ""),
+				*newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", map[string]string{}),
+				*newApp("example", "customer", "default", "v1.0.0", "", "", map[string]string{}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -532,7 +542,7 @@ func newACE(app, catalog, namespace, version, owners, team string, latest bool) 
 	return &ace
 }
 
-func newApp(name, catalog, namespace, version, statusVersion, statusRelease string) *v1alpha1.App {
+func newApp(name, catalog, namespace, version, statusVersion, statusRelease string, labels map[string]string) *v1alpha1.App {
 	if statusVersion == "" {
 		statusVersion = version
 	}
@@ -547,7 +557,7 @@ func newApp(name, catalog, namespace, version, statusVersion, statusRelease stri
 			APIVersion: "application.giantswarm.io/v1alpha1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Labels:    map[string]string{},
+			Labels:    labels,
 			Name:      name,
 			Namespace: namespace,
 		},
