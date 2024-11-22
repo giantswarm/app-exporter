@@ -8,7 +8,7 @@ deployment:
 
 image:
   name: "giantswarm/app-exporter"
-  tag: "[[ .Version ]]"
+  tag: ""
 
 registry:
   domain: gsoci.azurecr.io
@@ -22,10 +22,6 @@ pod:
     id: 1000
   group:
     id: 1000
-
-project:
-  branch: "[[ .Branch ]]"
-  commit: "[[ .SHA ]]"
 
 config:
   debug: true
@@ -54,6 +50,7 @@ podSecurityContext:
 
 # Add seccomp profile to container security context
 securityContext:
+  readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   capabilities:
     drop:
@@ -61,7 +58,3 @@ securityContext:
   runAsNonRoot: true
   seccompProfile:
     type: RuntimeDefault
-
-global:
-  podSecurityStandards:
-    enforced: false
