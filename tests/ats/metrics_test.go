@@ -239,10 +239,11 @@ func TestMetrics(t *testing.T) {
 			appVersion = expkey.FormatVersion(app.Status.AppVersion)
 		}
 
-		expectedAppExporterMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\",cluster_id=\"%s\"} 1",
+		expectedAppExporterMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_id=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			app.Spec.Name,
 			appVersion,
 			app.Spec.Catalog,
+			"",
 			"false",
 			expkey.FormatVersion(app.Status.Version), // deployed_version
 			"",                                       // latest_version is empty
@@ -251,8 +252,7 @@ func TestMetrics(t *testing.T) {
 			app.Status.Release.Status,
 			"false",                                // upgrade_avaiable is false
 			expkey.FormatVersion(app.Spec.Version), // version is the desired version
-			strconv.FormatBool(app.Spec.Version != app.Status.Version),
-			"")
+			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
 		t.Logf("f\n%s", expectedAppExporterMetric)
 
@@ -262,10 +262,11 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected nil got %#q", err)
 		}
 
-		expectedTestAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\",cluster_id=\"%s\"} 1",
+		expectedTestAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_id=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			testApp.Spec.Name,
 			"1.0.0",
 			testApp.Spec.Catalog,
+			"kind",
 			"false",
 			expkey.FormatVersion(testApp.Status.Version), // deployed_version
 			"", // latest_version is empty
@@ -274,8 +275,7 @@ func TestMetrics(t *testing.T) {
 			testApp.Status.Release.Status,
 			"false", // upgrade_avaiable is false
 			expkey.FormatVersion(testApp.Spec.Version), // version is the desired version
-			strconv.FormatBool(testApp.Spec.Version != testApp.Status.Version),
-			"kind")
+			strconv.FormatBool(testApp.Spec.Version != testApp.Status.Version))
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
