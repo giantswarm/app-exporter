@@ -225,6 +225,7 @@ func TestMetrics(t *testing.T) {
 	}
 
 	var app *v1alpha1.App
+	var testApp *v1alpha1.App
 	{
 		app = &v1alpha1.App{}
 		err = k8sClients.CtrlClient().Get(ctx, types.NamespacedName{Namespace: namespace, Name: project.Name()}, app)
@@ -238,7 +239,7 @@ func TestMetrics(t *testing.T) {
 			appVersion = expkey.FormatVersion(app.Status.AppVersion)
 		}
 
-		expectedAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
+		expectedAppExporterMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\",cluster_id=\"%s\"} 1",
 			app.Spec.Name,
 			appVersion,
 			app.Spec.Catalog,
@@ -250,9 +251,31 @@ func TestMetrics(t *testing.T) {
 			app.Status.Release.Status,
 			"false",                                // upgrade_avaiable is false
 			expkey.FormatVersion(app.Spec.Version), // version is the desired version
-			strconv.FormatBool(app.Spec.Version != app.Status.Version))
+			strconv.FormatBool(app.Spec.Version != app.Status.Version),
+			"")
 
-		t.Logf("f\n%s", expectedAppMetric)
+		t.Logf("f\n%s", expectedAppExporterMetric)
+
+		app = &v1alpha1.App{}
+		err = k8sClients.CtrlClient().Get(ctx, types.NamespacedName{Namespace: "test-app", Name: "test-app"}, testApp)
+		if err != nil {
+			t.Fatalf("expected nil got %#q", err)
+		}
+
+		expectedTestAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\",cluster_id=\"%s\"} 1",
+			testApp.Spec.Name,
+			"1.0.0",
+			testApp.Spec.Catalog,
+			"false",
+			expkey.FormatVersion(testApp.Status.Version), // deployed_version
+			"", // latest_version is empty
+			testApp.Name,
+			testApp.Namespace,
+			testApp.Status.Release.Status,
+			"false", // upgrade_avaiable is false
+			expkey.FormatVersion(testApp.Spec.Version), // version is the desired version
+			strconv.FormatBool(testApp.Spec.Version != testApp.Status.Version),
+			"kind")
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
@@ -260,8 +283,17 @@ func TestMetrics(t *testing.T) {
 		}
 
 		metrics := string(respBytes)
-		if !strings.Contains(metrics, expectedAppMetric) {
-			t.Fatalf("expected app metric\n\n%s\n\nnot found in response\n\n%s", expectedAppMetric, metrics)
+
+		t.Logf("METRICS RESPONSE START")
+		t.Logf("%s", metrics)
+		t.Logf("METROCS RESPONSE END")
+
+		if !strings.Contains(metrics, expectedAppExporterMetric) {
+			t.Fatalf("expected app (app-exporter) metric\n\n%s\n\nnot found in response\n\n%s", expectedAppExporterMetric, metrics)
+		}
+
+		if !strings.Contains(metrics, expectedTestAppMetric) {
+			t.Fatalf("expected app (test-app) metric\n\n%s\n\nnot found in response\n\n%s", expectedTestAppMetric, metrics)
 		}
 
 		t.Logf("found expected app metric")

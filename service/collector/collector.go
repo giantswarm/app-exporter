@@ -20,4 +20,5 @@ const (
 	labelUpgradeAvailable = "upgrade_available"
 	labelVersion          = "version"
 	labelVersionMismatch  = "version_mismatch"
+	labelClusterId        = "cluster_id"
 )
