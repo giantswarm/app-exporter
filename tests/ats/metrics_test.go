@@ -73,6 +73,102 @@ func TestMetrics(t *testing.T) {
 		}
 	}
 
+	catalogCR := &v1alpha1.Catalog{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "default",
+			Namespace: "giantswarm",
+			Labels: map[string]string{
+				label.AppOperatorVersion: "0.0.0",
+			},
+		},
+		Spec: v1alpha1.CatalogSpec{
+			Description: "default",
+			Title:       "default",
+			Repositories: []v1alpha1.CatalogSpecRepository{
+				{
+					Type: "helm",
+					URL:  "https://giantswarm.github.io/default-catalog",
+				},
+			},
+			Storage: v1alpha1.CatalogSpecStorage{
+				Type: "helm",
+				URL:  "https://giantswarm.github.io/default-catalog",
+			},
+		},
+	}
+	err = k8sClients.CtrlClient().Create(ctx, catalogCR)
+	if err != nil {
+		t.Fatalf("failed to create default catalog: %#v", err)
+	}
+
+	{
+		err := k8sClients.CtrlClient().Create(ctx, &v1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "test-app",
+			},
+		})
+		if err != nil {
+			t.Fatalf("failed to create test-app namespace: %#v", err)
+		}
+	}
+
+	{
+		testAppUserValues := &v1.ConfigMap{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "test-app-user-values",
+				Namespace: "test-app",
+			},
+			Data: map[string]string{
+				"values": "namespace: test-app",
+			},
+		}
+
+		_, err := k8sClients.K8sClient().CoreV1().ConfigMaps("test-app").Create(ctx, testAppUserValues, metav1.CreateOptions{})
+		if err != nil {
+			t.Fatalf("failed to create test-app-user-valies config map: %#v", err)
+		}
+	}
+
+	{
+		err := k8sClients.CtrlClient().Create(ctx, &v1alpha1.App{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "test-app",
+				Namespace: "test-app",
+				Labels: map[string]string{
+					label.AppOperatorVersion: "0.0.0",
+					label.AppKubernetesName:  "test-app",
+					label.Cluster:            "kind",
+					"foo":                    "bar",
+				},
+			},
+			Spec: v1alpha1.AppSpec{
+				Catalog: "default",
+				KubeConfig: v1alpha1.AppSpecKubeConfig{
+					InCluster: true,
+				},
+				Name:      "test-app",
+				Namespace: "test-app",
+				Version:   "1.0.0",
+				UserConfig: v1alpha1.AppSpecUserConfig{
+					ConfigMap: v1alpha1.AppSpecUserConfigConfigMap{
+						Name:      "test-app-user-values",
+						Namespace: "test-app",
+					},
+				},
+			},
+		})
+		if err != nil {
+			t.Fatalf("failed to create test-app app cr: %#v", err)
+		}
+	}
+
+	logger.Debugf(ctx, "Waiting for test-app to come up...")
+
+	_, err = waitForPod(ctx, k8sClients, "test-app")
+	if err != nil {
+		t.Fatalf("could not get test-app pod %#v", err)
+	}
+
 	var fw *k8sportforward.Forwarder
 	{
 		c := k8sportforward.ForwarderConfig{
@@ -125,79 +221,6 @@ func TestMetrics(t *testing.T) {
 		}
 
 		logger.Debugf(ctx, "got metrics from %#q", metricsURL)
-	}
-
-	catalogCR := &v1alpha1.Catalog{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      "default",
-			Namespace: "giantswarm",
-			Labels: map[string]string{
-				label.AppOperatorVersion: "0.0.0",
-			},
-		},
-		Spec: v1alpha1.CatalogSpec{
-			Description: "default",
-			Title:       "default",
-			Repositories: []v1alpha1.CatalogSpecRepository{
-				{
-					Type: "helm",
-					URL:  "https://giantswarm.github.io/default-catalog",
-				},
-			},
-			Storage: v1alpha1.CatalogSpecStorage{
-				Type: "helm",
-				URL:  "https://giantswarm.github.io/default-catalog",
-			},
-		},
-	}
-	err = k8sClients.CtrlClient().Create(ctx, catalogCR)
-	if err != nil {
-		t.Fatalf("failed to create default catalog: %#v", err)
-	}
-
-	{
-		err := k8sClients.CtrlClient().Create(ctx, &v1.Namespace{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-app",
-			},
-		})
-		if err != nil {
-			t.Fatalf("failed to create test-app namespace: %#v", err)
-		}
-	}
-
-	{
-		err := k8sClients.CtrlClient().Create(ctx, &v1alpha1.App{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      "test-app",
-				Namespace: "test-app",
-				Labels: map[string]string{
-					label.AppOperatorVersion: "0.0.0",
-					label.AppKubernetesName:  "test-app",
-					label.Cluster:            "kind",
-					"foo":                    "bar",
-				},
-			},
-			Spec: v1alpha1.AppSpec{
-				Catalog: "default",
-				KubeConfig: v1alpha1.AppSpecKubeConfig{
-					InCluster: true,
-				},
-				Name:      "test-app",
-				Namespace: "test-app",
-				Version:   "1.0.0",
-			},
-		})
-		if err != nil {
-			t.Fatalf("failed to create test-app app cr: %#v", err)
-		}
-	}
-
-	logger.Debugf(ctx, "Waiting for test-app to come up...")
-
-	_, err = waitForPod(ctx, k8sClients, "test-app")
-	if err != nil {
-		t.Fatalf("could not get test-app pod %#v", err)
 	}
 
 	var app *v1alpha1.App
