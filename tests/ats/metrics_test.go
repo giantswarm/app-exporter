@@ -162,7 +162,7 @@ func TestMetrics(t *testing.T) {
 		}
 	}
 
-	logger.Debugf(ctx, "Waiting for test-app to come up...")
+	t.Logf("Waiting for test-app to come up...")
 
 	_, err = waitForPod(ctx, k8sClients, "test-app")
 	if err != nil {
@@ -183,33 +183,33 @@ func TestMetrics(t *testing.T) {
 
 	var podName string
 	{
-		logger.Debugf(ctx, "waiting for %#q pod", project.Name())
+		t.Logf("waiting for %#q pod", project.Name())
 
 		podName, err = waitForPod(ctx, k8sClients, namespace)
 		if err != nil {
 			t.Fatalf("could not get %#q pod %#v", project.Name(), err)
 		}
 
-		logger.Debugf(ctx, "waited for %#q pod", project.Name())
+		t.Logf("waited for %#q pod", project.Name())
 	}
 
 	var tunnel *k8sportforward.Tunnel
 	{
-		logger.Debugf(ctx, "creating tunnel to pod %#q on port %d", podName, serverPort)
+		t.Logf("creating tunnel to pod %#q on port %d", podName, serverPort)
 
 		tunnel, err = fw.ForwardPort(namespace, podName, serverPort)
 		if err != nil {
 			t.Fatalf("could not create tunnel %v", err)
 		}
 
-		logger.Debugf(ctx, "created tunnel to pod %#q on port %d", podName, serverPort)
+		t.Logf("created tunnel to pod %#q on port %d", podName, serverPort)
 	}
 
 	var metricsResp *http.Response
 	{
 		metricsURL := fmt.Sprintf("http://%s/metrics", tunnel.LocalAddress())
 
-		logger.Debugf(ctx, "getting metrics from %#q", metricsURL)
+		t.Logf("getting metrics from %#q", metricsURL)
 
 		metricsResp, err = waitForServer(metricsURL)
 		if err != nil {
@@ -220,7 +220,7 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected http status %#q got %#q", http.StatusOK, metricsResp.StatusCode)
 		}
 
-		logger.Debugf(ctx, "got metrics from %#q", metricsURL)
+		t.Logf("got metrics from %#q", metricsURL)
 	}
 
 	var app *v1alpha1.App
@@ -251,7 +251,7 @@ func TestMetrics(t *testing.T) {
 			expkey.FormatVersion(app.Spec.Version), // version is the desired version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
-		logger.Debugf(ctx, "f\n%s", expectedAppMetric)
+		t.Logf("f\n%s", expectedAppMetric)
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
@@ -263,17 +263,17 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("expected app metric\n\n%s\n\nnot found in response\n\n%s", expectedAppMetric, metrics)
 		}
 
-		logger.Debugf(ctx, "found expected app metric")
+		t.Logf("found expected app metric")
 
 		expectedAppOperatorMetric := "app_operator_ready_total{namespace=\"giantswarm\",version=\"0.0.0\"} 1"
 
-		logger.Debugf(ctx, "checking for expected app-operator metric\n%s", expectedAppOperatorMetric)
+		t.Logf("checking for expected app-operator metric\n%s", expectedAppOperatorMetric)
 
 		if !strings.Contains(metrics, expectedAppOperatorMetric) {
 			t.Fatalf("expected app metric\n\n%s\n\nnot found in response\n\n%s", expectedAppOperatorMetric, metrics)
 		}
 
-		logger.Debugf(ctx, "found expected app-operator metric")
+		t.Logf("found expected app-operator metric")
 	}
 }
 
