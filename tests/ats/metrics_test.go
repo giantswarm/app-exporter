@@ -165,10 +165,12 @@ func TestMetrics(t *testing.T) {
 
 	t.Logf("Waiting for test-app to come up...")
 
-	_, err = waitForPod(ctx, k8sClients, "test-app", "test-app")
+	testAppPodName, err := waitForPod(ctx, k8sClients, "test-app", "test-app")
 	if err != nil {
 		t.Fatalf("could not get test-app pod %#v", err)
 	}
+
+	t.Logf("Waited for test-app to come up: %s", testAppPodName)
 
 	var fw *k8sportforward.Forwarder
 	{
@@ -191,7 +193,7 @@ func TestMetrics(t *testing.T) {
 			t.Fatalf("could not get %#q pod %#v", project.Name(), err)
 		}
 
-		t.Logf("waited for %#q pod", project.Name())
+		t.Logf("waited for %#q pod: %s", project.Name(), podName)
 	}
 
 	var tunnel *k8sportforward.Tunnel
@@ -250,21 +252,21 @@ func TestMetrics(t *testing.T) {
 			app.Name,
 			app.Namespace,
 			app.Status.Release.Status,
-			"false",                                // upgrade_avaiable is false
+			"false",                                // upgrade_available is false
 			expkey.FormatVersion(app.Spec.Version), // version is the desired version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
-		t.Logf("f\n%s", expectedAppExporterMetric)
+		t.Logf("Expected app-exporter metrics:\n%s", expectedAppExporterMetric)
 
-		app = &v1alpha1.App{}
+		testApp = &v1alpha1.App{}
 		err = k8sClients.CtrlClient().Get(ctx, types.NamespacedName{Namespace: "test-app", Name: "test-app"}, testApp)
 		if err != nil {
 			t.Fatalf("expected nil got %#q", err)
 		}
 
-		expectedTestAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_id=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"noteam\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
+		expectedTestAppMetric := fmt.Sprintf("app_operator_app_info{app=\"%s\",app_version=\"%s\",catalog=\"%s\",cluster_id=\"%s\",cluster_missing=\"%s\",deployed_version=\"%s\",latest_version=\"%s\",name=\"%s\",namespace=\"%s\",status=\"%s\",team=\"honeybadger\",upgrade_available=\"%s\",version=\"%s\",version_mismatch=\"%s\"} 1",
 			testApp.Spec.Name,
-			"1.0.0",
+			"2.13.0",
 			testApp.Spec.Catalog,
 			"kind",
 			"false",
@@ -273,9 +275,11 @@ func TestMetrics(t *testing.T) {
 			testApp.Name,
 			testApp.Namespace,
 			testApp.Status.Release.Status,
-			"false", // upgrade_avaiable is false
+			"false", // upgrade_available is false
 			expkey.FormatVersion(testApp.Spec.Version), // version is the desired version
 			strconv.FormatBool(testApp.Spec.Version != testApp.Status.Version))
+
+		t.Logf("Expected test-app metrics:\n%s", expectedTestAppMetric)
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
