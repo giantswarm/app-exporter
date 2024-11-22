@@ -6,15 +6,16 @@ package ats
 import (
 	"context"
 	"fmt"
-	"github.com/giantswarm/k8smetadata/pkg/label"
 	"io/ioutil"
-	v1 "k8s.io/api/core/v1"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/giantswarm/k8smetadata/pkg/label"
+	v1 "k8s.io/api/core/v1"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/backoff"
