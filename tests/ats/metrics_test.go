@@ -127,6 +127,34 @@ func TestMetrics(t *testing.T) {
 		logger.Debugf(ctx, "got metrics from %#q", metricsURL)
 	}
 
+	catalogCR := &v1alpha1.Catalog{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "default",
+			Namespace: "giantswarm",
+			Labels: map[string]string{
+				label.AppOperatorVersion: "0.0.0",
+			},
+		},
+		Spec: v1alpha1.CatalogSpec{
+			Description: "default",
+			Title:       "default",
+			Repositories: []v1alpha1.CatalogSpecRepository{
+				{
+					Type: "helm",
+					URL:  "https://giantswarm.github.io/default-catalog",
+				},
+			},
+			Storage: v1alpha1.CatalogSpecStorage{
+				Type: "helm",
+				URL:  "https://giantswarm.github.io/default-catalog",
+			},
+		},
+	}
+	err = k8sClients.CtrlClient().Create(ctx, catalogCR)
+	if err != nil {
+		t.Fatalf("failed to create default catalog: %#v", err)
+	}
+
 	{
 		err := k8sClients.CtrlClient().Create(ctx, &v1.Namespace{
 			ObjectMeta: metav1.ObjectMeta{
