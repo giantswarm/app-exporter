@@ -6,7 +6,9 @@ package ats
 import (
 	"context"
 	"fmt"
+	"github.com/giantswarm/k8smetadata/pkg/label"
 	"io/ioutil"
+	v1 "k8s.io/api/core/v1"
 	"log"
 	"net/http"
 	"strconv"
@@ -86,7 +88,7 @@ func TestMetrics(t *testing.T) {
 	{
 		logger.Debugf(ctx, "waiting for %#q pod", project.Name())
 
-		podName, err = waitForPod(ctx, k8sClients)
+		podName, err = waitForPod(ctx, k8sClients, namespace)
 		if err != nil {
 			t.Fatalf("could not get %#q pod %#v", project.Name(), err)
 		}
@@ -124,6 +126,51 @@ func TestMetrics(t *testing.T) {
 		logger.Debugf(ctx, "got metrics from %#q", metricsURL)
 	}
 
+	{
+		err := k8sClients.CtrlClient().Create(ctx, &v1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "test-app",
+			},
+		})
+		if err != nil {
+			t.Fatalf("failed to create test-app namespace: %#v", err)
+		}
+	}
+
+	{
+		err := k8sClients.CtrlClient().Create(ctx, &v1alpha1.App{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "test-app",
+				Namespace: "test-app",
+				Labels: map[string]string{
+					label.AppOperatorVersion: "0.0.0",
+					label.AppKubernetesName:  "test-app",
+					label.Cluster:            "kind",
+					"foo":                    "bar",
+				},
+			},
+			Spec: v1alpha1.AppSpec{
+				Catalog: "default",
+				KubeConfig: v1alpha1.AppSpecKubeConfig{
+					InCluster: true,
+				},
+				Name:      "test-app",
+				Namespace: "test-app",
+				Version:   "1.0.0",
+			},
+		})
+		if err != nil {
+			t.Fatalf("failed to create test-app app cr: %#v", err)
+		}
+	}
+
+	logger.Debugf(ctx, "Waiting for test-app to come up...")
+
+	_, err = waitForPod(ctx, k8sClients, "test-app")
+	if err != nil {
+		t.Fatalf("could not get test-app pod %#v", err)
+	}
+
 	var app *v1alpha1.App
 	{
 		app = &v1alpha1.App{}
@@ -152,7 +199,7 @@ func TestMetrics(t *testing.T) {
 			expkey.FormatVersion(app.Spec.Version), // version is the desired version
 			strconv.FormatBool(app.Spec.Version != app.Status.Version))
 
-		logger.Debugf(ctx, "checking for expected app metric\n%s", expectedAppMetric)
+		logger.Debugf(ctx, "f\n%s", expectedAppMetric)
 
 		respBytes, err := ioutil.ReadAll(metricsResp.Body)
 		if err != nil {
@@ -178,7 +225,7 @@ func TestMetrics(t *testing.T) {
 	}
 }
 
-func waitForPod(ctx context.Context, k8sClients *k8sclient.Clients) (string, error) {
+func waitForPod(ctx context.Context, k8sClients *k8sclient.Clients, namespace string) (string, error) {
 	var err error
 	var podName string
 
