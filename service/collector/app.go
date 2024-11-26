@@ -171,7 +171,6 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 
 		var clusterId string
 		{
-			// TODO Should we try to be more clever here? :thinking:
 			clusterId = clusterLabel
 		}
 
