@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `cluster_id` field to `app_operator_app_info` metrics that contains the value of the `giantswarm.io/cluster` label from the App CR, empty otherwise.
+
 ### Removed
 
 - Removed PSP support and thus support for pre v1.25 Kubernetes clusters.
