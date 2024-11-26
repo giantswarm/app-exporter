@@ -42,6 +42,7 @@ var (
 			labelUpgradeAvailable,
 			labelVersion,
 			labelVersionMismatch,
+			labelClusterId,
 		},
 		nil,
 	)
@@ -166,9 +167,16 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		appSpecVersion := key.Version(app)
 		appStatusVersion := expkey.FormatVersion(app.Status.Version)
 
+		clusterLabel := key.ClusterLabel(app)
+
+		var clusterId string
+		{
+			clusterId = clusterLabel
+		}
+
 		// clusterMissing is true if `giantswarm.io/cluster` label is missing
-		// on the org-namespaced app. Otherwise it's false.
-		clusterMissing := key.IsInOrgNamespace(app) && key.ClusterLabel(app) == ""
+		// on the org-namespaced app. Otherwise, it's false.
+		clusterMissing := key.IsInOrgNamespace(app) && clusterLabel == ""
 
 		// For optional apps in public catalogs we check if an upgrade
 		// is available.
@@ -198,6 +206,7 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			// Getting version from spec, not status since the version in the spec is the desired version.
 			appSpecVersion,
 			strconv.FormatBool(appSpecVersion != appStatusVersion),
+			clusterId,
 		)
 
 		if !key.IsAppCordoned(app) {
