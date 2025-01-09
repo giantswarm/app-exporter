@@ -13,7 +13,7 @@ require (
 	github.com/giantswarm/k8sclient/v8 v8.0.0
 	github.com/giantswarm/k8smetadata v0.25.0
 	github.com/giantswarm/k8sportforward/v2 v2.0.0
-	github.com/giantswarm/microendpoint v1.1.0
+	github.com/giantswarm/microendpoint v1.1.1
 	github.com/giantswarm/microerror v0.4.1
 	github.com/giantswarm/microkit v1.0.2
 	github.com/giantswarm/micrologger v1.1.1
