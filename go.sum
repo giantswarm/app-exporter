@@ -855,8 +855,8 @@ github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2H
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/giantswarm/apiextensions-application v0.6.2 h1:XL86OrpprWl5Wp38EUvUXt3ztTo25+V63oDVlFwDpNg=
 github.com/giantswarm/apiextensions-application v0.6.2/go.mod h1:8ylqSmDSzFblCppRQTFo8v9s/F6MX6RTusVVoDDfWso=
-github.com/giantswarm/app/v7 v7.0.2 h1:3RYA/4kwsK+yLS4vD5A7FjiEaplvq85jATCecni5I7o=
-github.com/giantswarm/app/v7 v7.0.2/go.mod h1:2sBTL8q40MSdzpLuz6foEv/zZKT+IpGxBWRDzm4nmc0=
+github.com/giantswarm/app/v7 v7.0.3 h1:2xMGts4kAkKHo4tUC8Golm3j/kAlUeQjAw5WpRkoz4w=
+github.com/giantswarm/app/v7 v7.0.3/go.mod h1:1xA1ddQzNMgPcf8VdQLn3Ohm2ww4z1ARSujirdFXz3U=
 github.com/giantswarm/backoff v1.0.1 h1:paqQhjUsibkf+wWFCHsk7VXAkcM1L3ssAe7V7i8twpM=
 github.com/giantswarm/backoff v1.0.1/go.mod h1:RGj8b06J3irMNFRoSiMnngS50K+QbpSvu77sW03bxqQ=
 github.com/giantswarm/exporterkit v1.2.0 h1:nUd/mjwKv+4x4suqvtRFhqy4fegP1tfF/anvZdjcppM=
@@ -1425,8 +1425,9 @@ golang.org/x/oauth2 v0.5.0/go.mod h1:9/XBHVqLaWO3/BRHs5jbpYCnOZVjj5V0ndyaAM7KB4I
 golang.org/x/oauth2 v0.6.0/go.mod h1:ycmewcwgD4Rpr3eZJLSB4Kyyljb3qDh40vJ8STE5HKw=
 golang.org/x/oauth2 v0.7.0/go.mod h1:hPLQkd9LyjfXTiRohC/41GhcFqxisoUQ99sCUOHO9x4=
 golang.org/x/oauth2 v0.8.0/go.mod h1:yr7u4HXZRm1R1kBWqr/xKNqewf0plRYoB7sla+BCIXE=
-golang.org/x/oauth2 v0.23.0 h1:PbgcYx2W7i4LvjJWEbf0ngHV6qJYr86PkAV3bXdLEbs=
 golang.org/x/oauth2 v0.23.0/go.mod h1:XYTD2NtWslqkgxebSiOHnXEap4TF09sJSc7H1sXbhtI=
+golang.org/x/oauth2 v0.25.0 h1:CY4y7XT9v0cRI9oupztF8AgiIu99L/ksR/Xp/6jrZ70=
+golang.org/x/oauth2 v0.25.0/go.mod h1:XYTD2NtWslqkgxebSiOHnXEap4TF09sJSc7H1sXbhtI=
 golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20181108010431-42b317875d0f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
