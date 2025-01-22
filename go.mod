@@ -7,7 +7,7 @@ toolchain go1.23.5
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/giantswarm/apiextensions-application v0.6.2
-	github.com/giantswarm/app/v7 v7.0.2
+	github.com/giantswarm/app/v7 v7.0.3
 	github.com/giantswarm/backoff v1.0.1
 	github.com/giantswarm/exporterkit v1.2.0
 	github.com/giantswarm/k8sclient/v8 v8.0.0
@@ -84,7 +84,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/net v0.34.0 // indirect
-	golang.org/x/oauth2 v0.23.0 // indirect
+	golang.org/x/oauth2 v0.25.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/term v0.28.0 // indirect
