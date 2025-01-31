@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/app/v7/pkg/key"
 	"github.com/giantswarm/k8sclient/v8/pkg/k8sclient"
 	"github.com/giantswarm/k8smetadata/pkg/label"
+	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
@@ -159,6 +160,10 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 		// Team annotation on the App CR overrides if it exists.
 		if key.AppTeam(app) != "" {
 			team = formatTeamName(key.AppTeam(app))
+		}
+
+		if v, ok := app.Labels[annotation.AppTeam]; ok {
+			team = formatTeamName(v)
 		}
 
 		// Trim `v` prefix from App CR version if there is any

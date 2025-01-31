@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Extend the logic for getting team information with looking in labels too.
+
 ## [1.0.0] - 2024-11-26
 
 ### Added
