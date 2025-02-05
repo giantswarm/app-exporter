@@ -4,7 +4,7 @@ description: "Chart holding app-exporter."
 home: "https://github.com/giantswarm/app-exporter"
 icon: https://s.giantswarm.io/app-icons/prometheus/1/light.svg
 name: "app-exporter"
-version: "1.0.0"
+version: "1.0.1"
 annotations:
   application.giantswarm.io/team: "honeybadger"
   config.giantswarm.io/version: 1.x.x

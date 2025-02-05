@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2025-02-05
+
 ### Changed
 
 - Extend the logic for getting team information with looking in labels too.
@@ -293,7 +295,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/giantswarm/app-exporter/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/giantswarm/app-exporter/compare/v0.20.0...v1.0.0
 [0.20.0]: https://github.com/giantswarm/app-exporter/compare/v0.19.2...v0.20.0
 [0.19.2]: https://github.com/giantswarm/app-exporter/compare/v0.19.1...v0.19.2
