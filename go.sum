@@ -865,8 +865,8 @@ github.com/giantswarm/k8smetadata v0.25.0 h1:6mKmmm4xHPuBvxDMAkIhU5oj6KJkJSaR2s5
 github.com/giantswarm/k8smetadata v0.25.0/go.mod h1:QiQAyaZnwco1U0lENLF0Kp4bSN4dIPwIlHWEvUo3ES8=
 github.com/giantswarm/k8sportforward/v2 v2.0.0 h1:tbu1i0+iRQ8ShTUwh55YizqBpYn5T9ltsr0ibNwH5Og=
 github.com/giantswarm/k8sportforward/v2 v2.0.0/go.mod h1:YfTaZsgLH1K9BX2zOy+QvvvUTdc744BvRlKrEfVwYfM=
-github.com/giantswarm/microendpoint v1.1.1 h1:nDEQOT43fGq8k/3f+wqw+z1Od04OJCeP1uSoZMR2bkU=
-github.com/giantswarm/microendpoint v1.1.1/go.mod h1:gdvw1bZl4nSB3kRZWr/Aaz8zXXn9IA/fT1EkQKgnJI0=
+github.com/giantswarm/microendpoint v1.1.2 h1:bytvCjpfDJEPJcu4J6O93ezIBQRLcETlP3buHSlQr4M=
+github.com/giantswarm/microendpoint v1.1.2/go.mod h1:TBpoe5c4FGJwHUfuaQ9UJyPJ47yn3dt9R2ZIvawKDpM=
 github.com/giantswarm/microerror v0.2.0/go.mod h1:1YtJq/m7Vlq1Y6NP7B+SODOKCGlG7e5wctV2OoE9n34=
 github.com/giantswarm/microerror v0.4.1 h1:WMiD7HQASoUA9lZzPlPK+erCEOJ0uT4cyo18VfCXHD0=
 github.com/giantswarm/microerror v0.4.1/go.mod h1:URFj0gFCmZihjya6saQCXxslBrgctXb4NsXYHB5JdrI=
