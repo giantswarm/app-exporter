@@ -51,7 +51,7 @@ func NewSet(config SetConfig) (*Set, error) {
 				RetiredTeamsMapping: cfg.RetiredTeamsMapping,
 			}
 		}
-		
+
 		c := convertToAppConfig(config)
 
 		appCollector, err = NewApp(c)
