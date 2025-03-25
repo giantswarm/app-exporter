@@ -40,7 +40,8 @@ func NewSet(config SetConfig) (*Set, error) {
 
 	var appCollector *App
 	{
-		c := AppConfig{ // nolint:gosimple
+		// Convert SetConfig to AppConfig
+		c := AppConfig{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 
