@@ -9,6 +9,7 @@ workflows:
     - architect/go-build:
         name: go-build
         binary: app-exporter
+        golangci_lint_flags: "-E gosec -E goconst -E asciicheck --skip-files=service/collector/app_test.go,service/collector/set.go --timeout 10m --max-same-issues 0 --max-issues-per-linter 0"
         filters:
           tags:
             only: /^v.*/
