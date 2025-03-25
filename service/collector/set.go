@@ -40,16 +40,19 @@ func NewSet(config SetConfig) (*Set, error) {
 
 	var appCollector *App
 	{
-		// Convert SetConfig to AppConfig
-		c := AppConfig{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-
-			AppTeamMappings:     config.AppTeamMappings,
-			DefaultTeam:         config.DefaultTeam,
-			Provider:            config.Provider,
-			RetiredTeamsMapping: config.RetiredTeamsMapping,
+		// Create a helper function to convert SetConfig to AppConfig
+		convertToAppConfig := func(cfg SetConfig) AppConfig {
+			return AppConfig{
+				K8sClient:           cfg.K8sClient,
+				Logger:              cfg.Logger,
+				AppTeamMappings:     cfg.AppTeamMappings,
+				DefaultTeam:         cfg.DefaultTeam,
+				Provider:            cfg.Provider,
+				RetiredTeamsMapping: cfg.RetiredTeamsMapping,
+			}
 		}
+		
+		c := convertToAppConfig(config)
 
 		appCollector, err = NewApp(c)
 		if err != nil {
