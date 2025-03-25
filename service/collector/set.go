@@ -41,15 +41,14 @@ func NewSet(config SetConfig) (*Set, error) {
 	var appCollector *App
 	{
 		// Create a helper function to convert SetConfig to AppConfig
-		convertToAppConfig := func(cfg SetConfig) AppConfig {
-			return AppConfig{
-				K8sClient:           cfg.K8sClient,
-				Logger:              cfg.Logger,
-				AppTeamMappings:     cfg.AppTeamMappings,
-				DefaultTeam:         cfg.DefaultTeam,
-				Provider:            cfg.Provider,
-				RetiredTeamsMapping: cfg.RetiredTeamsMapping,
-			}
+		convertToAppConfig := func(cfg SetConfig) (result AppConfig) {
+			result.K8sClient = cfg.K8sClient
+			result.Logger = cfg.Logger
+			result.AppTeamMappings = cfg.AppTeamMappings
+			result.DefaultTeam = cfg.DefaultTeam
+			result.Provider = cfg.Provider
+			result.RetiredTeamsMapping = cfg.RetiredTeamsMapping
+			return
 		}
 
 		c := convertToAppConfig(config)
