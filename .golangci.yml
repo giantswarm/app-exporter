@@ -29,5 +29,9 @@ issues:
       linters:
         - errcheck
         - staticcheck
+    - path: service/collector/set.go
+      linters:
+        - staticcheck
+      text: "S1016: should convert config .* to AppConfig instead of using struct literal"
   max-same-issues: 0
   max-issues-per-linter: 0
