@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update architect-orb to version `giantswarm/architect@dev:ce9a62fb6407cd537b3123a9546847b7b7fb0d0b`.
+- Mitigate golangci-lint v2.0.0 issues.
+
 ## [1.0.1] - 2025-02-05
 
 ### Changed

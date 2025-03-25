@@ -1,0 +1,23 @@
+# The configurations that used for the recording, feel free to edit them
+linters:
+  enable:
+    - gosec
+    - goconst
+    - govet
+  disable-all: true
+
+linters-settings:
+  gosec:
+    excludes:
+      - G104 # Audit errors not being checked
+
+run:
+  timeout: 15m
+  skip-dirs:
+    - vendor
+
+issues:
+  exclude-rules:
+    - linters:
+        - errcheck
+      text: "Error return value of .((os\\.)?std(out|err)\\..*|.*Close|.*Flush|os\\.Remove(All)?|.*print(f|ln)?|os\\.(Un)?Setenv). is not checked"
