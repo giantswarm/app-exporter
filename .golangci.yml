@@ -6,6 +6,8 @@ linters:
     - goconst
     - govet
     - asciicheck
+    - errcheck
+    - staticcheck
   disable-all: true
 
 linters-settings:
@@ -23,5 +25,9 @@ issues:
     - linters:
         - errcheck
       text: "Error return value of .((os\\.)?std(out|err)\\..*|.*Close|.*Flush|os\\.Remove(All)?|.*print(f|ln)?|os\\.(Un)?Setenv). is not checked"
+    - path: service/collector/app_test.go
+      linters:
+        - errcheck
+        - staticcheck
   max-same-issues: 0
   max-issues-per-linter: 0
