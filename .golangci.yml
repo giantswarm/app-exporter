@@ -1,9 +1,11 @@
 # The configurations that used for the recording, feel free to edit them
+version: 2
 linters:
   enable:
     - gosec
     - goconst
     - govet
+    - asciicheck
   disable-all: true
 
 linters-settings:
@@ -12,7 +14,7 @@ linters-settings:
       - G104 # Audit errors not being checked
 
 run:
-  timeout: 15m
+  timeout: 10m
   skip-dirs:
     - vendor
 
@@ -21,3 +23,5 @@ issues:
     - linters:
         - errcheck
       text: "Error return value of .((os\\.)?std(out|err)\\..*|.*Close|.*Flush|os\\.Remove(All)?|.*print(f|ln)?|os\\.(Un)?Setenv). is not checked"
+  max-same-issues: 0
+  max-issues-per-linter: 0
