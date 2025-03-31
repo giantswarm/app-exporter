@@ -40,15 +40,7 @@ func NewSet(config SetConfig) (*Set, error) {
 
 	var appCollector *App
 	{
-		c := AppConfig{ // nolint:gosimple
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-
-			AppTeamMappings:     config.AppTeamMappings,
-			DefaultTeam:         config.DefaultTeam,
-			Provider:            config.Provider,
-			RetiredTeamsMapping: config.RetiredTeamsMapping,
-		}
+		c := AppConfig(config)
 
 		appCollector, err = NewApp(c)
 		if err != nil {

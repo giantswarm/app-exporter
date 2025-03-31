@@ -254,7 +254,7 @@ func Test_collectAppStatus(t *testing.T) {
 			if err != nil {
 				panic(err)
 			}
-			defer expected.Close()
+			defer func() { _ = expected.Close() }()
 
 			err = prometheustest.CollectAndCompare(
 				fakeColl,
@@ -562,15 +562,15 @@ func newACE(app, catalog, namespace, version, owners, team string, latest bool) 
 	}
 
 	if latest {
-		ace.ObjectMeta.Labels["latest"] = "true"
+		ace.Labels["latest"] = "true"
 	}
 
 	if owners != "" {
-		ace.ObjectMeta.Annotations[annotation.AppOwners] = owners
+		ace.Annotations[annotation.AppOwners] = owners
 	}
 
 	if team != "" {
-		ace.ObjectMeta.Annotations[annotation.AppTeam] = team
+		ace.Annotations[annotation.AppTeam] = team
 	}
 
 	return &ace
