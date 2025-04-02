@@ -2,7 +2,7 @@ module github.com/giantswarm/app-exporter
 
 go 1.23.0
 
-toolchain go1.24.1
+toolchain go1.24.2
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
@@ -105,5 +105,5 @@ replace (
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf => github.com/golang/protobuf v1.5.4 // CVE-2024-24786
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.9
-	google.golang.org/grpc => google.golang.org/grpc v1.71.0
+	google.golang.org/grpc => google.golang.org/grpc v1.71.1
 )
