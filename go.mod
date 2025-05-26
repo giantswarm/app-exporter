@@ -103,5 +103,5 @@ replace (
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf => github.com/golang/protobuf v1.5.4 // CVE-2024-24786
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.9
-	google.golang.org/grpc => google.golang.org/grpc v1.72.1
+	google.golang.org/grpc => google.golang.org/grpc v1.72.2
 )
