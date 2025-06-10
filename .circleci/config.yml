@@ -51,32 +51,6 @@ workflows:
 
     - architect/push-to-app-collection:
         context: architect
-        name: push-app-exporter-to-aws-app-collection
-        app_name: app-exporter
-        app_collection_repo: aws-app-collection
-        requires:
-        - push-to-app-catalog
-        filters:
-          branches:
-            ignore: /.*/
-          tags:
-            only: /^v.*/
-
-    - architect/push-to-app-collection:
-        context: architect
-        name: push-app-exporter-to-azure-app-collection
-        app_name: app-exporter
-        app_collection_repo: azure-app-collection
-        requires:
-        - push-to-app-catalog
-        filters:
-          branches:
-            ignore: /.*/
-          tags:
-            only: /^v.*/
-
-    - architect/push-to-app-collection:
-        context: architect
         name: push-app-exporter-to-vsphere-app-collection
         app_name: app-exporter
         app_collection_repo: vsphere-app-collection
