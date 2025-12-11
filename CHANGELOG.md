@@ -300,10 +300,6 @@ reduce how often pods are rolled.
 - Added initial structures.
 
 [Unreleased]: https://github.com/giantswarm/app-exporter/compare/v1.0.1...HEAD
-
-### Changed
-
-- Migrate Chart.yaml annotations to new format as per https://docs.giantswarm.io/reference/platform-api/chart-metadata/
 [1.0.1]: https://github.com/giantswarm/app-exporter/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/giantswarm/app-exporter/compare/v0.20.0...v1.0.0
 [0.20.0]: https://github.com/giantswarm/app-exporter/compare/v0.19.2...v0.20.0
