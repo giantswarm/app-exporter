@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-01-29
+
 ### Changed
 
 - Migrate Chart.yaml annotations to new format as per https://docs.giantswarm.io/reference/platform-api/chart-metadata/
+
 ## [1.0.1] - 2025-02-05
 
 ### Changed
@@ -298,7 +301,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/giantswarm/app-exporter/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/giantswarm/app-exporter/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/giantswarm/app-exporter/compare/v0.20.0...v1.0.0
 [0.20.0]: https://github.com/giantswarm/app-exporter/compare/v0.19.2...v0.20.0

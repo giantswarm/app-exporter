@@ -1,9 +1,9 @@
 apiVersion: v2
-appVersion: 1.0.0
+appVersion: 1.0.2
 description: Chart holding app-exporter.
 home: https://github.com/giantswarm/app-exporter
 icon: https://s.giantswarm.io/app-icons/prometheus/1/light.svg
 name: app-exporter
-version: 1.0.1
+version: 1.0.2
 annotations:
   io.giantswarm.application.team: honeybadger
