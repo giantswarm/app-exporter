@@ -7,7 +7,7 @@ toolchain go1.26.4
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/giantswarm/apiextensions-application v0.6.2
-	github.com/giantswarm/app/v7 v7.0.4
+	github.com/giantswarm/app/v8 v8.1.1
 	github.com/giantswarm/backoff v1.0.1
 	github.com/giantswarm/exporterkit v1.3.0
 	github.com/giantswarm/k8sclient/v8 v8.1.0
@@ -76,7 +76,7 @@ require (
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/oauth2 v0.34.0 // indirect
+	golang.org/x/oauth2 v0.35.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/term v0.39.0 // indirect
