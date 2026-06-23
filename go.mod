@@ -104,3 +104,19 @@ replace (
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.10
 	google.golang.org/grpc => google.golang.org/grpc v1.80.0
 )
+
+replace github.com/go-jose/go-jose/v4 v4.1.3 => github.com/go-jose/go-jose/v4 v4.1.4
+
+replace github.com/golang-jwt/jwt/v4 v4.0.0 => github.com/golang-jwt/jwt/v4 v4.5.2
+
+replace github.com/moby/spdystream v0.5.0 => github.com/moby/spdystream v0.5.1
+
+replace github.com/nats-io/jwt v0.3.2 => github.com/nats-io/jwt v2.8.1+incompatible
+
+replace github.com/nats-io/nats-server/v2 v2.8.4 => github.com/nats-io/nats-server/v2 v2.14.2
+
+replace github.com/yuin/goldmark v1.4.13 => github.com/yuin/goldmark v1.8.2
+
+replace go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738 => go.etcd.io/etcd v3.3.27+incompatible
+
+replace go.opentelemetry.io/otel v1.39.0 => go.opentelemetry.io/otel v1.44.0
