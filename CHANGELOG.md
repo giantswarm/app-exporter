@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   push fails on every build. That step was deprecated in orb 6.8.0 when chart pushes moved to
   `gsoci`, and is absent from 9.x. 9.6.0 is the version already running in `coredns-app`,
   `external-dns-app` and `kyverno-policies-dx`.
+- Add `context: architect` to the `go-build` job. It was the only job in this config without a
+  context, which was harmless on orb 6.x but fails on 9.x: the job's `Generate temporary GitHub
+  token` step needs `CIRCLECI_ARCHITECT_GITHUB_APP_PRIVATE_KEY_B64` from that context and aborts
+  with `CIRCLECI_ARCHITECT_GITHUB_APP_PRIVATE_KEY_B64 is not set.` without it.
 
 ## [1.0.2] - 2026-01-29
 
