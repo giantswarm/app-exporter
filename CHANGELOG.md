@@ -19,6 +19,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   token` step needs `CIRCLECI_ARCHITECT_GITHUB_APP_PRIVATE_KEY_B64` from that context and aborts
   with `CIRCLECI_ARCHITECT_GITHUB_APP_PRIVATE_KEY_B64 is not set.` without it.
 
+### Fixed
+
+- Pin `app-test-suite` to 0.10.6 in the `run-tests-with-ats` job. Orb 9.6.0 raised the job's default
+  from 0.10.6 to 0.15.0, and that is the only difference between the two orb versions for this job.
+  0.15.0 builds its KinD cluster from `kindest/node:v1.31.12` where 0.10.6 used `v1.29.2`. On 1.31 the
+  `test-app` 1.0.0 fixture -- kube-state-metrics v1.9.2, released 2020 -- never reaches `Running`, so
+  `TestMetrics` spends its full 5-minute backoff reporting `expected 1 pod got 0` and fails, while
+  `app-exporter` itself deploys and serves metrics normally. `run-tests-with-ats` is a required check
+  here, and it last passed on 2026-06-03 under orb 6.x. Modernising the fixture is the real fix; this
+  repo is `lifecycle: deprecated`, so it pins instead.
+
 ## [1.0.2] - 2026-01-29
 
 ### Changed
