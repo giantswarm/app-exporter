@@ -27,3 +27,6 @@ CVE-2026-56864 until=2026-09-27 # golang.org/x/mod@v0.37.0
 CVE-2026-56865 until=2026-09-27 # golang.org/x/mod@v0.37.0
 CVE-2026-56854 until=2026-09-30 # golang.org/x/crypto@v0.54.0
 CVE-2026-37236 until=2026-10-01 # github.com/grpc-ecosystem/grpc-gateway@v1.16.0
+CVE-2026-81870 until=2026-10-03 # go.opentelemetry.io/otel/exporters/otlp/otlptrace@v1.34.0
+CVE-2026-84303 until=2026-10-03 # google.golang.org/grpc@v1.80.0
+CVE-2026-84304 until=2026-10-03 # google.golang.org/grpc@v1.80.0
