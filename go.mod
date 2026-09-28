@@ -76,13 +76,13 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/net v0.56.0 // indirect
-	golang.org/x/oauth2 v0.34.0 // indirect
+	golang.org/x/net v0.58.0 // indirect
+	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/term v0.45.0 // indirect
 	golang.org/x/text v0.42.0 // indirect
-	golang.org/x/time v0.12.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
@@ -103,7 +103,7 @@ replace (
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf => github.com/golang/protobuf v1.5.4 // CVE-2024-24786
 	github.com/pkg/sftp => github.com/pkg/sftp v1.13.11
-	google.golang.org/grpc => google.golang.org/grpc v1.80.0
+	google.golang.org/grpc => google.golang.org/grpc v1.84.0
 )
 
 replace github.com/go-jose/go-jose/v4 v4.1.3 => github.com/go-jose/go-jose/v4 v4.1.4
@@ -125,3 +125,7 @@ replace github.com/yuin/goldmark v1.4.13 => github.com/yuin/goldmark v1.8.5
 replace go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738 => go.etcd.io/etcd v3.3.27+incompatible
 
 replace go.opentelemetry.io/otel/sdk v1.39.0 => go.opentelemetry.io/otel/sdk v1.46.0
+
+replace github.com/apache/thrift => github.com/apache/thrift v0.24.0
+
+replace golang.org/x/image => golang.org/x/image v0.46.0
