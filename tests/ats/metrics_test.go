@@ -220,7 +220,7 @@ func TestMetrics(t *testing.T) {
 		}
 
 		if metricsResp.StatusCode != http.StatusOK {
-			t.Fatalf("expected http status %#q got %#q", http.StatusOK, metricsResp.StatusCode)
+			t.Fatalf("expected http status %d got %d", http.StatusOK, metricsResp.StatusCode)
 		}
 
 		t.Logf("got metrics from %#q", metricsURL)
