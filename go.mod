@@ -129,3 +129,7 @@ replace go.opentelemetry.io/otel/sdk v1.39.0 => go.opentelemetry.io/otel/sdk v1.
 replace github.com/apache/thrift => github.com/apache/thrift v0.24.0
 
 replace golang.org/x/image => golang.org/x/image v0.46.0
+
+replace go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.34.0 => go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.47.0
+
+replace go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.34.0 => go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.47.0
