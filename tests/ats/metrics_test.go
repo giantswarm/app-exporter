@@ -149,7 +149,7 @@ func TestMetrics(t *testing.T) {
 				},
 				Name:      "test-app",
 				Namespace: "test-app",
-				Version:   "1.0.0",
+				Version:   "1.0.1",
 				UserConfig: v1alpha1.AppSpecUserConfig{
 					ConfigMap: v1alpha1.AppSpecUserConfigConfigMap{
 						Name:      "test-app-user-values",
