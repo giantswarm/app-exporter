@@ -26,20 +26,20 @@ func Test_collectAppVersions(t *testing.T) {
 		{
 			name: fmt.Sprintf("case 1: All apps have the %#q label", label.AppOperatorVersion),
 			apps: []*v1alpha1.App{
-				newTestApp("hello-world-1", "abc01", map[string]string{
-					label.AppOperatorVersion: "6.3.0",
+				newTestApp("hello-world-1", testNamespaceABC01, map[string]string{
+					label.AppOperatorVersion: testOperatorVersionOld,
 				}),
 				newTestApp("hello-world-2", "xyz01", map[string]string{
 					label.AppOperatorVersion: "5.9.2",
 				}),
-				newTestApp("hello-world-3", "testing", map[string]string{
-					label.AppOperatorVersion: "6.3.0",
+				newTestApp("hello-world-3", testNamespaceTesting, map[string]string{
+					label.AppOperatorVersion: testOperatorVersionOld,
 				}),
 			},
 			expectedAppVersions: map[string]map[string]bool{
-				"6.3.0": {
-					"abc01":   true,
-					"testing": true,
+				testOperatorVersionOld: {
+					testNamespaceABC01:   true,
+					testNamespaceTesting: true,
 				},
 				"5.9.2": {
 					"xyz01": true,
@@ -49,42 +49,42 @@ func Test_collectAppVersions(t *testing.T) {
 		{
 			name: fmt.Sprintf("case 2: Skip app with invalid %#q label", label.AppOperatorVersion),
 			apps: []*v1alpha1.App{
-				newTestApp("hello-world-1", "abc01", map[string]string{
-					label.AppOperatorVersion: "6.3.0",
+				newTestApp("hello-world-1", testNamespaceABC01, map[string]string{
+					label.AppOperatorVersion: testOperatorVersionOld,
 				}),
 				newTestApp("hello-world-2", "xyz01", map[string]string{
 					label.AppOperatorVersion: "this-is-not-a-valid-version",
 				}),
-				newTestApp("hello-world-3", "testing", map[string]string{
-					label.AppOperatorVersion: "6.4.0",
+				newTestApp("hello-world-3", testNamespaceTesting, map[string]string{
+					label.AppOperatorVersion: testOperatorVersionNew,
 				}),
 			},
 			expectedAppVersions: map[string]map[string]bool{
-				"6.3.0": {
-					"abc01": true,
+				testOperatorVersionOld: {
+					testNamespaceABC01: true,
 				},
-				"6.4.0": {
-					"testing": true,
+				testOperatorVersionNew: {
+					testNamespaceTesting: true,
 				},
 			},
 		},
 		{
 			name: fmt.Sprintf("case 3: Skip app with missing %#q label", label.AppOperatorVersion),
 			apps: []*v1alpha1.App{
-				newTestApp("hello-world-1", "abc01", map[string]string{
-					label.AppOperatorVersion: "6.3.0",
+				newTestApp("hello-world-1", testNamespaceABC01, map[string]string{
+					label.AppOperatorVersion: testOperatorVersionOld,
 				}),
 				newTestApp("hello-world-2", "org-example", map[string]string{}),
-				newTestApp("hello-world-3", "testing", map[string]string{
-					label.AppOperatorVersion: "6.4.0",
+				newTestApp("hello-world-3", testNamespaceTesting, map[string]string{
+					label.AppOperatorVersion: testOperatorVersionNew,
 				}),
 			},
 			expectedAppVersions: map[string]map[string]bool{
-				"6.3.0": {
-					"abc01": true,
+				testOperatorVersionOld: {
+					testNamespaceABC01: true,
 				},
-				"6.4.0": {
-					"testing": true,
+				testOperatorVersionNew: {
+					testNamespaceTesting: true,
 				},
 			},
 		},
@@ -146,7 +146,7 @@ func newTestApp(name, namespace string, labels map[string]string) *v1alpha1.App 
 	app := v1alpha1.App{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "App",
-			APIVersion: "application.giantswarm.io/v1alpha1",
+			APIVersion: testAPIVersion,
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Labels:    labels,
@@ -157,7 +157,7 @@ func newTestApp(name, namespace string, labels map[string]string) *v1alpha1.App 
 			Name:      name,
 			Namespace: namespace,
 			Catalog:   "test-catalog",
-			Version:   "1.0.0",
+			Version:   testAppVersion,
 		},
 	}
 
