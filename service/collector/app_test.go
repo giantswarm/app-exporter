@@ -93,11 +93,11 @@ func Test_collectAppStatus(t *testing.T) {
 		expectedMetricsCount int
 	}{
 		{
-			name: "flawless",
+			name: testCaseFlawless,
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
-				newApp("example", "customer", "default", "1.0.0", "", "", nil, nil),
-				newApp("test-app", "default", "test-app", "1.0.0", "", "", nil, map[string]string{
+				newApp("example", "customer", "default", testAppVersion, "", "", nil, nil),
+				newApp("test-app", "default", "test-app", testAppVersion, "", "", nil, map[string]string{
 					label.Cluster: "foo",
 				}),
 			},
@@ -108,14 +108,14 @@ func Test_collectAppStatus(t *testing.T) {
 			},
 			catalogsEntries: []*v1alpha1.AppCatalogEntry{
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
-				newACE("example", "customer", "default", "1.0.0", "", "", true),
-				newACE("test-app", "default", "giantswarm", "1.0.0", "", "", true),
+				newACE("example", "customer", "default", testAppVersion, "", "", true),
+				newACE("test-app", "default", "giantswarm", testAppVersion, "", "", true),
 			},
 			expectedMetrics:      "testdata/expected.1",
 			expectedMetricsCount: 3,
 		},
 		{
-			name: "flawless with v* versions",
+			name: testCaseFlawlessVersions,
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "v0.3.0", "", "", nil, nil),
 				newApp("example", "customer", "default", "v1.0.0", "", "", nil, nil),
@@ -131,7 +131,7 @@ func Test_collectAppStatus(t *testing.T) {
 			catalogsEntries: []*v1alpha1.AppCatalogEntry{
 				newACE("hello-world-app", "giantswarm", "default", "v0.3.0", "", "", true),
 				newACE("example", "customer", "default", "v1.0.0", "", "", true),
-				newACE("test-app", "default", "giantswarm", "1.0.0", "", "", true),
+				newACE("test-app", "default", "giantswarm", testAppVersion, "", "", true),
 			},
 			expectedMetrics:      "testdata/expected.1",
 			expectedMetricsCount: 3,
@@ -166,7 +166,7 @@ func Test_collectAppStatus(t *testing.T) {
 			},
 			catalogsEntries: []*v1alpha1.AppCatalogEntry{
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
-				newACE("atlas-app", "giantswarm", "default", "1.0.0", "", "", true),
+				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
 			expectedMetrics:      "testdata/expected.3",
 			expectedMetricsCount: 2,
@@ -183,7 +183,7 @@ func Test_collectAppStatus(t *testing.T) {
 			},
 			catalogsEntries: []*v1alpha1.AppCatalogEntry{
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
-				newACE("atlas-app", "giantswarm", "default", "1.0.0", "", "", true),
+				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
 			expectedMetrics:      "testdata/expected.3",
 			expectedMetricsCount: 2,
@@ -229,8 +229,8 @@ func Test_collectAppStatus(t *testing.T) {
 				K8sClient: k8sClientFake,
 				Logger:    microloggertest.New(),
 
-				DefaultTeam:         "honeybadger",
-				Provider:            "aws",
+				DefaultTeam:         testTeam,
+				Provider:            testProvider,
 				RetiredTeamsMapping: map[string]string{},
 			}
 
@@ -276,7 +276,7 @@ func Test_getLatestAppVersions(t *testing.T) {
 		expectedVersions map[string]string
 	}{
 		{
-			name: "flawless",
+			name: testCaseFlawless,
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
 				newCatalog("customer", "default"),
@@ -284,17 +284,17 @@ func Test_getLatestAppVersions(t *testing.T) {
 			catalogsEntries: []*v1alpha1.AppCatalogEntry{
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("hello-world-app", "giantswarm", "default", "0.2.0", "", "", false),
-				newACE("example", "customer", "default", "1.0.0", "", "", true),
+				newACE("example", "customer", "default", testAppVersion, "", "", true),
 				newACE("example", "customer", "default", "0.2.0", "", "", false),
 				newACE("example", "customer", "default", "0.1.0", "", "", false),
 			},
 			expectedVersions: map[string]string{
-				"customer-example":           "1.0.0",
+				"customer-example":           testAppVersion,
 				"giantswarm-hello-world-app": "0.3.0",
 			},
 		},
 		{
-			name: "flawless with v* versions",
+			name: testCaseFlawlessVersions,
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
 				newCatalog("customer", "default"),
@@ -307,7 +307,7 @@ func Test_getLatestAppVersions(t *testing.T) {
 				newACE("example", "customer", "default", "v0.1.0", "", "", false),
 			},
 			expectedVersions: map[string]string{
-				"customer-example":           "1.0.0",
+				"customer-example":           testAppVersion,
 				"giantswarm-hello-world-app": "0.3.0",
 			},
 		},
@@ -348,8 +348,8 @@ func Test_getLatestAppVersions(t *testing.T) {
 				K8sClient: k8sClientFake,
 				Logger:    microloggertest.New(),
 
-				DefaultTeam:         "honeybadger",
-				Provider:            "aws",
+				DefaultTeam:         testTeam,
+				Provider:            testProvider,
 				RetiredTeamsMapping: map[string]string{},
 			}
 
@@ -380,10 +380,10 @@ func Test_getTeamMappings(t *testing.T) {
 		retiredTeamsMapping  map[string]string
 	}{
 		{
-			name: "flawless",
+			name: testCaseFlawless,
 			apps: []v1alpha1.App{
 				*newApp("hello-world-app", "giantswarm", "hello-world", "0.2.0", "", "", nil, nil),
-				*newApp("example", "customer", "default", "1.0.0", "", "", nil, nil),
+				*newApp("example", "customer", "default", testAppVersion, "", "", nil, nil),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -398,18 +398,18 @@ func Test_getTeamMappings(t *testing.T) {
 					"hello-world-app", "giantswarm", "default", "0.2.0",
 					"[{'team':'honeybadger','catalog':'giantswarm'}]", "", false,
 				),
-				newACE("example", "customer", "default", "1.0.0", "", "customer-team", true),
+				newACE("example", "customer", "default", testAppVersion, "", "customer-team", true),
 				newACE("example", "customer", "default", "0.2.0", "", "customer-team", false),
 				newACE("example", "customer", "default", "0.1.0", "", "customer-team", false),
 			},
 			expectedTeamMappings: map[string]string{
-				"customer-example-1.0.0":           "customer-team",
-				"giantswarm-hello-world-app-0.2.0": "honeybadger",
+				testCustomerApp:                    "customer-team",
+				"giantswarm-hello-world-app-0.2.0": testTeam,
 			},
 			retiredTeamsMapping: map[string]string{},
 		},
 		{
-			name: "flawless with v* versions",
+			name: testCaseFlawlessVersions,
 			apps: []v1alpha1.App{
 				*newApp("hello-world-app", "giantswarm", "hello-world", "0.2.0", "", "", nil, nil),
 				*newApp("example", "customer", "default", "v1.0.0", "", "", nil, nil),
@@ -432,8 +432,8 @@ func Test_getTeamMappings(t *testing.T) {
 				newACE("example", "customer", "default", "v0.1.0", "", "customer-team", false),
 			},
 			expectedTeamMappings: map[string]string{
-				"customer-example-1.0.0":           "",
-				"giantswarm-hello-world-app-0.2.0": "honeybadger",
+				testCustomerApp:                    "",
+				"giantswarm-hello-world-app-0.2.0": testTeam,
 			},
 			retiredTeamsMapping: map[string]string{},
 		},
@@ -468,11 +468,11 @@ func Test_getTeamMappings(t *testing.T) {
 				),
 			},
 			expectedTeamMappings: map[string]string{
-				"customer-example-1.0.0":           "",
-				"giantswarm-hello-world-app-0.3.0": "honeybadger",
+				testCustomerApp:                    "",
+				"giantswarm-hello-world-app-0.3.0": testTeam,
 			},
 			retiredTeamsMapping: map[string]string{
-				"batman": "honeybadger",
+				"batman": testTeam,
 			},
 		},
 	}
@@ -512,8 +512,8 @@ func Test_getTeamMappings(t *testing.T) {
 				K8sClient: k8sClientFake,
 				Logger:    microloggertest.New(),
 
-				DefaultTeam:         "honeybadger",
-				Provider:            "aws",
+				DefaultTeam:         testTeam,
+				Provider:            testProvider,
 				RetiredTeamsMapping: tc.retiredTeamsMapping,
 			}
 
@@ -538,7 +538,7 @@ func newACE(app, catalog, namespace, version, owners, team string, latest bool) 
 	ace := v1alpha1.AppCatalogEntry{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "AppCatalogEntry",
-			APIVersion: "application.giantswarm.io/v1alpha1",
+			APIVersion: testAPIVersion,
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{
@@ -588,7 +588,7 @@ func newApp(name, catalog, namespace, version, statusVersion, statusRelease stri
 	app := v1alpha1.App{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "App",
-			APIVersion: "application.giantswarm.io/v1alpha1",
+			APIVersion: testAPIVersion,
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: annotations,
@@ -617,7 +617,7 @@ func newCatalog(name, namespace string) *v1alpha1.Catalog {
 	catalog := v1alpha1.Catalog{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Catalog",
-			APIVersion: "application.giantswarm.io/v1alpha1",
+			APIVersion: testAPIVersion,
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Labels: map[string]string{
