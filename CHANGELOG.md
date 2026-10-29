@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   App CR's team label still overrides its team annotation. Charts migrated to the
   OCI-compliant metadata format carry only the new key, so their Apps got `team="noteam"` and
   `WorkloadClusterAppFailed` and the other app alerts, which skip `noteam`, never fired for them.
+- Bump `golang.org/x/net` to v0.62.0 for CVE-2026-97045 and CVE-2026-78661.
 - Fix ARM64 images.
 - The `helm.sh/chart` label is valid for long chart versions: the 63-character cut trims the whole trailing run of `-`, `.` and `_`.
 
