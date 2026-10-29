@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-10-29
+
 ### Fixed
 
 - Read the owning team from `io.giantswarm.application.team` too, on AppCatalogEntries and on App
@@ -335,7 +337,8 @@ reduce how often pods are rolled.
 
 - Added initial structures.
 
-[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/giantswarm/app-exporter/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/giantswarm/app-exporter/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/giantswarm/app-exporter/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/giantswarm/app-exporter/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/giantswarm/app-exporter/compare/v0.20.0...v1.0.0
