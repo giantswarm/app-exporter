@@ -4,6 +4,12 @@ const (
 	gaugeValue         float64 = 1
 	namespace          string  = "app_operator"
 	notInstalledStatus string  = "not-installed"
+
+	// ociAppTeam is the team annotation of the OCI-compliant chart metadata
+	// format, see https://docs.giantswarm.io/reference/platform-api/chart-metadata/.
+	// Charts migrated to it carry it instead of annotation.AppTeam, which
+	// k8smetadata does not define.
+	ociAppTeam string = "io.giantswarm.application.team"
 )
 
 const (

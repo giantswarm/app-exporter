@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Read the owning team from `io.giantswarm.application.team` too, on AppCatalogEntries and on App
+  CR annotations and labels. Within each of them `application.giantswarm.io/team` wins, and an
+  App CR's team label still overrides its team annotation. Charts migrated to the
+  OCI-compliant metadata format carry only the new key, so their Apps got `team="noteam"` and
+  `WorkloadClusterAppFailed` and the other app alerts, which skip `noteam`, never fired for them.
 - Fix ARM64 images.
 - The `helm.sh/chart` label is valid for long chart versions: the 63-character cut trims the whole trailing run of `-`, `.` and `_`.
 
