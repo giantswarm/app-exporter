@@ -1,11 +1,16 @@
-CVE-2026-56854 until=2026-10-08 # golang.org/x/crypto@v0.54.0
 CVE-2026-37236 until=2026-10-31 # github.com/grpc-ecosystem/grpc-gateway@v1.16.0
-CVE-2026-56855 until=2026-10-08 # golang.org/x/crypto@v0.54.0
-CVE-2026-78662 until=2026-10-08 # golang.org/x/crypto@v0.54.0
 CVE-2026-84445 until=2026-10-29 # google.golang.org/grpc@v1.84.0
-CVE-2026-94637 until=2026-11-05 # github.com/apache/thrift@v0.24.0
-CVE-2026-63772 until=2026-11-05 # github.com/apache/thrift@v0.24.0
-CVE-2026-66055 until=2026-11-05 # github.com/apache/thrift@v0.24.0
-CVE-2026-82458 until=2026-11-05 # github.com/apache/thrift@v0.24.0
-CVE-2026-83663 until=2026-11-05 # github.com/apache/thrift@v0.24.0
-CVE-2026-96990 until=2026-11-05 # github.com/apache/thrift@v0.24.0
+CVE-2026-94637 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-63772 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-66055 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-82458 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-83663 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-96990 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-85088 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-85494 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-94636 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-94655 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-66054 until=2026-11-27 # github.com/apache/thrift@v0.24.0 since=2026-10-28
+CVE-2026-116586 until=2026-11-27 # github.com/go-jose/go-jose/v4@v4.1.4 since=2026-10-28
+CVE-2026-116585 until=2026-11-27 # github.com/go-jose/go-jose/v4@v4.1.4 since=2026-10-28
+CVE-2026-115804 until=2026-11-27 # github.com/hashicorp/consul/api@v1.14.0 since=2026-10-28
