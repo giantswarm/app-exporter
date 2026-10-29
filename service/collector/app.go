@@ -157,12 +157,13 @@ func (a *App) collectAppStatus(ctx context.Context, ch chan<- prometheus.Metric)
 			team = a.defaultTeam
 		}
 
-		// Team annotation on the App CR overrides if it exists.
-		if key.AppTeam(app) != "" {
-			team = formatTeamName(key.AppTeam(app))
+		// Team annotation on the App CR overrides if it exists, and a team
+		// label overrides the annotation.
+		if v := teamFrom(app.Annotations); v != "" {
+			team = formatTeamName(v)
 		}
 
-		if v, ok := app.Labels[annotation.AppTeam]; ok {
+		if v := teamFrom(app.Labels); v != "" {
 			team = formatTeamName(v)
 		}
 
@@ -351,7 +352,7 @@ func (a *App) getTeam(ctx context.Context, app v1alpha1.App) (string, error) {
 
 	// Use team annotation if there are no owners.
 	if team == "" {
-		team = key.AppCatalogEntryTeam(*ace)
+		team = teamFrom(ace.Annotations)
 	}
 
 	// Normalize team name e.g. remove team- prefix if its present.
@@ -414,6 +415,17 @@ func convertToTime(input string) (time.Time, error) {
 	}
 
 	return t, nil
+}
+
+// teamFrom returns the team from App or AppCatalogEntry metadata. The
+// `application.giantswarm.io/team` key wins; charts in the OCI-compliant
+// metadata format carry the team only under `io.giantswarm.application.team`.
+func teamFrom(metadata map[string]string) string {
+	if v := metadata[annotation.AppTeam]; v != "" {
+		return v
+	}
+
+	return metadata[ociAppTeam]
 }
 
 // formatTeamName allows for normalizing the team name. This is needed as our

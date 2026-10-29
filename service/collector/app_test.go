@@ -158,7 +158,7 @@ func Test_collectAppStatus(t *testing.T) {
 			name: "non existing ACE, taking team from annotations",
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
-				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", map[string]string{annotation.AppTeam: "team-atlas"}, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", map[string]string{annotation.AppTeam: testTeamAtlas}, nil),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -168,14 +168,14 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 		{
 			name: "non existing ACE, taking team from labels",
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
-				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{annotation.AppTeam: "team-atlas"}),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{annotation.AppTeam: testTeamAtlas}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -185,7 +185,101 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
+			expectedMetricsCount: 2,
+		},
+		{
+			name: "non existing ACE, taking team from OCI annotations",
+			apps: []*v1alpha1.App{
+				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", map[string]string{ociAppTeam: testTeamAtlas}, nil),
+			},
+			catalogs: []*v1alpha1.Catalog{
+				newCatalog("giantswarm", "default"),
+				newCatalog("customer", "default"),
+			},
+			catalogsEntries: []*v1alpha1.AppCatalogEntry{
+				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
+				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
+			},
+			expectedMetrics:      testExpectedMetrics3,
+			expectedMetricsCount: 2,
+		},
+		{
+			name: "non existing ACE, taking team from OCI labels",
+			apps: []*v1alpha1.App{
+				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{ociAppTeam: testTeamAtlas}),
+			},
+			catalogs: []*v1alpha1.Catalog{
+				newCatalog("giantswarm", "default"),
+				newCatalog("customer", "default"),
+			},
+			catalogsEntries: []*v1alpha1.AppCatalogEntry{
+				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
+				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
+			},
+			expectedMetrics:      testExpectedMetrics3,
+			expectedMetricsCount: 2,
+		},
+		{
+			name: "non existing ACE, empty old label key falls back to OCI label key",
+			apps: []*v1alpha1.App{
+				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{
+					annotation.AppTeam: "",
+					ociAppTeam:         testTeamAtlas,
+				}),
+			},
+			catalogs: []*v1alpha1.Catalog{
+				newCatalog("giantswarm", "default"),
+				newCatalog("customer", "default"),
+			},
+			catalogsEntries: []*v1alpha1.AppCatalogEntry{
+				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
+				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
+			},
+			expectedMetrics:      testExpectedMetrics3,
+			expectedMetricsCount: 2,
+		},
+		{
+			name: "non existing ACE, OCI label key wins over old annotation key",
+			apps: []*v1alpha1.App{
+				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "",
+					map[string]string{annotation.AppTeam: "team-cabbage"},
+					map[string]string{ociAppTeam: testTeamAtlas},
+				),
+			},
+			catalogs: []*v1alpha1.Catalog{
+				newCatalog("giantswarm", "default"),
+				newCatalog("customer", "default"),
+			},
+			catalogsEntries: []*v1alpha1.AppCatalogEntry{
+				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
+				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
+			},
+			expectedMetrics:      testExpectedMetrics3,
+			expectedMetricsCount: 2,
+		},
+		{
+			name: "non existing ACE, old label key wins over OCI label key",
+			apps: []*v1alpha1.App{
+				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{
+					annotation.AppTeam: testTeamAtlas,
+					ociAppTeam:         "team-cabbage",
+				}),
+			},
+			catalogs: []*v1alpha1.Catalog{
+				newCatalog("giantswarm", "default"),
+				newCatalog("customer", "default"),
+			},
+			catalogsEntries: []*v1alpha1.AppCatalogEntry{
+				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
+				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
+			},
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 	}
@@ -475,6 +569,59 @@ func Test_getTeamMappings(t *testing.T) {
 				"batman": testTeam,
 			},
 		},
+		{
+			name: "team from OCI annotation",
+			apps: []v1alpha1.App{
+				*newApp("external-dns-app", "giantswarm", "default", testAppVersion, "", "", nil, nil),
+				*newApp("example", "customer", "default", testAppVersion, "", "", nil, nil),
+				*newApp("hello-world-app", "giantswarm", "hello-world", testAppVersion, "", "", nil, nil),
+			},
+			catalogs: []*v1alpha1.Catalog{
+				newCatalog("giantswarm", "default"),
+				newCatalog("customer", "default"),
+			},
+			catalogsEntries: []*v1alpha1.AppCatalogEntry{
+				// Only the OCI key, as catalog entries of migrated charts carry it.
+				withAnnotation(
+					newACE("external-dns-app", "giantswarm", "default", testAppVersion, "", "", true),
+					ociAppTeam, "cabbage",
+				),
+				// Both keys: the old key wins.
+				withAnnotation(
+					newACE("example", "customer", "default", testAppVersion, "", "customer-team", true),
+					ociAppTeam, "cabbage",
+				),
+				// Neither key.
+				newACE("hello-world-app", "giantswarm", "default", testAppVersion, "", "", true),
+			},
+			expectedTeamMappings: map[string]string{
+				"giantswarm-external-dns-app-" + testAppVersion: "cabbage",
+				testCustomerApp: "customer-team",
+				"giantswarm-hello-world-app-" + testAppVersion: "",
+			},
+			retiredTeamsMapping: map[string]string{},
+		},
+		{
+			name: "retired team from OCI annotation",
+			apps: []v1alpha1.App{
+				*newApp("external-dns-app", "giantswarm", "default", testAppVersion, "", "", nil, nil),
+			},
+			catalogs: []*v1alpha1.Catalog{
+				newCatalog("giantswarm", "default"),
+			},
+			catalogsEntries: []*v1alpha1.AppCatalogEntry{
+				withAnnotation(
+					newACE("external-dns-app", "giantswarm", "default", testAppVersion, "", "", true),
+					ociAppTeam, "team-batman",
+				),
+			},
+			expectedTeamMappings: map[string]string{
+				"giantswarm-external-dns-app-" + testAppVersion: testTeam,
+			},
+			retiredTeamsMapping: map[string]string{
+				"batman": testTeam,
+			},
+		},
 	}
 	for i, tc := range tests {
 		t.Run(fmt.Sprintf("case %d: %s", i, tc.name), func(t *testing.T) {
@@ -574,6 +721,12 @@ func newACE(app, catalog, namespace, version, owners, team string, latest bool) 
 	}
 
 	return &ace
+}
+
+func withAnnotation(ace *v1alpha1.AppCatalogEntry, key, value string) *v1alpha1.AppCatalogEntry {
+	ace.Annotations[key] = value
+
+	return ace
 }
 
 func newApp(name, catalog, namespace, version, statusVersion, statusRelease string, annotations, labels map[string]string) *v1alpha1.App {
