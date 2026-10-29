@@ -13,4 +13,6 @@ const (
 	testTeam                 = "honeybadger"
 	testProvider             = "aws"
 	testCustomerApp          = "customer-example-" + testAppVersion
+	testTeamAtlas            = "team-atlas"
+	testExpectedMetrics3     = "testdata/expected.3"
 )

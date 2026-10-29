@@ -158,7 +158,7 @@ func Test_collectAppStatus(t *testing.T) {
 			name: "non existing ACE, taking team from annotations",
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
-				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", map[string]string{annotation.AppTeam: "team-atlas"}, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", map[string]string{annotation.AppTeam: testTeamAtlas}, nil),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -168,14 +168,14 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 		{
 			name: "non existing ACE, taking team from labels",
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
-				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{annotation.AppTeam: "team-atlas"}),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{annotation.AppTeam: testTeamAtlas}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -185,14 +185,14 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 		{
 			name: "non existing ACE, taking team from OCI annotations",
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
-				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", map[string]string{ociAppTeam: "team-atlas"}, nil),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", map[string]string{ociAppTeam: testTeamAtlas}, nil),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -202,14 +202,14 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 		{
 			name: "non existing ACE, taking team from OCI labels",
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
-				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{ociAppTeam: "team-atlas"}),
+				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{ociAppTeam: testTeamAtlas}),
 			},
 			catalogs: []*v1alpha1.Catalog{
 				newCatalog("giantswarm", "default"),
@@ -219,7 +219,7 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 		{
@@ -228,7 +228,7 @@ func Test_collectAppStatus(t *testing.T) {
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
 				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{
 					annotation.AppTeam: "",
-					ociAppTeam:         "team-atlas",
+					ociAppTeam:         testTeamAtlas,
 				}),
 			},
 			catalogs: []*v1alpha1.Catalog{
@@ -239,7 +239,7 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 		{
@@ -248,7 +248,7 @@ func Test_collectAppStatus(t *testing.T) {
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
 				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "",
 					map[string]string{annotation.AppTeam: "team-cabbage"},
-					map[string]string{ociAppTeam: "team-atlas"},
+					map[string]string{ociAppTeam: testTeamAtlas},
 				),
 			},
 			catalogs: []*v1alpha1.Catalog{
@@ -259,7 +259,7 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 		{
@@ -267,7 +267,7 @@ func Test_collectAppStatus(t *testing.T) {
 			apps: []*v1alpha1.App{
 				newApp("hello-world-app", "giantswarm", "hello-world", "0.3.0", "", "", nil, nil),
 				newApp("atlas-app", "giantswarm", "default", "0.9.0", "", "", nil, map[string]string{
-					annotation.AppTeam: "team-atlas",
+					annotation.AppTeam: testTeamAtlas,
 					ociAppTeam:         "team-cabbage",
 				}),
 			},
@@ -279,7 +279,7 @@ func Test_collectAppStatus(t *testing.T) {
 				newACE("hello-world-app", "giantswarm", "default", "0.3.0", "", "", true),
 				newACE("atlas-app", "giantswarm", "default", testAppVersion, "", "", true),
 			},
-			expectedMetrics:      "testdata/expected.3",
+			expectedMetrics:      testExpectedMetrics3,
 			expectedMetricsCount: 2,
 		},
 	}
