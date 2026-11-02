@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update github.com/prometheus/client_golang to v1.25.0 (giantswarm/app-exporter#709)
+
 ## [1.0.3] - 2026-10-29
 
 ### Fixed
