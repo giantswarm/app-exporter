@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update github.com/masterminds/semver/v3 to v3.5.0 (giantswarm/app-exporter#710)
+
 ## [1.0.3] - 2026-10-29
 
 ### Fixed
